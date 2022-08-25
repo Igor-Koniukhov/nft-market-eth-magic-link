@@ -4,7 +4,7 @@ import { Fragment } from "react";
 import { Disclosure, Menu } from "@headlessui/react";
 import { BellIcon, MenuIcon, XIcon } from "@heroicons/react/outline";
 import Link from "next/link";
-import { ActiveLink } from "../../components";
+import { ActiveLink } from "..";
 
 const navigation = [
   { name: "Marketplace", href: "/", current: true },
