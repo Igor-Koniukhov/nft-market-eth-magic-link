@@ -3,7 +3,7 @@ import { Disclosure, Menu } from "@headlessui/react";
 import { BellIcon, MenuIcon, XIcon } from "@heroicons/react/outline";
 import Link from "next/link";
 import { ActiveLink } from "..";
-import {useWeb3} from "@providers/web3";
+import {useAccount} from "@hooks/web3";
 
 
 
@@ -17,14 +17,15 @@ function classNames(...classes: string[]) {
 }
 
 export default function Navbar() {
-  const {hooks}=useWeb3();
-  const {data} = hooks.useAccount("")
-  console.log(data, " - data")
+  const {account}=useAccount();
+
+  console.log(account.data, " - account")
 
   return (
     <Disclosure as="nav" className="bg-gray-800">
       {({ open }) => (
         <>
+          {account.data}
           <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
             <div className="relative flex items-center justify-between h-16">
               <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
@@ -75,35 +76,50 @@ export default function Navbar() {
                 </button>
 
                 {/* Profile dropdown */}
-                <Menu as="div" className="ml-3 relative z-10">
-                  <div>
-                    <Menu.Button className="bg-gray-800 flex text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white">
-                      <span className="sr-only">Open user menu</span>
-                      <img
-                        className="h-8 w-8 rounded-full"
-                       src="/images/pm-scary-face.png"
-                        alt=""
-                      />
-                    </Menu.Button>
-                  </div>
+                {
+                  false ?
+                  <Menu as="div" className="ml-3 relative z-10">
+                    <div>
+                      <Menu.Button className="bg-gray-800 flex text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white">
+                        <span className="sr-only">Open user menu</span>
+                        <img
+                            className="h-8 w-8 rounded-full"
+                            src="/images/pm-scary-face.png"
+                            alt=""
+                        />
+                      </Menu.Button>
+                    </div>
 
-                  <Menu.Items className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
-                    <Menu.Item>
-                      {({ active }) => (
-                        <Link href="/profile">
-                          <a
-                            className={classNames(
-                              active ? "bg-gray-100" : "",
-                              "block px-4 py-2 text-sm text-gray-700"
-                            )}
-                          >
-                            Your Profile
-                          </a>
-                        </Link>
-                      )}
-                    </Menu.Item>
-                  </Menu.Items>
-                </Menu>
+                    <Menu.Items className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
+                      <Menu.Item>
+                        {({ active }) => (
+                            <Link href="/profile">
+                              <a
+                                  className={classNames(
+                                      active ? "bg-gray-100" : "",
+                                      "block px-4 py-2 text-sm text-gray-700"
+                                  )}
+                              >
+                                Your Profile
+                              </a>
+                            </Link>
+                        )}
+                      </Menu.Item>
+                    </Menu.Items>
+                  </Menu> :
+                      <button
+                          onClick={() => {
+                            // in the next lecture!
+                            account.connect();
+                          }}
+                          type="button"
+                          className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-full shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                      >
+                        Connect Wallet
+                      </button>
+
+                }
+
               </div>
             </div>
           </div>
