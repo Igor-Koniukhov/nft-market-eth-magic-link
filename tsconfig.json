@@ -19,6 +19,10 @@
       "@ui": ["components/ui"],
       "@ui/*": ["components/ui/8"],
       "@_types/*": ["types/*"],
+      "@providers": ["components/providers"],
+      "@providers/*": ["components/providers/*"],
+      "@hooks": ["components/hooks"],
+      "@hooks/*": ["components/hooks/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],

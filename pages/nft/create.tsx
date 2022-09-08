@@ -1,8 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
-
 import type { NextPage } from 'next'
 import { useState } from 'react';
-import { BaseLayout } from '../../components/ui'
+import { BaseLayout } from '@ui'
 import { Switch } from '@headlessui/react'
 import Link from 'next/link'
 

@@ -1,10 +1,11 @@
 /* eslint-disable @next/next/no-img-element */
-
-import { Fragment } from "react";
 import { Disclosure, Menu } from "@headlessui/react";
 import { BellIcon, MenuIcon, XIcon } from "@heroicons/react/outline";
 import Link from "next/link";
 import { ActiveLink } from "..";
+import {useWeb3} from "@providers/web3";
+
+
 
 const navigation = [
   { name: "Marketplace", href: "/", current: true },
@@ -16,6 +17,10 @@ function classNames(...classes: string[]) {
 }
 
 export default function Navbar() {
+  const {hooks}=useWeb3();
+  const {data} = hooks.useAccount("")
+  console.log(data, " - data")
+
   return (
     <Disclosure as="nav" className="bg-gray-800">
       {({ open }) => (
@@ -76,7 +81,7 @@ export default function Navbar() {
                       <span className="sr-only">Open user menu</span>
                       <img
                         className="h-8 w-8 rounded-full"
-                        src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                       src="/images/pm-scary-face.png"
                         alt=""
                       />
                     </Menu.Button>
