@@ -2,7 +2,9 @@
 
 import {Menu} from "@headlessui/react";
 import Link from "next/link";
-import {FunctionComponent} from "react";
+import {FunctionComponent, useEffect, useRef} from "react";
+import {useWeb3} from "@providers/web3";
+import jazzicon from "@metamask/jazzicon"
 
 type WalletbarProps = {
     isLoading: boolean;
@@ -22,10 +24,31 @@ const Walletbar: FunctionComponent<WalletbarProps> = (
         connect,
         account
     }) => {
+    const {provider} = useWeb3();
+    console.log(provider)
+
+    const avatarRef = useRef()
+    useEffect(() => {
+        const element = avatarRef.current;
+        if (element && account) {
+            const addr = account.slice(2, 10);
+            const seed = parseInt(addr, 16);
+            const icon = jazzicon(32, seed); //generates a size 32 icon
+            // @ts-ignore
+            if (element.firstChild) {
+                // @ts-ignore
+                element.removeChild(element.firstChild);
+            }
+            // @ts-ignore
+            element.appendChild(icon);
+        }
+    }, [account, avatarRef]);
+
 
     if (isLoading) {
         return (
             <div>
+
                 <button
                     onClick={() => {
                     }}
@@ -39,17 +62,16 @@ const Walletbar: FunctionComponent<WalletbarProps> = (
     }
 
     if (account) {
+
         return (
             <Menu as="div" className="ml-3 relative">
                 <div>
+
                     <Menu.Button
                         className="bg-gray-800 flex text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white">
                         <span className="sr-only">Open user menu</span>
-                        <img
-                            className="h-8 w-8 rounded-full"
-                            src="/images/default_user_image.png"
-                            alt=""
-                        />
+                        <div ref={avatarRef} className="h-8 w-8 rounded-full"></div>
+
                     </Menu.Button>
                 </div>
 
