@@ -2,9 +2,9 @@
 
 import {Menu} from "@headlessui/react";
 import Link from "next/link";
-import {FunctionComponent, useEffect, useRef} from "react";
-import {useWeb3} from "@providers/web3";
-import jazzicon from "@metamask/jazzicon"
+import {createRef, FunctionComponent, useEffect, useRef} from "react";
+// @ts-ignore
+import jazzicon from "@metamask/jazzicon";
 
 type WalletbarProps = {
     isLoading: boolean;
@@ -24,10 +24,9 @@ const Walletbar: FunctionComponent<WalletbarProps> = (
         connect,
         account
     }) => {
-    const {provider} = useWeb3();
-    console.log(provider)
 
-    const avatarRef = useRef()
+
+    const avatarRef = createRef()
     useEffect(() => {
         const element = avatarRef.current;
         if (element && account) {
@@ -42,7 +41,13 @@ const Walletbar: FunctionComponent<WalletbarProps> = (
             // @ts-ignore
             element.appendChild(icon);
         }
-    }, [account, avatarRef]);
+    });
+
+
+    const copyToClipBoard = async (event: { stopPropagation: () => void; }) => {
+        event.stopPropagation()
+        await navigator.clipboard.writeText(String(account));
+    }
 
 
     if (isLoading) {
@@ -55,7 +60,7 @@ const Walletbar: FunctionComponent<WalletbarProps> = (
                     type="button"
                     className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-full shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                 >
-                    Loading ...
+                    Loading
                 </button>
             </div>
         )
@@ -69,7 +74,7 @@ const Walletbar: FunctionComponent<WalletbarProps> = (
 
                     <Menu.Button
                         className="bg-gray-800 flex text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white">
-                        <span className="sr-only">Open user menu</span>
+
                         <div ref={avatarRef} className="h-8 w-8 rounded-full"></div>
 
                     </Menu.Button>
@@ -80,9 +85,10 @@ const Walletbar: FunctionComponent<WalletbarProps> = (
                     <Menu.Item>
                         {() => (
                             <button
-                                disabled={true}
-                                className="disabled:text-gray-500 text-xs block px-4 pt-2 text-gray-700">
+                                onClick={copyToClipBoard}
+                                className=" disabled:text-gray-500 text-xs block px-4 pt-2 text-gray-700">
                                 {`0x${account[2]}${account[3]}${account[4]}....${account.slice(-4)}`}
+
                             </button>
                         )}
                     </Menu.Item>

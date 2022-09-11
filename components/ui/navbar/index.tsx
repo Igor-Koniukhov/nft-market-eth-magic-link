@@ -2,7 +2,7 @@
 import {Disclosure} from "@headlessui/react";
 import {MenuIcon, XIcon} from "@heroicons/react/outline";
 import {ActiveLink} from "..";
-import {useAccount} from "@hooks/web3";
+import {useAccount, useNetwork} from "@hooks/web3";
 import Walletbar from "./Walletbar";
 
 
@@ -17,11 +17,12 @@ function classNames(...classes: string[]) {
 
 export default function Navbar() {
     const {account} = useAccount();
+    const {network} = useNetwork();
+
     return (
         <Disclosure as="nav" className="bg-gray-800">
             {({open}) => (
                 <>
-                    {account.data}
                     <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
                         <div className="relative flex items-center justify-between h-16">
                             <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
@@ -72,6 +73,27 @@ export default function Navbar() {
                                     connect={account.connect}
                                     account={account.data}
                                 />
+                                <div className="text-gray-300 self-center ml-2">
+                  <span
+                      className="inline-flex items-center px-2.5 py-0.5 rounded-md text-sm font-medium bg-yellow-100 text-yellow-800">
+                    <svg className="-ml-0.5 mr-1.5 h-2 w-2 text-yellow-400" fill="currentColor" viewBox="0 0 8 8">
+                      <circle cx={4} cy={4} r={3}/>
+                    </svg>
+                      <button
+                          disabled={network.data}
+                          onClick={() => {
+                              window.open('https://metamask.io', '_ blank');
+                          }}>
+                          {network.isLoading ?
+                              "..." :
+                              account.isInstalled ?
+                                  network.data :
+                                  "<- Install "
+                          }
+                      </button>
+
+                  </span>
+                                </div>
 
                             </div>
                         </div>

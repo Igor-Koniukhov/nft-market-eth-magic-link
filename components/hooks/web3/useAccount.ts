@@ -10,8 +10,10 @@ type UseAccountResponse = {
 type AccountHookFactory = CryptoHookFactory<string, UseAccountResponse>
 
 export type UseAccountHook = ReturnType<AccountHookFactory>
+
 export const hookFactory: AccountHookFactory = (
-    {provider,
+    {
+        provider,
         ethereum,
         isLoading
     }) => () => {
@@ -25,7 +27,8 @@ export const hookFactory: AccountHookFactory = (
             }
             return account
         }, {
-            revalidateOnFocus: false
+            revalidateOnFocus: false,
+            shouldRetryOnError: false
         }
     )
     useEffect(() => {
