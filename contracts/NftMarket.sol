@@ -55,8 +55,21 @@ contract NftMarket is ERC721URIStorage {
         _setTokenURI(newTokenId, tokenURI);
         _createNftItem(newTokenId, price);
         _usedTokenURIs[tokenURI] = true;
-
         return newTokenId;
+    }
+    function byNft(
+    uint tokenId
+    ) public payable{
+        uint price = _idToNftItem[tokenId].price;
+        address owner = ERC721.ownerOf(tokenId);
+        require(msg.sender != owner, "You already own this NFT");
+        require(msg.value == price, "Please submit the asking price");
+
+        _idToNftItem[tokenId].isListed = false;
+        _listedItems.decrement();
+        _transfer(owner, to, tokenId);
+        payable(owner).transfer(msg.value);
+
     }
 
     function _createNftItem(
@@ -72,6 +85,5 @@ contract NftMarket is ERC721URIStorage {
         );
         emit NftItemCreated(tokenId, price, msg.sender, true);
     }
-
 
 }
