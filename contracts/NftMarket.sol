@@ -91,6 +91,7 @@ contract NftMarket is ERC721URIStorage {
         return items;
 
     }
+    // only for test
     function burnToken(uint tokenId) public{
         _burn(tokenId);
     }
