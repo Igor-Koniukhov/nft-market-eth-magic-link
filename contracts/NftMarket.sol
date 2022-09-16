@@ -132,7 +132,7 @@ contract NftMarket is ERC721URIStorage, Ownable {
         require(msg.value == listingPrice, "Price must be equal to listing price");
 
         _idToNftItem[tokenId].isListed = true;
-        _listedItems.increment();
+        _idToNftItem[tokenId].price = newPrice;
         _listedItems.increment();
     }
 
