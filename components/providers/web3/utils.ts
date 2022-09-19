@@ -1,7 +1,7 @@
-import {MetaMaskInpageProvider} from "@metamask/providers";
-import {Contract, ethers, providers} from "ethers";
-import {setupHooks, Web3Hooks} from "@hooks/web3/setupHooks";
-import {Web3Dependencies} from "@_types/hooks";
+import { setupHooks, Web3Hooks } from "@hooks/web3/setupHooks";
+import { MetaMaskInpageProvider } from "@metamask/providers";
+import { Web3Dependencies } from "@_types/hooks";
+import { Contract, ethers, providers } from "ethers";
 
 declare global {
     interface Window {
@@ -18,6 +18,7 @@ export type Web3State = {
     hooks: Web3Hooks;
 } & Nullable<Web3Dependencies>
 
+
 export const createDefaultState = () => {
     return {
         ethereum: null,
@@ -28,13 +29,9 @@ export const createDefaultState = () => {
     }
 }
 
-export const createWeb3State = (
-    {
-        ethereum,
-        provider,
-        contract,
-        isLoading
-    }: Web3Dependencies) => {
+export const createWeb3State = ({
+                                    ethereum, provider, contract, isLoading
+                                }: Web3Dependencies) => {
     return {
         ethereum,
         provider,
@@ -50,15 +47,13 @@ export const loadContract = async (
     name: string,  // NftMarket
     provider: providers.Web3Provider
 ): Promise<Contract> => {
-
     if (!NETWORK_ID) {
         return Promise.reject("Network ID is not defined!");
     }
 
     const res = await fetch(`/contracts/${name}.json`);
-
     const Artifact = await res.json();
-    console.log(Artifact)
+
     if (Artifact.networks[NETWORK_ID].address) {
         const contract = new ethers.Contract(
             Artifact.networks[NETWORK_ID].address,

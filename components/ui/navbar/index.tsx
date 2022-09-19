@@ -19,6 +19,9 @@ export default function Navbar() {
     const {account} = useAccount();
     const {network} = useNetwork();
 
+
+
+    // @ts-ignore
     return (
         <Disclosure as="nav" className="bg-gray-800">
             {({open}) => (

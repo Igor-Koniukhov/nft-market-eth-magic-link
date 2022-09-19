@@ -2,7 +2,7 @@
 
 import {Menu} from "@headlessui/react";
 import Link from "next/link";
-import {createRef, FunctionComponent, useEffect, useRef} from "react";
+import {createRef, FunctionComponent, useEffect} from "react";
 // @ts-ignore
 import jazzicon from "@metamask/jazzicon";
 
@@ -25,23 +25,22 @@ const Walletbar: FunctionComponent<WalletbarProps> = (
         account
     }) => {
 
-
     const avatarRef = createRef()
-    useEffect(() => {
-        const element = avatarRef.current;
-        if (element && account) {
-            const addr = account.slice(2, 10);
-            const seed = parseInt(addr, 16);
-            const icon = jazzicon(32, seed); //generates a size 32 icon
-            // @ts-ignore
-            if (element.firstChild) {
-                // @ts-ignore
-                element.removeChild(element.firstChild);
-            }
-            // @ts-ignore
-            element.appendChild(icon);
-        }
-    });
+   useEffect(() => {
+       const element = avatarRef.current;
+       if (element && account) {
+           const addr = account.slice(2, 10);
+           const seed = parseInt(addr, 16);
+           const icon = jazzicon(32, seed); //generates a size 32 icon
+           // @ts-ignore
+           if (element.firstChild) {
+               // @ts-ignore
+               element.removeChild(element.firstChild);
+           }
+           // @ts-ignore
+           element.appendChild(icon);
+       }
+   });
 
 
     const copyToClipBoard = async (event: { stopPropagation: () => void; }) => {
@@ -75,7 +74,7 @@ const Walletbar: FunctionComponent<WalletbarProps> = (
                     <Menu.Button
                         className="bg-gray-800 flex text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white">
 
-                        <div ref={avatarRef} className="h-8 w-8 rounded-full"></div>
+                       <div ref={avatarRef} className="h-8 w-8 rounded-full"></div>
 
                     </Menu.Button>
                 </div>

@@ -1,0 +1,19 @@
+{
+  "description": "Cruel and angry pumpkin. Very annoying if not fed",
+  "image": "https://gateway.pinata.cloud/ipfs/Qma2U9GT7py9xSoSAtMTGA2azX6ncVrasofbeFZn1izbUN",
+  "name": "Pumpkin #1",
+  "attributes": [
+    {
+      "trait_type": "attack",
+      "value": "20"
+    },
+    {
+      "trait_type": "health",
+      "value": "100"
+    },
+    {
+      "trait_type": "speed",
+      "value": "30"
+    }
+  ]
+}

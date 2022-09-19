@@ -1,0 +1,19 @@
+{
+  "description": "Happy and crazy pumpkin. Will drive you crazy",
+  "image": "https://gateway.pinata.cloud/ipfs/QmYe6wfTtsYQkLmsud4GhM7wSN2rgTFLCbpVJcMuZoQAww",
+  "name": "Pumpkin #2",
+  "attributes": [
+    {
+      "trait_type": "attack",
+      "value": "20"
+    },
+    {
+      "trait_type": "health",
+      "value": "100"
+    },
+    {
+      "trait_type": "speed",
+      "value": "30"
+    }
+  ]
+}
