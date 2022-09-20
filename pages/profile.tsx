@@ -1,8 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
-
 import type { NextPage } from "next";
 import { BaseLayout } from "@ui";
-import {Nft, NftMeta} from "@_types/nft";
+import {Nft} from "@_types/nft";
 import {useOwnedNfts} from "@hooks/web3";
 import {useEffect, useState} from "react";
 
