@@ -4,6 +4,7 @@ import {useListedNfts} from "@hooks/web3";
 
 const NftList: FunctionComponent = () => {
     const {nfts}=useListedNfts();
+
     return (
         <div className="mt-12 max-w-lg mx-auto grid gap-5 lg:grid-cols-3 lg:max-w-none">
             {nfts.data?.map(nft =>

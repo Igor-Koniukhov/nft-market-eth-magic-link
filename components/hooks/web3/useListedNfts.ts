@@ -19,6 +19,7 @@ export const hookFactory: ListedNftsHookFactory = ({contract}) => () => {
         async () => {
             const nfts = [] as Nft[];
             const coreNfts = await contract!.getAllNftsOnSale();
+            console.log(contract)
 
             for (let i = 0; i < coreNfts.length; i++) {
                 const item = coreNfts[i];
@@ -59,6 +60,7 @@ export const hookFactory: ListedNftsHookFactory = ({contract}) => () => {
             console.error(e.message);
         }
     }, [_contract])
+
 
     return {
         ...swr,

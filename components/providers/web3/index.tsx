@@ -1,18 +1,14 @@
-import {createContext, FunctionComponent, useContext, useEffect, useState} from "react"
-import {createDefaultState, createWeb3State, loadContract, Web3State} from "./utils";
-import {ethers} from "ethers";
-import {MetaMaskInpageProvider} from "@metamask/providers";
-import {NftMarketContract} from "@_types/nftMarketContract";
+import { createContext, FunctionComponent, useContext, useEffect, useState } from "react"
+import { createDefaultState, createWeb3State, loadContract, Web3State } from "./utils";
+import { ethers } from "ethers";
+import { MetaMaskInpageProvider } from "@metamask/providers";
+import { NftMarketContract } from "@_types/nftMarketContract";
 
-const pageReload = () => {
-    window.location.reload();
-}
+const pageReload = () => { window.location.reload(); }
 
 const handleAccount = (ethereum: MetaMaskInpageProvider) => async () => {
-    const isLocked = !(await ethereum._metamask.isUnlocked());
-    if (isLocked) {
-        pageReload();
-    }
+    const isLocked =  !(await ethereum._metamask.isUnlocked());
+    if (isLocked) { pageReload(); }
 }
 
 const setGlobalListeners = (ethereum: MetaMaskInpageProvider) => {
@@ -30,12 +26,12 @@ const Web3Context = createContext<Web3State>(createDefaultState());
 const Web3Provider: FunctionComponent = ({children}) => {
     const [web3Api, setWeb3Api] = useState<Web3State>(createDefaultState());
 
-
     useEffect(() => {
         async function initWeb3() {
             try {
                 const provider = new ethers.providers.Web3Provider(window.ethereum as any);
-                const contract = await loadContract("NftMarket", provider);
+                const contract =  await loadContract("NftMarket", provider);
+
                 const signer = provider.getSigner();
                 const signedContract = contract.connect(signer);
 
@@ -46,7 +42,7 @@ const Web3Provider: FunctionComponent = ({children}) => {
                     contract: signedContract as unknown as NftMarketContract,
                     isLoading: false
                 }))
-            } catch (e: any) {
+            } catch(e: any) {
                 console.error("Please, install web3 wallet");
                 setWeb3Api((api) => createWeb3State({
                     ...api as any,
@@ -71,7 +67,7 @@ export function useWeb3() {
 }
 
 export function useHooks() {
-    const {hooks} = useWeb3();
+    const { hooks } = useWeb3();
     return hooks;
 }
 

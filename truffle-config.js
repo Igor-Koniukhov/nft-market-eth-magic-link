@@ -1,6 +1,6 @@
 const AccountIndex = 0;
 
-require("dotenv").config({path: "./.env"});
+require("dotenv").config({path: "./.env.development"});
 
 const HDWalletProvider = require('@truffle/hdwallet-provider');
 

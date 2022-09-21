@@ -1,7 +1,10 @@
-import { FunctionComponent } from "react";
+import React, { FunctionComponent } from "react";
 import Navbar from "../navbar";
 
-const BaseLayout: FunctionComponent = ({ children }) => {
+interface Props {
+  children: React.ReactNode;
+}
+const BaseLayout: FunctionComponent<Props> = ({ children }) => {
   return (
     <>
     <Navbar/>
