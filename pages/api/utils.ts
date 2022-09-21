@@ -1,5 +1,6 @@
-import { withIronSession } from "next-iron-session";
+import { withIronSession, Session } from "next-iron-session";
 import contract from "../../public/contracts/NftMarket.json";
+import {NextApiRequest, NextApiResponse} from "next";
 
 const NETWORKS = {
     "1337": "Ganache"
@@ -17,6 +18,16 @@ export function withSession(handler: any) {
         cookieName: "nft-auth-session",
         cookieOptions: {
             secure: process.env.NODE_ENV === "production"
+        }
+    })
+}
+export const addressCheckMiddleware = async (req: NextApiRequest & {session: Session}, res: NextApiResponse)=>{
+    return new Promise((resolve, reject) =>{
+        const message = req.session.get("message-session");
+        if (message){
+            resolve("Correct Address");
+        }else{
+            reject("Cannot resolve Address")
         }
     })
 }

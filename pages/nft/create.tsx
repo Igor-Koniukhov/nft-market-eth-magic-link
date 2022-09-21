@@ -7,8 +7,10 @@ import { Switch } from '@headlessui/react'
 import Link from 'next/link'
 import { NftMeta } from '@_types/nft';
 import axios from 'axios';
+import {useWeb3} from "@providers/web3";
 
 const NftCreate: NextPage = () => {
+    const {ethereum}=useWeb3();
     const [nftURI, setNftURI] = useState("");
     const [hasURI, setHasURI] = useState(false);
     const [nftMeta, setNftMeta] = useState<NftMeta>({
@@ -41,7 +43,21 @@ const NftCreate: NextPage = () => {
     const createNft = async () => {
         try {
             const messageToSign = await axios.get("/api/verify");
-            console.log(messageToSign)
+            const accounts = await ethereum?.request({method: "eth_requestAccounts"}) as string[];
+            console.log(accounts)
+            const account = accounts[0];
+            const signedData = await ethereum?.request({
+                method: "personal_sign",
+                params: [JSON.stringify(messageToSign.data), account, messageToSign.data.id]
+            })
+
+            await axios.post("/api/verify", {
+                address: account,
+                signature: signedData,
+                nft: nftMeta
+            })
+
+            console.log(signedData)
         } catch (e: any) {
             console.error(e.message);
         }
@@ -135,7 +151,7 @@ const NftCreate: NextPage = () => {
                                             type="button"
                                             className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                                         >
-                                            List
+                                            Mint Nft
                                         </button>
                                     </div>
                                 </div>
