@@ -57,7 +57,7 @@ const NftCreate: NextPage = () => {
                 nft: nftMeta
             })
 
-            console.log(signedData)
+
         } catch (e: any) {
             console.error(e.message);
         }
