@@ -26,8 +26,8 @@ export type Nft = {
 
 export type FileReq = {
     bytes: Uint8Array;
-    contentType: string;
     fileName: string;
+    contentType: string;
 }
 
 export type PinataRes = {
