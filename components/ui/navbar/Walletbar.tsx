@@ -4,7 +4,8 @@ import {Menu} from "@headlessui/react";
 import Link from "next/link";
 import {createRef, FunctionComponent, LegacyRef, useEffect} from "react";
 // @ts-ignore
-import jazzicon from "@metamask/jazzicon";
+import jazzicon from '@metamask/jazzicon';
+
 
 type WalletbarProps = {
     isLoading: boolean;
