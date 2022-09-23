@@ -27,7 +27,7 @@ const NftItem: FunctionComponent<NftItemProps> = ({item, buyNft}) => {
                             <div>
                                 <img
                                     className="inline-block h-9 w-9 rounded-full"
-                                    src="/images/default_avatar.png"
+                                    src="/images/page_logo.png"
                                     alt=""
                                 />
                             </div>
