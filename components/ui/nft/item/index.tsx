@@ -37,7 +37,7 @@ const NftItem: FunctionComponent<NftItemProps> = ({item, buyNft}) => {
                             </div>
                         </div>
                         <p className="text-sm font-medium text-indigo-600">
-                            Creatures NFT
+                            Pumpkin NFT
                         </p>
                     </div>
                     <div className="block mt-2">
@@ -49,7 +49,7 @@ const NftItem: FunctionComponent<NftItemProps> = ({item, buyNft}) => {
                     <dl className="-mx-4 -mt-4 flex flex-wrap">
                         <div className="flex flex-col px-4 pt-4">
                             <dt className="order-2 text-sm font-medium text-gray-500">Price</dt>
-                            <dd className="order-1 text-xl font-extrabold text-indigo-600">
+                            <dd className="order-1 text-xl font-extrabold text-yellow-600">
                                 <div className="flex justify-center items-center">
                                     {item.price}
                                     <img className="h-6" src="/images/small-eth.webp" alt="ether icon"/>
@@ -61,7 +61,7 @@ const NftItem: FunctionComponent<NftItemProps> = ({item, buyNft}) => {
                                 <dt className="order-2 text-sm font-medium text-gray-500">
                                     {attribute.trait_type}
                                 </dt>
-                                <dd className="order-1 text-xl font-extrabold text-indigo-600">
+                                <dd className="order-1 text-xl font-extrabold text-yellow-600">
                                     {attribute.value}
                                 </dd>
                             </div>
