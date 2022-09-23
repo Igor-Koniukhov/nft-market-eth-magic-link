@@ -8,7 +8,7 @@ keys.json
 /node_modules
 /.pnp
 .pnp.js
-
+.idea
 
 
 # testing
