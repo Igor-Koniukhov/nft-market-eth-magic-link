@@ -143,8 +143,8 @@ const NftCreate: NextPage = () => {
             );
             await toast.promise(
                 tx!.wait(), {
-                    pending: "Uploading metadata",
-                    success: "Metadata uploaded",
+                    pending: "Minting Nft",
+                    success: "Nft has been created",
                     error: "Metadata upload error"
                 }
             )
@@ -205,7 +205,8 @@ const NftCreate: NextPage = () => {
                     <div className="md:grid md:grid-cols-3 md:gap-6">
                         <div className="md:col-span-1">
                             <div className="px-4 sm:px-0">
-                                <h3 className="text-lg font-medium leading-6 text-gray-900">List NFT</h3>
+                                <h3 className="text-lg font-medium leading-6 text-gray-900">List NFT on Pinata</h3>
+                                <img src="/images/pinata.png" alt="Pinata image" height="70"/>
                                 <p className="mt-1 text-sm text-gray-600">
                                     This information will be displayed publicly so be careful what you share.
                                 </p>

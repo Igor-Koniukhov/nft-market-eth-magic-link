@@ -83,7 +83,7 @@ export default function Navbar() {
                       <circle cx={4} cy={4} r={3}/>
                     </svg>
                       <button
-                          disabled={network.data}
+
                           onClick={() => {
                               window.open('https://metamask.io', '_ blank');
                           }}>

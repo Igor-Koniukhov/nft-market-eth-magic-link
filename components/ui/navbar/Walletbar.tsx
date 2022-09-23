@@ -2,7 +2,7 @@
 
 import {Menu} from "@headlessui/react";
 import Link from "next/link";
-import {createRef, FunctionComponent, useEffect} from "react";
+import {createRef, FunctionComponent, LegacyRef, useEffect} from "react";
 // @ts-ignore
 import jazzicon from "@metamask/jazzicon";
 
@@ -25,9 +25,10 @@ const Walletbar: FunctionComponent<WalletbarProps> = (
         account
     }) => {
 
-    const avatarRef = createRef()
+    let avatarRef:  LegacyRef<HTMLDivElement> | undefined   = createRef();
    useEffect(() => {
-       const element = avatarRef.current;
+       // @ts-ignore
+       let element = avatarRef.current ;
        if (element && account) {
            const addr = account.slice(2, 10);
            const seed = parseInt(addr, 16);
