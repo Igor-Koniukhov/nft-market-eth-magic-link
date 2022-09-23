@@ -6,7 +6,8 @@ import {NextApiRequest, NextApiResponse} from "next";
 import {NftMarketContract} from "@_types/nftMarketContract";
 
 const NETWORKS = {
-    "1337": "Ganache"
+    "1337": "Ganache",
+    "3": "Ropsten"
 }
 
 type NETWORK = typeof NETWORKS;
@@ -25,12 +26,15 @@ export function withSession(handler: any) {
         }
     })
 }
+const url = process.env.NODE_ENV === "production" ?
+    process.env.INFURA_ROPSTEN_URL :
+    "http://127.0.0.1:7545"
 
 export const addressCheckMiddleware = async (req: NextApiRequest & { session: Session }, res: NextApiResponse) => {
     return new Promise((resolve, reject) => {
         const message = req.session.get("message-session");
         //could get access to server side, in our case ganache - http://127.0.0.1:7545
-        const provider = new ethers.providers.JsonRpcProvider("http://127.0.0.1:7545");
+        const provider = new ethers.providers.JsonRpcProvider(url);
         //getting contract on server (TODO: contract for adding white/black list)
         const contract = new ethers.Contract(
             contractAddress,
