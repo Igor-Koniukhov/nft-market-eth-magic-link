@@ -7,9 +7,11 @@ type NftItemProps = {
     item: Nft;
     buyNft: (token: number, value: number) => Promise<void>;
 }
+
 function shortifyAddress(address: string) {
     return `0x****${address.slice(-4)}`
 }
+
 const NftItem: FunctionComponent<NftItemProps> = ({item, buyNft}) => {
     return (
         <>
@@ -36,7 +38,7 @@ const NftItem: FunctionComponent<NftItemProps> = ({item, buyNft}) => {
                                 <p className="text-xs font-medium text-gray-500 group-hover:text-gray-700">{shortifyAddress(item.creator)}</p>
                             </div>
                         </div>
-                        <p className="text-sm font-medium text-indigo-600">
+                        <p className="text-sm font-medium text-yellow-600">
                             Pumpkin NFT
                         </p>
                     </div>
@@ -70,11 +72,27 @@ const NftItem: FunctionComponent<NftItemProps> = ({item, buyNft}) => {
                 </div>
                 <div>
                     <button
-                        onClick={()=>{
+                        onClick={() => {
                             buyNft(item.tokenId, item.price);
                         }}
                         type="button"
-                        className="disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none disabled:cursor-not-allowed mr-2 inline-flex items-center px-4 py-2 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                        className="disabled:bg-slate-50
+                         disabled:text-slate-500
+                          disabled:border-slate-200
+                           disabled:shadow-none
+                            disabled:cursor-not-allowed
+                             mr-2 inline-flex
+                              items-center
+                               px-4 py-2 border
+                                border-transparent
+                                 text-base font-medium
+                                 rounded-md shadow-sm
+                                  text-white bg-yellow-600
+                                   hover:bg-grey-700
+                                    focus:outline-none
+                                     focus:ring-2
+                                      focus:ring-offset-2
+                                       focus:ring-yellow-500"
                     >
                         Buy Nft
                     </button>
