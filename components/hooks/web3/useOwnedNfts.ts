@@ -49,7 +49,6 @@ export const hookFactory: OwnedNftsHookFactory = ({contract}) => () => {
                     value: ethers.utils.parseEther(0.025.toString())
                 }
             )
-
             await toast.promise(
                 result!.wait(), {
                     pending: "Processing transaction",
