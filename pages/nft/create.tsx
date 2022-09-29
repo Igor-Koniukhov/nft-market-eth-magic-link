@@ -26,9 +26,8 @@ const NftCreate: NextPage = () => {
         description: "",
         image: "",
         attributes: [
-            {trait_type: "attack", value: "0"},
-            {trait_type: "health", value: "0"},
-            {trait_type: "speed", value: "0"},
+            {trait_type: "fury", value: "0"},
+            {trait_type: "scary", value: "0"}
         ]
     });
 
@@ -181,35 +180,13 @@ const NftCreate: NextPage = () => {
     return (
         <BaseLayout>
             <div>
-                <div className="py-4">
-                    {!nftURI &&
-                        <div className="flex">
-                            <div className="mr-2 font-bold underline">Do you have meta data already?</div>
-                            <Switch
-                                checked={hasURI}
-                                onChange={() => setHasURI(!hasURI)}
-                                className={`${hasURI ? 'bg-indigo-900' : 'bg-indigo-700'}
-                  relative inline-flex flex-shrink-0 h-[28px] w-[64px] border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus-visible:ring-2  focus-visible:ring-white focus-visible:ring-opacity-75`}
-                            >
-                                <span className="sr-only">Use setting</span>
-                                <span
-                                    aria-hidden="true"
-                                    className={`${hasURI ? 'translate-x-9' : 'translate-x-0'}
-                    pointer-events-none inline-block h-[24px] w-[24px] rounded-full bg-white shadow-lg transform ring-0 transition ease-in-out duration-200`}
-                                />
-                            </Switch>
-                        </div>
-                    }
-                </div>
+
                 {(nftURI || hasURI) ?
                     <div className="md:grid md:grid-cols-3 md:gap-6">
                         <div className="md:col-span-1">
                             <div className="px-4 sm:px-0">
                                 <h3 className="text-lg font-medium leading-6 text-gray-900">List NFT on Pinata</h3>
                                 <img src="/images/pinata.png" alt="Pinata image" height="70"/>
-                                <p className="mt-1 text-sm text-gray-600">
-                                    This information will be displayed publicly so be careful what you share.
-                                </p>
                             </div>
                         </div>
                         <div className="mt-5 md:mt-0 md:col-span-2">
@@ -250,7 +227,7 @@ const NftCreate: NextPage = () => {
                                     <div className="px-4 py-5 bg-white space-y-6 sm:p-6">
                                         <div>
                                             <label htmlFor="price" className="block text-sm font-medium text-gray-700">
-                                                Price (ETH)
+                                                Set you price (ETH)
                                             </label>
                                             <div className="mt-1 flex rounded-md shadow-sm">
                                                 <input
@@ -269,9 +246,20 @@ const NftCreate: NextPage = () => {
                                         <button
                                             onClick={createNft}
                                             type="button"
-                                            className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                                            className="inline-flex
+                                             justify-center
+                                             py-2 px-4 border
+                                             border-transparent
+                                             shadow-sm text-sm
+                                             font-medium rounded-md
+                                             text-white bg-yellow-600
+                                             hover:bg-yellow-700
+                                             focus:outline-none
+                                             focus:ring-2
+                                             focus:ring-offset-2
+                                             focus:ring-indigo-500"
                                         >
-                                            List
+                                            Mint Nft
                                         </button>
                                     </div>
                                 </div>
@@ -279,16 +267,19 @@ const NftCreate: NextPage = () => {
                         </div>
                     </div>
                     :
-                    <div className="md:grid md:grid-cols-3 md:gap-6">
-                        <div className="md:col-span-1">
-                            <div className="px-4 sm:px-0">
-                                <h3 className="text-lg font-medium leading-6 text-gray-900">Create NFT Metadata</h3>
-                                <p className="mt-1 text-sm text-gray-600">
-                                    This information will be displayed publicly so be careful what you share.
-                                </p>
+                    <div>
+
+                        <div className="block mx-auto mt-5 md:mt-0 md:col-span-2 max-w-2xl">
+                            <div>
+                                <div className="px-4 sm:px-0">
+                                    <h3 className="text-lg font-medium leading-6 text-gray-900 text-center">Create NFT
+                                        Metadata</h3>
+                                    <p className="mt-1 text-sm text-gray-600 text-center">
+                                        This information will be displayed publicly so be careful what you share.
+                                    </p>
+                                </div>
                             </div>
-                        </div>
-                        <div className="mt-5 md:mt-0 md:col-span-2">
+
                             <form>
                                 <div className="shadow sm:rounded-md sm:overflow-hidden">
                                     <div className="px-4 py-5 bg-white space-y-6 sm:p-6">
@@ -321,16 +312,13 @@ const NftCreate: NextPage = () => {
                           name="description"
                           rows={3}
                           className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border border-gray-300 rounded-md"
-                          placeholder="Some nft description..."
+                          placeholder="Please enter brief nft description..."
                       />
                                             </div>
-                                            <p className="mt-2 text-sm text-gray-500">
-                                                Brief description of NFT
-                                            </p>
                                         </div>
-                                        {/* Has Image? */}
+
                                         {nftMeta.image ?
-                                            <img src={nftMeta.image} alt="" className="h-40"/> :
+                                            <img src={nftMeta.image} alt="" className="h-40 block mx-auto"/> :
                                             <div>
                                                 <label className="block text-sm font-medium text-gray-700">Image</label>
                                                 <div
@@ -401,7 +389,7 @@ const NftCreate: NextPage = () => {
                                             type="button"
                                             className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                                         >
-                                            List
+                                            Create URI
                                         </button>
                                     </div>
                                 </div>
