@@ -10,6 +10,7 @@ export default withSession(async (req: NextApiRequest & { session: Session }, re
         try {
             const {body} = req;
             const nft = body.nft as NftMeta
+            console.log(nft, " nft")
             if (!nft.name || !nft.description || !nft.attributes) {
                 return res.status(422).send("All fields of the form should be filed!")
             }
@@ -26,6 +27,11 @@ export default withSession(async (req: NextApiRequest & { session: Session }, re
                     pinata_secret_api_key: pinataSecretApiKey
                 }
             })
+
+            // console.log(jsonRes.data, " jsonRes from verify")
+            // IpfsHash: 'QmPitcZmehaKh693KvCywUgVfxiwZ5G7UvAWY5RSKUMExt',
+            // PinSize: 225,
+            // Timestamp: '2022-09-29T16:52:01.338Z'
             return res.status(200).send(jsonRes.data);
         } catch {
             return res.status(422).send({message: "Cannot create JSON"})

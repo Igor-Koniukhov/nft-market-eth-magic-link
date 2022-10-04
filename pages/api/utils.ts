@@ -30,9 +30,13 @@ const url = process.env.NODE_ENV === "production" ?
     process.env.INFURA_ROPSTEN_URL :
     "http://127.0.0.1:7545"
 
-export const addressCheckMiddleware = async (req: NextApiRequest & { session: Session }, res: NextApiResponse) => {
+export const addressCheckMiddleware = async (
+    req: NextApiRequest & { session: Session },
+    res: NextApiResponse) => {
+
     return new Promise((resolve, reject) => {
         const message = req.session.get("message-session");
+
         //could get access to server side, in our case ganache - http://127.0.0.1:7545
         const provider = new ethers.providers.JsonRpcProvider(url);
         //getting contract on server (TODO: contract for adding white/black list)
@@ -48,8 +52,10 @@ export const addressCheckMiddleware = async (req: NextApiRequest & { session: Se
             JSON.stringify(message);
 
         nonce = util.keccak(Buffer.from(nonce, "utf-8"))
+
         const {v, r, s} = util.fromRpcSig(req.body.signature);
         const pubKey = util.ecrecover(util.toBuffer(nonce), v,r,s);
+
         const addrBuffer = util.pubToAddress(pubKey);
         const address = util.bufferToHex(addrBuffer);
 

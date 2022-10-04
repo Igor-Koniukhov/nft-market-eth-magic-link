@@ -127,6 +127,7 @@ const NftCreate: NextPage = () => {
         try {
             const nftRes = await axios.get(nftURI);
             const content = nftRes.data;
+            console.log(content, " content from createNft")
 
             Object.keys(content).forEach(key => {
                 if (!ALLOWED_FIELDS.includes(key)) {

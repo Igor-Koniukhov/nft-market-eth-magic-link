@@ -19,7 +19,7 @@ export const hookFactory: ListedNftsHookFactory = ({contract}) => () => {
         async () => {
             const nfts = [] as Nft[];
             const coreNfts = await contract!.getAllNftsOnSale();
-            console.log(contract)
+            console.log(contract, " from useListedNfts.ts")
 
             for (let i = 0; i < coreNfts.length; i++) {
                 const item = coreNfts[i];
