@@ -18,10 +18,7 @@ const BaseLayout: FunctionComponent<Props> = ({ children }) => {
           <div className="max-w-7xl mx-auto px-4 space-y-8 sm:px-6 lg:px-8">{children}</div> :
           <>
             <LoginContent/>
-
-          </>
-
-      }
+          </>      }
 
     </div>
       <Footer/>
