@@ -33,6 +33,7 @@ export default withSession(async (
                 filename: fileName + "-" + uuidv4()
             }
         );
+        console.log(formData, " formData from verify-image")
 
         const fileRes = await axios.post("https://api.pinata.cloud/pinning/pinFileToIPFS", formData, {
             maxBodyLength: Infinity,
@@ -42,6 +43,13 @@ export default withSession(async (
                 pinata_secret_api_key: pinataSecretApiKey
             }
         });
+        //console.log(fileRes.data)
+        //fileRes.data consist from:
+        // IpfsHash: 'QmVq8qYiwFGyMkULoBeVkbYpnaN6eWtwHN4Gejzf5dd748',
+        // PinSize: 41692,
+        // Timestamp: '2022-09-29T12:57:35.866Z',
+        // isDuplicate: true
+
 
         return res.status(200).send(fileRes.data);
     } else {

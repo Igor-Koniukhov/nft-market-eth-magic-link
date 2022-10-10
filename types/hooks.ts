@@ -8,6 +8,8 @@ export type Web3Dependencies = {
     contract: NftMarketContract;
     ethereum: MetaMaskInpageProvider;
     isLoading: boolean;
+    magic: any;
+    magicProvider: providers.Web3Provider
 }
 export type CryptoHookFactory<D=any, R= any, P=any> = {
     (d: Partial<Web3Dependencies>): CryptoHandlerHook<D, R, P>

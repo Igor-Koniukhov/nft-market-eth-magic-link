@@ -31,6 +31,19 @@ module.exports = {
             gasPrice: 20000000000,
             confirmations: 2,
             timeoutBlocks: 200
+        },
+        goerli: {
+            provider: function() {
+                return new HDWalletProvider(
+                    keys.PRIVATE_KEY_GOERLI,
+                    keys.INFURA_GOERLI_URL
+                )
+            },
+            network_id: 5,
+            gas: 5500000,
+            gasPrice: 20000000000,
+            confirmations: 2,
+            timeoutBlocks: 200
         }
     },
     compilers: {

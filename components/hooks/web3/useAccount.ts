@@ -1,6 +1,5 @@
-
-import { CryptoHookFactory } from "@_types/hooks";
-import { useEffect } from "react";
+import {CryptoHookFactory} from "@_types/hooks";
+import {useEffect} from "react";
 import useSWR from "swr";
 
 type UseAccountResponse = {
@@ -13,15 +12,27 @@ type AccountHookFactory = CryptoHookFactory<string, UseAccountResponse>
 
 export type UseAccountHook = ReturnType<AccountHookFactory>
 
-export const hookFactory: AccountHookFactory = ({provider, ethereum, isLoading}) => () => {
-    const {data, mutate, isValidating, ...swr} = useSWR(
+export const hookFactory: AccountHookFactory = (
+    {
+        provider,
+        ethereum,
+        isLoading
+    }
+    ) => () => {
+
+    const {
+        data,
+        mutate,
+        isValidating,
+        ...swr
+    } = useSWR(
         provider ? "web3/useAccount" : null,
         async () => {
             const accounts = await provider!.listAccounts();
             const account = accounts[0];
 
             if (!account) {
-                throw "Cannot retreive account! Please, connect to web3 wallet."
+                throw "Cannot retrieve account! Please, connect to web3 wallet."
             }
 
             return account;
@@ -50,7 +61,7 @@ export const hookFactory: AccountHookFactory = ({provider, ethereum, isLoading})
     const connect = async () => {
         try {
             ethereum?.request({method: "eth_requestAccounts"});
-        } catch(e) {
+        } catch (e) {
             console.error(e);
         }
     }

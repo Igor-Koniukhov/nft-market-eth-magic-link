@@ -36,3 +36,12 @@ export const useOwnedNfts = () => {
         nfts: swrRes
     }
 }
+
+export const useFiatOnRamp = () => {
+    const hooks = useHooks();
+    const swrRes = hooks.useFiatOnRamp();
+
+    return {
+        magicWallet: swrRes
+    }
+}
