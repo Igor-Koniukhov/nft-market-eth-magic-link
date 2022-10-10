@@ -4,12 +4,14 @@ import { hookFactory as createAccountHook, UseAccountHook } from "./useAccount";
 import { hookFactory as createNetworkHook, UseNetworkHook } from "./useNetwork";
 import { hookFactory as createListedNftsHook, UseListedNftsHook } from "./useListedNfts";
 import { hookFactory as createOwnedNftsHook, UseOwnedNftsHook } from "./useOwnedNfts";
+import {hookFactory as createFiatOnRamp, UseFiatOnRampHook } from "@hooks/web3/useFiatOnRamp";
 
 export type Web3Hooks = {
     useAccount: UseAccountHook;
     useNetwork: UseNetworkHook;
     useListedNfts: UseListedNftsHook;
     useOwnedNfts: UseOwnedNftsHook;
+    useFiatOnRamp: UseFiatOnRampHook;
 }
 
 export type SetupHooks = {
@@ -22,5 +24,6 @@ export const setupHooks: SetupHooks = (deps) => {
         useNetwork: createNetworkHook(deps),
         useListedNfts: createListedNftsHook(deps),
         useOwnedNfts: createOwnedNftsHook(deps),
+        useFiatOnRamp: createFiatOnRamp(deps),
     }
 }
