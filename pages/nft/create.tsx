@@ -1,6 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 
-import type {NextPage} from 'next'
+import type {NextPage} from 'next';
+import { useRouter } from 'next/router';
 import {ChangeEvent, useState} from 'react';
 import {BaseLayout} from '@ui'
 import {Switch} from '@headlessui/react'
@@ -16,6 +17,7 @@ import {ExclamationIcon} from "@heroicons/react/solid";
 const ALLOWED_FIELDS = ["name", "description", "image", "attributes"];
 
 const NftCreate: NextPage = () => {
+    const router = useRouter();
     const {ethereum, contract} = useWeb3();
     const {network} = useNetwork();
     const [nftURI, setNftURI] = useState("");
@@ -148,6 +150,9 @@ const NftCreate: NextPage = () => {
                     error: "Metadata upload error"
                 }
             )
+             router.push('/')
+
+
 
         } catch (e: any) {
             console.error(e.message);
