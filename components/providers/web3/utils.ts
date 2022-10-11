@@ -92,7 +92,7 @@ export const loadContract = async (
 
 export const magicConnectProvider = async () : Promise<{magic: any, magicProvider: Web3Provider}> =>{
     const magic = new Magic("pk_live_8EBC0E6F41C015D8", {
-        network: "goerli"  as any ,
+        network: "goerli",
         locale: "en_US",
         extensions: [new ConnectExtension()]
     } );

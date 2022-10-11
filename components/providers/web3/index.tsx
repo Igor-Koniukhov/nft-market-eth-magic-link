@@ -45,7 +45,7 @@ const Web3Provider: FunctionComponent = ({children}) => {
                     magic,
                     magicProvider,
                 }))
-            } catch(e: any) {
+            } catch(e) {
                 console.error("Please, install web3 wallet");
                 setWeb3Api((api) => createWeb3State({
                     ...api as any,

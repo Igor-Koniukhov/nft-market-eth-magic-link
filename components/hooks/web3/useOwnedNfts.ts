@@ -57,7 +57,7 @@ export const hookFactory: OwnedNftsHookFactory = ({contract}) => () => {
                 }
             );
 
-        } catch (e: any) {
+        } catch (e) {
             console.error(e.message);
         }
     }, [_contract])

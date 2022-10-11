@@ -41,6 +41,7 @@ export const hookFactory: ListedNftsHookFactory = ({contract}) => () => {
 
     const _contract = contract;
     const buyNft = useCallback(async (tokenId: number, value: number) => {
+
         try {
             const result = await _contract!.buyNft(
                 tokenId, {
@@ -55,7 +56,7 @@ export const hookFactory: ListedNftsHookFactory = ({contract}) => () => {
                     error: "Processing error"
                 }
             );
-        } catch (e: any) {
+        } catch (e) {
             console.error(e.message);
         }
     }, [_contract])
