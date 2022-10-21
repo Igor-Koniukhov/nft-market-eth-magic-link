@@ -8,7 +8,8 @@ import Walletbar from "./Walletbar";
 
 const navigation = [
     {name: "Marketplace", href: "/", current: true},
-    {name: "Create", href: "/nft/create", current: false},
+    {name: "Create (Pinata)", href: "/nft/create", current: false},
+    {name: "Create (Nft.storage)", href: "/nft/createOnNftStorage", current: false},
 ];
 
 function classNames(...classes: string[]) {

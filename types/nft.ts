@@ -1,4 +1,4 @@
-
+import {Blob, File} from "nft.storage";
 export type Trait = "fury" | "scary";
 
 export type NftAttribute = {
@@ -9,7 +9,7 @@ export type NftAttribute = {
 export type NftMeta = {
     name: string;
     description: string;
-    image: string;
+    image: string | Blob | File;
     attributes: NftAttribute[];
 }
 
@@ -30,9 +30,21 @@ export type FileReq = {
     contentType: string;
 }
 
+export type FileReqForNftStore = {
+    file:  globalThis.File;
+    fileName: string;
+    contentType: string;
+}
+
 export type PinataRes = {
     IpfsHash: string;
     PinSize: number;
     Timestamp: string;
     isDuplicate: boolean;
+}
+
+export type NftStoreRes ={
+    ipnft: string;
+    url: string;
+
 }

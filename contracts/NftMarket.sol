@@ -38,11 +38,17 @@ contract NftMarket is ERC721URIStorage, Ownable {
 
     constructor() ERC721("PumpkinNFT", "PNFT") {}
 
+    //The difference is because in public functions,
+    //Solidity immediately copies array arguments to memory,
+    // while external functions can read directly from calldata.
+    //Memory allocation is expensive, whereas reading from calldata is cheap.
+
+    // external uses gas 261
     function setListingPrice(uint newPrice) external onlyOwner {
         require(newPrice > 0, "Price must be at least 1 wei");
         listingPrice = newPrice;
     }
-
+    //public uses 496 gas
     function getNftItem(uint tokenId) public view returns (NftItem memory) {
         return _idToNftItem[tokenId];
     }

@@ -1796,12 +1796,12 @@
     "1337": {
       "events": {},
       "links": {},
-      "address": "0x6146f470E9971009e03284c347718A199C7EFD55",
-      "transactionHash": "0x6f96a3c93d2900d1601060cc544b8870c8ccbae84d710f4d96070202e1acafcd"
+      "address": "0x7F654C1DDfE9Fc8e826185D1b18C017f96C5F3Be",
+      "transactionHash": "0x89a3363ca3ac0f9e90cde2947a92054d8474db759f144c7a5242c7c98481e5c9"
     }
   },
   "schemaVersion": "3.4.9",
-  "updatedAt": "2022-10-11T10:52:49.520Z",
+  "updatedAt": "2022-10-18T14:55:23.765Z",
   "networkType": "ethereum",
   "devdoc": {
     "kind": "dev",
