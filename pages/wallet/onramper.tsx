@@ -7,7 +7,7 @@ const Onramper: NextPage = ()=>{
         <div style={{display: 'flex', justifyContent: 'center', padding: '15px'}}>
             <iframe
                 style={{borderRadius: '10px', boxShadow: '0 2px 10px 0 rgba(0,0,0,.20)', margin: 'auto', maxWidth: '420px'}}
-                src="https://widget.onramper.com?color=266677&apiKey=pk_test_x5M_5fdXzn1fxK04seu0JgFjGsu7CH8lOvS9xZWzuSM0"
+                src="https://widget.onramper.com?color=266677&apiKey=pk_test_LY7BSnJawcHyCsemFl_pqm1VzY83hv0GQTp4yub0J7E0"
                 height="660px"
                 width="482px"
                 title="Onramper widget"
