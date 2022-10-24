@@ -20,7 +20,7 @@ const keys = require("./../../keys.json");
 const ALLOWED_FIELDS = ["name", "description", "image", "attributes"];
 
 
-const NftCreateOnNftStorage: NextPage = () => {
+const NftCreateOnWeb3Storage: NextPage = () => {
     const router = useRouter();
     const {ethereum, contract} = useWeb3();
     const {network} = useNetwork();
@@ -167,7 +167,7 @@ const NftCreateOnNftStorage: NextPage = () => {
                     error: "Metadata upload error"
                 }
             )
-             router.push('/')
+            router.push('/')
             window.location.reload()
 
 
@@ -426,4 +426,4 @@ const NftCreateOnNftStorage: NextPage = () => {
     )
 }
 
-export default NftCreateOnNftStorage
+export default NftCreateOnWeb3Storage
