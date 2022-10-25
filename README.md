@@ -1,13 +1,34 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+## Project was realized with next technologies:
 
+- [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+- [Magic.link](https://magic.link/) - is a developer SDK that integrates with your application to enable passwordless Web3 onboarding (no seed phrases) and authentication using magic links.
+ in that project used [Magic Connect](https://magic.link/connect) - Magic Connect is a fully-featured, global web3 wallet.
+- [Pinata](https://app.pinata.cloud/) for saving (pinning) on blockchain images (jpg, png) and metadata (json which include information about picture)
+```
+{
+        name: "",
+        description: "",
+        image: "URI from pinata.cloud",
+        attributes: [
+            {trait_type: "fury", value: "0"},
+            {trait_type: "scary", value: "0"}
+        ]
+    }
+```
+- [Infura](https://infura.io/) blockchain for deploying smart-contract (used Goerli testnet)
+- [Vercel](https://vercel.com/) for deploying front-end part of the project. Register on versel.com, choose your project in git repo, 
+and upload all necessary keys for the project on versel. See example .env.production.example.
+  ![alt text](https://github.com/Igor-Koniukhov/nft-market-eth-magic-link/blob/develop/public/images/scheme-nft-creation.jpg?raw=true)
 ## Getting Started
-
-First, run the development server:
+```bash
+npm install
+```
+## Set up all necessary env key
+See examples in .env.development.examples and .env.production.examples.
+Run the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
