@@ -22,10 +22,10 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
   In that project used [Magic Connect](https://magic.link/connect) - Magic Connect is a fully-featured, global web3 wallet.
 - [SWR React Hooks for Data Fetching](https://swr.vercel.app/). With SWR components will get a stream of data updates constantly and automatically.
   And the UI will be always fast and reactive. The name “SWR” is derived from stale-while-revalidate, a HTTP cache invalidation strategy popularized by HTTP RFC 5861.
-- SWR is a strategy to first return the data from cache (stale), then send the fetch request (revalidate), and finally come with the up-to-date data. SSR / SSG Ready.
+SWR is a strategy to first return the data from cache (stale), then send the fetch request (revalidate), and finally come with the up-to-date data. SSR / SSG Ready.
 
-### Building and managing smart contract;
-- [OpenZeppelin](https://docs.openzeppelin.com/contracts/4.x/) used as main base and framework for building smart contract;
+### Building and managing smart contract:
+- [OpenZeppelin](https://docs.openzeppelin.com/contracts/4.x/) used as main base and framework for building smart contract.
 ```
 npm i @openzeppelin/contracts
 ```
