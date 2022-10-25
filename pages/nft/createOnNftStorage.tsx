@@ -422,6 +422,7 @@ const NftCreateOnNftStorage: NextPage = () => {
                     </div>
                 }
             </div>
+
         </BaseLayout>
     )
 }

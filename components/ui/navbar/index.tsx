@@ -10,8 +10,9 @@ const navigation = [
     {name: "Marketplace", href: "/", current: true},
     {name: "Pinata", href: "/nft/create", current: false},
     {name: "Nft.storage", href: "/nft/createOnNftStorage", current: false},
+    {name: "Web3.Storage", href: "/nft/createOnWeb3Storage", current: false},
     {name: "onramper", href: "/wallet/onramper", current: false},
-    {name: "Web3.Storage", href: "/wallet/createOnWeb3Storage", current: false},
+
 ];
 
 function classNames(...classes: string[]) {

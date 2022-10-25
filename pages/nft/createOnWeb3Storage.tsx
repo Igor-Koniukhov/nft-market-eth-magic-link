@@ -12,23 +12,20 @@ import {ethers} from "ethers";
 import {toast} from "react-toastify";
 import {useNetwork} from "@hooks/web3";
 import {ExclamationIcon} from "@heroicons/react/solid";
-import {NftStoreRes} from "@_types/nft";
-
+import { Web3Storage, getFilesFromPath } from 'web3.storage'
 
 const keys = require("./../../keys.json");
 
 const ALLOWED_FIELDS = ["name", "description", "image", "attributes"];
 
-
 const NftCreateOnWeb3Storage: NextPage = () => {
+
     const router = useRouter();
     const {ethereum, contract} = useWeb3();
     const {network} = useNetwork();
     const [nftURI, setNftURI] = useState("");
     const [price, setPrice] = useState("");
     const [hasURI, setHasURI] = useState(false);
-    const [imageUploaded, setImageUploaded] = useState(null)
-    const [imgBytes, setImageBytes] =useState(null)
     const [nftMeta, setNftMeta] = useState<NftMeta>({
         name: "",
         description: "",
@@ -40,7 +37,7 @@ const NftCreateOnWeb3Storage: NextPage = () => {
     });
 
     const getSignedData = async () => {
-        const messageToSign = await axios.get("/api/verify-for-nft-store");
+        const messageToSign = await axios.get("/api/verify-for-web3-store");
         const accounts = await ethereum?.request({method: "eth_requestAccounts"}) as string[];
         const account = accounts[0];
 
@@ -51,54 +48,32 @@ const NftCreateOnWeb3Storage: NextPage = () => {
 
         return {signedData, account};
     }
-
-
+    const token = keys.WEB3_STORAGE_TOKEN
 
     const handleImage = async (e: ChangeEvent<HTMLInputElement>) => {
         if (!e.target.files || e.target.files.length === 0) {
             console.error("Select a file");
             return;
         }
+        const storage = new Web3Storage({ token })
 
         const file = e.target.files[0];
-        const pathImg = URL.createObjectURL(file)
 
-        setImageUploaded(pathImg)
-        const buffer = await file.arrayBuffer();
-        const bytes = new Uint8Array(buffer);
-        setImageBytes(bytes);
+        const files = []
+        files.push(file)
 
 
-        try {
-            const {signedData, account} = await getSignedData();
-            const promise = axios.post("/api/verify-image-for-nft-store", {
-                address: account,
-                signature: signedData,
-                bytes,
-                contentType: file.type,
-                fileName: file.name.replace(/\.[^/.]+$/, ""),
 
-            });
-            console.log(promise)
 
-            const res = await toast.promise(
-                promise, {
-                    pending: "Uploading image",
-                    success: "Image uploaded",
-                    error: "Image upload error"
-                }
-            )
-            let imgUri = res.data as NftStoreRes
 
-            console.log(imgUri)
+        console.log(`Uploading ${files.length} files`)
+        const cid = await storage.put(files)
+        console.log('Content added with CID:', cid)
+        console.log('Ref:', ` https://dweb.link/ipfs/${cid}`)
+        let list= await storage.list()
+        console.log(list)
 
-            setNftMeta({
-                ...nftMeta,
-                image: imgUri.ipnft
-            });
-        } catch (e: any) {
-            console.error(e.message);
-        }
+
     }
 
     const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -121,13 +96,12 @@ const NftCreateOnWeb3Storage: NextPage = () => {
         try {
             const {signedData, account} = await getSignedData();
 
-            const promise = axios.post("/api/verify-for-nft-store", {
+            const promise = axios.post("/api/verify", {
                 address: account,
                 signature: signedData,
-                nft: nftMeta,
-                imgPath: imageUploaded
+                nft: nftMeta
             })
-            console.log(promise, " promise from upload data")
+
             const res = await toast.promise(
                 promise, {
                     pending: "Uploading metadata",
@@ -136,9 +110,9 @@ const NftCreateOnWeb3Storage: NextPage = () => {
                 }
             )
             const data = res.data as PinataRes;
-            setNftURI(`https://${data.IpfsHash}.ipfs.nftstorage.link`);
+            setNftURI(`${process.env.NEXT_PUBLIC_PINATA_DOMAIN}/ipfs/${data.IpfsHash}`);
         } catch (e: any) {
-            console.error(e.message, e, " uploadMetadata");
+            console.error(e.message);
         }
     }
 
@@ -209,7 +183,7 @@ const NftCreateOnWeb3Storage: NextPage = () => {
                     <div className="md:grid md:grid-cols-3 md:gap-6">
                         <div className="md:col-span-1">
                             <div className="px-4 sm:px-0">
-                                <h3 className="text-lg font-medium leading-6 text-gray-900">List NFT on Nft.storage</h3>
+                                <h3 className="text-lg font-medium leading-6 text-gray-900">List NFT on Pinata</h3>
                                 <img src="/images/pinata.png" alt="Pinata image" height="70"/>
                             </div>
                         </div>
@@ -297,7 +271,7 @@ const NftCreateOnWeb3Storage: NextPage = () => {
                             <div>
                                 <div className="px-4 sm:px-0">
                                     <h3 className="text-lg font-medium leading-6 text-gray-900 text-center">Create NFT
-                                        Metadata on <a href="https://nft.storage/" target="_blank" rel="noreferrer">Nft.storage</a></h3>
+                                        Metadata <a href="https://www.pinata.cloud/" target="_blank" rel="noreferrer">Pinata</a></h3>
                                     <p className="mt-1 text-sm text-gray-600 text-center">
                                         This information will be displayed publicly so be careful what you share.
                                     </p>
@@ -341,8 +315,8 @@ const NftCreateOnWeb3Storage: NextPage = () => {
                                             </div>
                                         </div>
 
-                                        {imageUploaded ?
-                                            <img src={imageUploaded} alt="" className="h-40 block mx-auto"/> :
+                                        {nftMeta.image ?
+                                            <img src={nftMeta.image} alt="" className="h-40 block mx-auto"/> :
                                             <div>
                                                 <label className="block text-sm font-medium text-gray-700">Image</label>
                                                 <div
@@ -422,6 +396,7 @@ const NftCreateOnWeb3Storage: NextPage = () => {
                     </div>
                 }
             </div>
+
         </BaseLayout>
     )
 }
