@@ -18,7 +18,7 @@
 - [Infura](https://infura.io/) blockchain for deploying smart-contract (used Goerli testnet)
 - [Vercel](https://vercel.com/) for deploying front-end part of the project. Register on versel.com, choose your project in git repo, 
 and upload all necessary keys for the project on versel. See example .env.production.example.
-  ![alt text](https://github.com/Igor-Koniukhov/nft-market-eth-magic-link/blob/develop/public/images/scheme-nft-creation.jpg?raw=true)
+  ![alt text](https://github.com/Igor-Koniukhov/nft-market-eth-magic-link/blob/develop/public/images/scheme-nft-creation.png?raw=true)
 ## Getting Started
 ```bash
 npm install
