@@ -1,10 +1,10 @@
 ## Getting Started
-### For getting started, good enough to follow the next commands and recommendations. Below are described technologies used in the project:
+#### For getting started, good enough to follow the next commands and recommendations. Below are described technologies used in the project:
 
 ```bash
 npm install
 ```
-## Set up all necessary env keys (refs on the necessary sources you could find in the description of the used technologies)
+#### Set up all necessary env keys (refs on the necessary sources you could find in the description of the used technologies)
 See examples in .env.development.examples and .env.production.examples.
 Run the development server:
 
