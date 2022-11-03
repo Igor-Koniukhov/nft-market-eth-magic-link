@@ -2,10 +2,11 @@
 pragma solidity >=0.4.22 <0.9.0;
 
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract NftMarket is ERC721URIStorage, Ownable {
+contract NftMarket is ERC721URIStorage, ERC721Enumerable, Ownable {
     using Counters for Counters.Counter;
 
     struct NftItem {
@@ -26,8 +27,8 @@ contract NftMarket is ERC721URIStorage, Ownable {
     mapping(address => mapping(uint => uint)) private _ownedTokens;
     mapping(uint => uint) private _idToOwnedIndex;
 
-    uint256[] private _allNfts;
-    mapping(uint => uint) private _idToNftIndex;
+    /*uint256[] private _allNfts;
+    mapping(uint => uint) private _idToNftIndex;*/
 
     event NftItemCreated (
         uint tokenId,
@@ -61,13 +62,13 @@ contract NftMarket is ERC721URIStorage, Ownable {
         return _usedTokenURIs[tokenURI] == true;
     }
 
-    function totalSupply() public view returns (uint) {
-        return _allNfts.length;
+    function totalSupply() public view override(ERC721Enumerable) returns (uint) {
+        return super._allTokens.length;
     }
 
-    function tokenByIndex(uint index) public view returns (uint) {
+    function tokenByIndex(uint index) public view override(ERC721Enumerable) returns (uint) {
         require(index < totalSupply(), "Index out of bounds");
-        return _allNfts[index];
+        return super._allTokens[index];
     }
 
     function tokenOfOwnerByIndex(address owner, uint index) public view returns (uint) {
@@ -190,13 +191,13 @@ contract NftMarket is ERC721URIStorage, Ownable {
         _allNfts.push(tokenId);
     }
 
-    function _addTokenToOwnerEnumeration(address to, uint tokenId) private {
+   /* function _addTokenToOwnerEnumeration(address to, uint tokenId) private {
         uint length = ERC721.balanceOf(to);
         _ownedTokens[to][length] = tokenId;
         _idToOwnedIndex[tokenId] = length;
-    }
+    }*/
 
-    function _removeTokenFromOwnerEnumeration(address from, uint tokenId) private {
+    /*function _removeTokenFromOwnerEnumeration(address from, uint tokenId) private {
         uint lastTokenIndex = ERC721.balanceOf(from) - 1;
         uint tokenIndex = _idToOwnedIndex[tokenId];
 
@@ -209,7 +210,7 @@ contract NftMarket is ERC721URIStorage, Ownable {
 
         delete _idToOwnedIndex[tokenId];
         delete _ownedTokens[from][lastTokenIndex];
-    }
+    }*/
 
     function _removeTokenFromAllTokensEnumeration(uint tokenId) private {
         uint lastTokenIndex = _allNfts.length - 1;
