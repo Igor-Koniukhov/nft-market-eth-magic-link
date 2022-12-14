@@ -89,7 +89,10 @@ export const loadContract = async (
         return Promise.reject(`Contract: [${name}] cannot be loaded!`);
     }
 }
-
+/*const customNodeOptions = {
+    rpcUrl: 'http://127.0.0.1:7545', // Your own node URL
+    chainId: 1337, // Your own node's chainId
+};*/
 export const magicConnectProvider = async () : Promise<{magic: any, magicProvider: Web3Provider}> =>{
     const magic = new Magic("pk_live_8EBC0E6F41C015D8", {
         network: "goerli",
