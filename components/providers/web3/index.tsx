@@ -30,8 +30,10 @@ const Web3Provider: FunctionComponent = ({children}) => {
         async function initWeb3() {
             try {
                 const provider = new ethers.providers.Web3Provider(window.ethereum as any);
-                const contract =  await loadContract("NftMarket", provider);
                 const {magic, magicProvider} = await magicConnectProvider();
+                const contract =  await loadContract("NftMarket", provider);
+
+
 
                 const signer = provider.getSigner();
                 const signedContract = contract.connect(signer);

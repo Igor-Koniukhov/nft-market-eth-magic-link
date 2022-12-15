@@ -2,9 +2,9 @@ import {setupHooks, Web3Hooks} from "@hooks/web3/setupHooks";
 import {MetaMaskInpageProvider} from "@metamask/providers";
 import {Web3Dependencies} from "@_types/hooks";
 import {Contract, ethers, providers} from "ethers";
-import {Magic} from "magic-sdk";
+import {Magic, CustomNodeConfiguration} from "magic-sdk";
 import {ConnectExtension} from "@magic-ext/connect";
-import {Web3Provider} from "@ethersproject/providers/src.ts/web3-provider";
+import Web3 from "web3";
 
 
 declare global {
@@ -90,13 +90,18 @@ export const loadContract = async (
     }
 }
 
-export const magicConnectProvider = async () : Promise<{magic: any, magicProvider: Web3Provider}> =>{
+/*const customNodeOptions = {
+    rpcUrl: "https://goerli.optimism.io",
+    chainId: 420
+};*/
+export const magicConnectProvider = async () : Promise<{magic: any, magicProvider: Web3}> =>{
     const magic = new Magic("pk_live_8EBC0E6F41C015D8", {
-        network: "goerli",
+        network: 'goerli',
         locale: "en_US",
         extensions: [new ConnectExtension()]
     } );
 
-  const magicProvider = new ethers.providers.Web3Provider(magic.rpcProvider as any);
+  const magicProvider = new Web3(magic.rpcProvider as any);
+
   return {magic, magicProvider};
 }

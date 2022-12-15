@@ -2,17 +2,20 @@
 
 import {FunctionComponent} from "react";
 import {Nft} from "../../../../types/nft";
+import {useFiatOnRamp} from "@hooks/web3";
 
 type NftItemProps = {
     item: Nft;
     buyNft: (token: number, value: number) => Promise<void>;
+    buyNftWithMW: (token: number, value: number) => Promise<void>;
 }
 
 function shortifyAddress(address: string) {
     return `0x****${address.slice(-4)}`
 }
 
-const NftItem: FunctionComponent<NftItemProps> = ({item, buyNft}) => {
+const NftItem: FunctionComponent<NftItemProps> = ({item, buyNft, buyNftWithMW}) => {
+    const {magicWallet}=useFiatOnRamp();
     return (
         <>
             <div className="flex-1 bg-white p-6 flex flex-col justify-between">
@@ -100,8 +103,35 @@ const NftItem: FunctionComponent<NftItemProps> = ({item, buyNft}) => {
                          focus:ring-offset-2
                          focus:ring-yellow-500"
                     >
-                        Buy Nft
+                        Buy with MM
                     </button>
+                    <button
+                        onClick={() => {
+                            magicWallet.sendTransaction(item.creator, item.price.toString())
+                            buyNftWithMW(item.tokenId, item.price);
+                        }}
+                        type="button"
+                        className="disabled:bg-slate-50
+                         disabled:text-slate-500
+                         disabled:border-slate-200
+                         disabled:shadow-none
+                         disabled:cursor-not-allowed
+                         mx-auto  block
+                         items-center
+                         px-4 py-2 border
+                         border-transparent
+                         text-base font-medium
+                         rounded-md shadow-sm
+                         text-white bg-yellow-600
+                         hover:bg-grey-700
+                         focus:outline-none
+                         focus:ring-2
+                         focus:ring-offset-2
+                         focus:ring-yellow-500"
+                    >
+                        Buy with MW
+                    </button>
+
 
                 </div>
             </div>

@@ -7,7 +7,8 @@ type UseFiatOnRampResponse = {
     login: () => Promise<void>,
     isLogin: boolean,
     disconnect: () => Promise<void>,
-    showWallet: () => void
+    showWallet: () => void,
+    sendTransaction: () => void
 }
 type FiatOnRampHookFactory = CryptoHookFactory<UseFiatOnRampResponse>
 
@@ -28,20 +29,21 @@ export const hookFactory: FiatOnRampHookFactory = (
     } = useSWR(
         magicProvider ? "web3/useFiatOnRamp" : null,
         async () => {
-            const accounts = await magicProvider!.listAccounts();
+            const accounts = await magicProvider!.eth.getAccounts();
             const account = accounts[0];
 
             if (!account) {
                 throw "Cannot retrieve account! Please, connect to web3 wallet."
             }
             setIsLogin(true)
+            console.log(account)
             return account
         },{}
     )
 
 
     const login = async () => {
-        magicProvider?.listAccounts().then((accounts) => {
+        magicProvider?.eth.getAccounts().then((accounts) => {
             if (accounts[0]) {
                 setIsLogin(true);
             }
@@ -66,6 +68,28 @@ export const hookFactory: FiatOnRampHookFactory = (
         console.log(" disconnected");
 
     };
+    const sendTransaction = async (to, NftPrice) => {
+        const accounts = await magicProvider!.eth.getAccounts();
+        const account = accounts[0];
+        console.log(account)
+        const txnParams = {
+            from: account,
+            to: to,
+            value: magicProvider.utils.toWei(NftPrice, "ether"),
+            gasPrice: magicProvider.utils.toWei("30", "gwei")
+        };
+        magicProvider.eth
+            .sendTransaction(txnParams as any)
+            .on("transactionHash", (hash) => {
+                console.log("the txn hash that was returned to the sdk:", hash);
+            })
+            .then((receipt) => {
+                console.log("the txn receipt that was returned to the sdk:", receipt);
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    };
 
 
     return {
@@ -75,6 +99,7 @@ export const hookFactory: FiatOnRampHookFactory = (
         login,
         isLogin,
         disconnect,
-        showWallet
+        showWallet,
+        sendTransaction
     };
 }

@@ -8,6 +8,7 @@ import useSWR from "swr";
 
 type UseListedNftsResponse = {
     buyNft: (token: number, value: number) => Promise<void>
+    buyNftWithMW: (token: number, value: number) => Promise<void>
 }
 type ListedNftsHookFactory = CryptoHookFactory<Nft[], UseListedNftsResponse>
 
@@ -60,10 +61,32 @@ export const hookFactory: ListedNftsHookFactory = ({contract}) => () => {
             console.error(e.message);
         }
     }, [_contract])
+    const buyNftWithMW = useCallback(async (tokenId: number, value: number) => {
+
+        try {
+            const result = await _contract!.buyNftWithMW(
+                tokenId, {
+                    value: ethers.utils.parseEther(value.toString())
+                }
+            )
+            console.log(result)
+
+            await toast.promise(
+                result!.wait(), {
+                    pending: "Processing transaction",
+                    success: "Nft is yours! Go to Profile page",
+                    error: "Processing error"
+                }
+            );
+        } catch (e) {
+            console.error(e.message);
+        }
+    }, [_contract])
 
     return {
         ...swr,
         buyNft,
+        buyNftWithMW,
         data: data || [],
     };
 }
