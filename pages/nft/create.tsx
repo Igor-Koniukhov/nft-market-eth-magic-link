@@ -158,7 +158,7 @@ const NftCreate: NextPage = () => {
             console.error(e.message);
         }
     }
-    if (!network.isConnectedToNetwork) {
+    if (network.isConnectedToNetwork) {
         return (
             <BaseLayout>
                 <div className="rounded-md bg-yellow-50 p-4 mt-10">

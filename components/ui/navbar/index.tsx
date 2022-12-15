@@ -2,7 +2,7 @@
 import {Disclosure} from "@headlessui/react";
 import {MenuIcon, XIcon} from "@heroicons/react/outline";
 import {ActiveLink} from "..";
-import {useAccount, useFiatOnRamp, useNetwork} from "@hooks/web3";
+import { useFiatOnRamp, useAccount, useNetwork} from "@hooks/web3";
 import Walletbar from "./Walletbar";
 
 

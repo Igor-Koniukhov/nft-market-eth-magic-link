@@ -89,6 +89,31 @@ export const loadContract = async (
         return Promise.reject(`Contract: [${name}] cannot be loaded!`);
     }
 }
+export const loadContractMW = async (
+    name: string,  // NftMarket
+    provider: Web3
+
+): Promise<Contract> => {
+    if (!NETWORK_ID) {
+        return Promise.reject("Network ID is not defined!");
+    }
+
+    const res = await fetch(`/contracts/${name}.json`);
+    const Artifact = await res.json();
+
+
+    if (Artifact.networks[NETWORK_ID].address) {
+        const contract = new provider.eth.Contract(
+            Artifact.abi,
+            Artifact.networks[NETWORK_ID].address,
+
+        )
+
+        return contract as undefined as Contract;
+    } else {
+        return Promise.reject(`Contract: [${name}] cannot be loaded!`);
+    }
+}
 
 /*const customNodeOptions = {
     rpcUrl: "https://goerli.optimism.io",

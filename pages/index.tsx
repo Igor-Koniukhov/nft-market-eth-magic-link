@@ -9,6 +9,7 @@ import {useFiatOnRamp} from "@hooks/web3";
 const Home: NextPage = () => {
     const {network} = useNetwork();
     const {magicWallet}=useFiatOnRamp();
+    console.log(network)
 
 
 

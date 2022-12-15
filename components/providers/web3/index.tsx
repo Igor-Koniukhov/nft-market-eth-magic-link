@@ -1,5 +1,12 @@
 import { createContext, FunctionComponent, useContext, useEffect, useState } from "react"
-import { createDefaultState, createWeb3State, loadContract, Web3State, magicConnectProvider } from "./utils";
+import {
+    createDefaultState,
+    createWeb3State,
+    //loadContract,
+    Web3State,
+    magicConnectProvider,
+    loadContractMW, loadContract
+} from "./utils";
 import { ethers } from "ethers";
 import { MetaMaskInpageProvider } from "@metamask/providers";
 import { NftMarketContract } from "@_types/nftMarketContract";
@@ -29,9 +36,12 @@ const Web3Provider: FunctionComponent = ({children}) => {
     useEffect(() => {
         async function initWeb3() {
             try {
-                const provider = new ethers.providers.Web3Provider(window.ethereum as any);
+
                 const {magic, magicProvider} = await magicConnectProvider();
+                const provider = new ethers.providers.Web3Provider(window.ethereum as any);
                 const contract =  await loadContract("NftMarket", provider);
+                //const contract =  await loadContractMW("NftMarket", magicProvider);
+
 
 
 
