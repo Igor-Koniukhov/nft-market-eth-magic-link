@@ -6,7 +6,7 @@ import { NftMarketContract } from "@_types/nftMarketContract";
 
 const pageReload = () => { window.location.reload(); }
 
-const handleAccount = (ethereum: MetaMaskInpageProvider) => async () => {
+/*const handleAccount = (ethereum: MetaMaskInpageProvider) => async () => {
     const isLocked =  !(await ethereum._metamask.isUnlocked());
     if (isLocked) { pageReload(); }
 }
@@ -19,7 +19,7 @@ const setGlobalListeners = (ethereum: MetaMaskInpageProvider) => {
 const removeGlobalListeners = (ethereum: MetaMaskInpageProvider) => {
     ethereum?.removeListener("chainChanged", pageReload);
     ethereum?.removeListener("accountsChanged", handleAccount);
-}
+}*/
 
 const Web3Context = createContext<Web3State>(createDefaultState());
 
@@ -29,18 +29,20 @@ const Web3Provider: FunctionComponent = ({children}) => {
     useEffect(() => {
         async function initWeb3() {
             try {
-                const provider = new ethers.providers.Web3Provider(window.ethereum as any);
+
                 const {magic, magicProvider} = await magicConnectProvider();
+                const provider = new ethers.providers.Web3Provider(magicProvider as any);
                 const contract =  await loadContract("NftMarket", provider);
 
 
 
                 const signer = provider.getSigner();
+                console.log(signer)
                 const signedContract = contract.connect(signer);
 
-                setTimeout(() => setGlobalListeners(window.ethereum), 500);
+                //setTimeout(() => setGlobalListeners(magicProvider), 500);
                 setWeb3Api(createWeb3State({
-                    ethereum: window.ethereum,
+                    ethereum: magicProvider,
                     provider,
                     contract: signedContract as unknown as NftMarketContract,
                     isLoading: false,
@@ -48,16 +50,16 @@ const Web3Provider: FunctionComponent = ({children}) => {
                     magicProvider,
                 }))
             } catch(e) {
-                console.error("Please, install web3 wallet");
+                console.error(e, "Please, install web3 wallet. Msg from providers/web3 - 53");
                 setWeb3Api((api) => createWeb3State({
                     ...api as any,
-                    isLoading: false,
+                    isLoading: true,
                 }))
             }
         }
 
         initWeb3();
-        return () => removeGlobalListeners(window.ethereum);
+        //return () => removeGlobalListeners(window.ethereum);
     }, [])
 
     return (
