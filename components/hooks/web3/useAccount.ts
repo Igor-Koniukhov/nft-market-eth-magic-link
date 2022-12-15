@@ -3,7 +3,7 @@ import {useEffect} from "react";
 import useSWR from "swr";
 
 type UseAccountResponse = {
-    connect: () => void;
+   // connect: () => void;
     isLoading: boolean;
     isInstalled: boolean;
 }
@@ -42,12 +42,12 @@ export const hookFactory: AccountHookFactory = (
         }
     )
 
-    useEffect(() => {
+   /* useEffect(() => {
         ethereum?.on("accountsChanged", handleAccountsChanged);
         return () => {
             ethereum?.removeListener("accountsChanged", handleAccountsChanged);
         }
-    })
+    })*/
 
     const handleAccountsChanged = (...args: unknown[]) => {
         const accounts = args[0] as string[];
@@ -58,21 +58,21 @@ export const hookFactory: AccountHookFactory = (
         }
     }
 
-    const connect = async () => {
+   /* const connect = async () => {
         try {
             ethereum?.request({method: "eth_requestAccounts"});
         } catch (e) {
             console.error(e);
         }
-    }
+    }*/
 
     return {
         ...swr,
         data,
         isValidating,
         isLoading: isLoading as boolean,
-        isInstalled: ethereum?.isMetaMask || false,
+        isInstalled: true,
         mutate,
-        connect
+       // connect
     };
 }
