@@ -57,6 +57,7 @@ const NftCreate: NextPage = () => {
 
         try {
             const {signedData, account} = await getSignedData();
+            console.log(signedData, " signed data")
             const promise = axios.post("/api/verify-image", {
                 address: account,
                 signature: signedData,

@@ -30,7 +30,7 @@ export function withSession(handler: any) {
 }
 
 const url = process.env.NODE_ENV === "production" ?
-    process.env.INFURA_ROPSTEN_URL :
+    process.env.INFURA_GOERLY_URL :
     "http://127.0.0.1:7545"
 
 export const addressCheckMiddleware = async (
@@ -70,6 +70,7 @@ export const addressCheckMiddleware = async (
     })
 }
 const keys = require("./../../keys.json");
+
 export const storeBlobOnNftStorage = async (contentType, buffer) => {
     let image = new Blob([buffer], { type: contentType});
     const client = new NFTStorage({token: keys.NFT_STORAGE_KEY})
