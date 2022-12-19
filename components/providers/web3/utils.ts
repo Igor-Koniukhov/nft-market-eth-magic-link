@@ -9,7 +9,7 @@ import Web3 from "web3";
 
 declare global {
     interface Window {
-        ethereum: Web3;
+        ethereum: Magic;
     }
 }
 
@@ -76,7 +76,7 @@ export const loadContract = async (
 
     const res = await fetch(`/contracts/${name}.json`);
     const Artifact = await res.json();
-
+    console.log(Artifact[NETWORK_ID])
 
     if (Artifact.networks[NETWORK_ID].address) {
         const contract = new ethers.Contract(
@@ -91,10 +91,10 @@ export const loadContract = async (
     }
 }
 
-/*const customNodeOptions = {
+const customNodeOptions = {
     rpcUrl: "https://goerli.optimism.io",
     chainId: 420
-};*/
+};
 export const magicConnectProvider = async () : Promise<{magic: any, magicProvider: Web3}> =>{
     const magic = new Magic("pk_live_8EBC0E6F41C015D8", {
         network: 'goerli',
