@@ -32,6 +32,7 @@ const Web3Provider: FunctionComponent = ({children}) => {
                 const provider = new ethers.providers.Web3Provider(window.ethereum as any);
                 const {magic, magicProvider} = await magicConnectProvider();
                 const contract =  await loadContract("NftMarket", provider);
+                console.log(contract)
 
 
 
@@ -48,7 +49,7 @@ const Web3Provider: FunctionComponent = ({children}) => {
                     magicProvider,
                 }))
             } catch(e) {
-                console.error("Please, install web3 wallet");
+                console.error(e, "Please, install web3 wallet");
                 setWeb3Api((api) => createWeb3State({
                     ...api as any,
                     isLoading: false,
