@@ -1,6 +1,7 @@
 import {CryptoHookFactory} from "@_types/hooks";
 import useSWR from "swr";
 import {useState} from "react";
+import {ethers} from "ethers";
 
 
 type UseFiatOnRampResponse = {
@@ -16,7 +17,7 @@ export type UseFiatOnRampHook = ReturnType<FiatOnRampHookFactory>
 
 export const hookFactory: FiatOnRampHookFactory = (
     {
-        magic, magicProvider
+        magic, provider
     }
 ) => () => {
     const [isLogin, setIsLogin] = useState(false);
@@ -27,27 +28,24 @@ export const hookFactory: FiatOnRampHookFactory = (
         isValidating,
         ...swr
     } = useSWR(
-        magicProvider ? "web3/useFiatOnRamp" : null,
+        provider ? "web3/useFiatOnRamp" : null,
         async () => {
-            const accounts = await magicProvider!.eth.getAccounts();
-            const account = accounts[0];
+            const account = await provider!.getSigner().getAddress();
 
             if (!account) {
                 throw "Cannot retrieve account! Please, connect to web3 wallet."
             }
             setIsLogin(true)
-            console.log(account)
             return account
         },{}
     )
 
 
     const login = async () => {
-        magicProvider?.eth.getAccounts().then((accounts) => {
-            if (accounts[0]) {
+        provider?.getSigner().getAddress().then((account) => {
+            if (account) {
                 setIsLogin(true);
             }
-
         })
             .catch((error) => {
                 console.log(error, " console error");
@@ -69,16 +67,16 @@ export const hookFactory: FiatOnRampHookFactory = (
 
     };
     const sendTransaction = async (to, NftPrice) => {
-        const accounts = await magicProvider!.eth.getAccounts();
-        const account = accounts[0];
+        const signer = await provider!.getSigner();
+        const account = await signer.getAddress();
         console.log(account)
         const txnParams = {
             from: account,
             to: to,
-            value: magicProvider.utils.toWei(NftPrice, "ether"),
-            gasPrice: magicProvider.utils.toWei("30", "gwei")
+            value: magic.utils.toWei(NftPrice, "ether"),
+            gasPrice: magic.utils.toWei("30", "gwei")
         };
-        magicProvider.eth
+        magic.eth
             .sendTransaction(txnParams as any)
             .on("transactionHash", (hash) => {
                 console.log("the txn hash that was returned to the sdk:", hash);

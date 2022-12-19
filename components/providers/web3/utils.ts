@@ -1,5 +1,4 @@
 import {setupHooks, Web3Hooks} from "@hooks/web3/setupHooks";
-import {MetaMaskInpageProvider} from "@metamask/providers";
 import {Web3Dependencies} from "@_types/hooks";
 import {Contract, ethers, providers} from "ethers";
 import {Magic, CustomNodeConfiguration} from "magic-sdk";
@@ -9,7 +8,7 @@ import Web3 from "web3";
 
 declare global {
     interface Window {
-        ethereum: Magic["rpcProvider"];
+        ethereum: providers.Web3Provider;
     }
 }
 
@@ -42,7 +41,6 @@ export const createWeb3State = (
         contract,
         isLoading,
         magic,
-        magicProvider,
     }: Web3Dependencies) => {
     return {
         ethereum,
@@ -50,7 +48,6 @@ export const createWeb3State = (
         contract,
         isLoading,
         magic,
-        magicProvider,
         hooks: setupHooks(
             {
                 ethereum,
@@ -58,7 +55,6 @@ export const createWeb3State = (
                 contract,
                 isLoading,
                 magic,
-                magicProvider,
             }
         )
     }
@@ -68,7 +64,7 @@ const NETWORK_ID = process.env.NEXT_PUBLIC_NETWORK_ID;
 
 export const loadContract = async (
     name: string,  // NftMarket
-    provider: ethers.providers.Web3Provider
+    provider: providers.Web3Provider
 ): Promise<Contract> => {
     if (!NETWORK_ID) {
         return Promise.reject("Network ID is not defined!");
@@ -83,7 +79,6 @@ export const loadContract = async (
             Artifact.abi,
             provider
         )
-
         return contract;
     } else {
         return Promise.reject(`Contract: [${name}] cannot be loaded!`);
@@ -94,14 +89,14 @@ const customNodeOptions = {
     rpcUrl: "https://goerli.optimism.io",
     chainId: 420
 };
-export const magicConnectProvider = async () : Promise<{magic: any, magicProvider: Web3}> =>{
-    const magic = new Magic("pk_live_8EBC0E6F41C015D8", {
+export const magicConnectProvider = async () : Promise<{magic: any, provider: providers.Web3Provider}> =>{
+    const magic = new Magic("pk_live_DE9DCFDD500A3F8D", {
         network: 'goerli',
         locale: "en_US",
         extensions: [new ConnectExtension()]
     } );
 
-  const magicProvider = new Web3(magic.rpcProvider as any);
+    const provider = new ethers.providers.Web3Provider(magic.rpcProvider as any);
 
-  return {magic, magicProvider};
+  return {magic, provider};
 }

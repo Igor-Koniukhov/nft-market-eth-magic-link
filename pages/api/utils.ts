@@ -29,9 +29,7 @@ export function withSession(handler: any) {
     })
 }
 
-const url = process.env.NODE_ENV === "production" ?
-    process.env.INFURA_GOERLY_URL :
-    process.env.INFURA_GOERLY_URL
+
 
 export const addressCheckMiddleware = async (
     req: NextApiRequest & { session: Session },
@@ -39,15 +37,6 @@ export const addressCheckMiddleware = async (
 
     return new Promise((resolve, reject) => {
         const message = req.session.get("message-session");
-        console.log(message, " this is message")
-        //could get access to server side, in our case ganache - http://127.0.0.1:7545
-        const provider = new ethers.providers.JsonRpcProvider(url);
-        //getting contract on server (TODO: contract for adding white/black list)
-        const contract = new ethers.Contract(
-            contractAddress,
-            abi,
-            provider
-        ) as unknown as NftMarketContract;
 
         let nonce: string | Buffer =
             "\x19Ethereum Signed Message:\n" +
@@ -57,12 +46,18 @@ export const addressCheckMiddleware = async (
         nonce = util.keccak(Buffer.from(nonce, "utf-8"))
 
         const {v, r, s} = util.fromRpcSig(req.body.signature);
+
         const pubKey = util.ecrecover(util.toBuffer(nonce), v, r, s);
+
 
         const addrBuffer = util.pubToAddress(pubKey);
         const address = util.bufferToHex(addrBuffer);
 
-        if (address === req.body.address) {
+        console.log(address, " address")
+        console.log(req.body.address.toLowerCase(), " address from body req")
+
+
+        if (address === req.body.address.toLowerCase()) {
             resolve("Correct Address");
         } else {
             reject("Cannot resolve Address")

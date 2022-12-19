@@ -17,7 +17,7 @@ const ALLOWED_FIELDS = ["name", "description", "image", "attributes"];
 
 const NftCreate: NextPage = () => {
     const router = useRouter();
-    const {ethereum, contract} = useWeb3();
+    const {ethereum, provider, contract} = useWeb3();
     const {network} = useNetwork();
     const [nftURI, setNftURI] = useState("");
     const [price, setPrice] = useState("");
@@ -34,20 +34,18 @@ const NftCreate: NextPage = () => {
 
     const getSignedData = async () => {
         const messageToSign = await axios.get("/api/verify");
-        console.log(messageToSign, " message to sign")
-        //const accounts = await ethereum?.request({method: "eth_requestAccounts"}) as string[];
-        const accounts = await ethereum.listAccounts()
-        console.log(accounts)
-        const account = accounts[0];
 
-       /* const signedData = await ethereum?.request({
-            method: "personal_sign",
-            params: [JSON.stringify(messageToSign.data), account, messageToSign.data.id]
-        })*/
-        const signedData = await ethereum.send({
-            method: "personal_sign",
-            params: [JSON.stringify(messageToSign.data), account, messageToSign.data.id]
-        })
+        //const accounts = await ethereum?.request({method: "eth_requestAccounts"}) as string[];
+        const account = await provider.getSigner().getAddress()
+
+
+        console.log(account, " account")
+        console.log(account.toLowerCase(), " account in lowercase")
+
+
+        const signedData = await provider.send(
+            "personal_sign",
+            [JSON.stringify(messageToSign.data), account, messageToSign.data.id])
 
         return {signedData, account};
     }
