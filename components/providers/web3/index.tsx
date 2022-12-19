@@ -3,23 +3,24 @@ import { createDefaultState, createWeb3State, loadContract, Web3State, magicConn
 import { ethers } from "ethers";
 import { MetaMaskInpageProvider } from "@metamask/providers";
 import { NftMarketContract } from "@_types/nftMarketContract";
+import {Magic} from "magic-sdk";
 
 const pageReload = () => { window.location.reload(); }
 
-/*const handleAccount = (ethereum: MetaMaskInpageProvider) => async () => {
-    const isLocked =  !(await ethereum._metamask.isUnlocked());
+const handleAccount = (ethereum: Magic["rpcProvider"]) => async () => {
+    const isLocked =  !( ethereum.isMagic);
     if (isLocked) { pageReload(); }
 }
 
-const setGlobalListeners = (ethereum: MetaMaskInpageProvider) => {
+const setGlobalListeners = (ethereum: Magic["rpcProvider"]) => {
     ethereum.on("chainChanged", pageReload);
     ethereum.on("accountsChanged", handleAccount(ethereum));
 }
 
-const removeGlobalListeners = (ethereum: MetaMaskInpageProvider) => {
+const removeGlobalListeners = (ethereum: Magic["rpcProvider"]) => {
     ethereum?.removeListener("chainChanged", pageReload);
     ethereum?.removeListener("accountsChanged", handleAccount);
-}*/
+}
 
 const Web3Context = createContext<Web3State>(createDefaultState());
 
@@ -35,12 +36,11 @@ const Web3Provider: FunctionComponent = ({children}) => {
                 const contract =  await loadContract("NftMarket", provider);
                 const signer = provider.getSigner();
                 const signedContract = contract.connect(signer);
-                console.log(magic, " magic")
+                console.log(magic.rpcProvider, " magic")
 
-                console.log(signedContract, " signed contract")
-                //setTimeout(() => setGlobalListeners(magic.rpcProvider), 500);
+                setTimeout(() => setGlobalListeners(magic.rpcProvider), 500);
                 setWeb3Api(createWeb3State({
-                    ethereum: window.ethereum,
+                    ethereum: magic.rpcProvider,
                     provider,
                     contract: signedContract as unknown as NftMarketContract,
                     isLoading: false,
@@ -57,7 +57,7 @@ const Web3Provider: FunctionComponent = ({children}) => {
         }
 
         initWeb3();
-        //return () => removeGlobalListeners(window.ethereum);
+        return () => removeGlobalListeners(window.ethereum);
     }, [])
 
     return (

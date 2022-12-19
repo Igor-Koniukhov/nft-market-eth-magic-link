@@ -3,7 +3,7 @@ import {useEffect} from "react";
 import useSWR from "swr";
 
 type UseAccountResponse = {
-    //connect: () => void;
+    connect: () => void;
     isLoading: boolean;
     isInstalled: boolean;
 }
@@ -58,13 +58,13 @@ export const hookFactory: AccountHookFactory = (
         }
     }
 
-   /* const connect = async () => {
+    const connect = async () => {
         try {
             ethereum?.request({method: "eth_requestAccounts"});
         } catch (e) {
             console.error(e);
         }
-    }*/
+    }
 
     return {
         ...swr,
