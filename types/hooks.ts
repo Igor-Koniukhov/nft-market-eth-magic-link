@@ -7,7 +7,7 @@ import {NftMarketContract} from "@_types/nftMarketContract";
 export type Web3Dependencies = {
     provider: ethers.providers.Web3Provider;
     contract: NftMarketContract;
-    ethereum: Web3;
+    ethereum: ethers.providers.Web3Provider;
     isLoading: boolean;
     magic: any;
     magicProvider: Web3;

@@ -9,7 +9,7 @@ import Web3 from "web3";
 
 declare global {
     interface Window {
-        ethereum: Magic;
+        ethereum:ethers.providers.Web3Provider;
     }
 }
 

@@ -31,19 +31,16 @@ const Web3Provider: FunctionComponent = ({children}) => {
             try {
 
                 const {magic, magicProvider} = await magicConnectProvider();
-
                 const provider = new ethers.providers.Web3Provider(magic.rpcProvider as any);
-                console.log(provider, " provider")
                 const contract =  await loadContract("NftMarket", provider);
-
-
                 const signer = provider.getSigner();
-                console.log(signer)
                 const signedContract = contract.connect(signer);
+                console.log(magic, " magic")
 
+                console.log(signedContract, " signed contract")
                 //setTimeout(() => setGlobalListeners(magic.rpcProvider), 500);
                 setWeb3Api(createWeb3State({
-                    ethereum: magicProvider,
+                    ethereum: window.ethereum,
                     provider,
                     contract: signedContract as unknown as NftMarketContract,
                     isLoading: false,

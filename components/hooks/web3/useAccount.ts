@@ -3,7 +3,7 @@ import {useEffect} from "react";
 import useSWR from "swr";
 
 type UseAccountResponse = {
-   // connect: () => void;
+    //connect: () => void;
     isLoading: boolean;
     isInstalled: boolean;
 }
@@ -42,12 +42,12 @@ export const hookFactory: AccountHookFactory = (
         }
     )
 
-   /* useEffect(() => {
+    useEffect(() => {
         ethereum?.on("accountsChanged", handleAccountsChanged);
         return () => {
             ethereum?.removeListener("accountsChanged", handleAccountsChanged);
         }
-    })*/
+    })
 
     const handleAccountsChanged = (...args: unknown[]) => {
         const accounts = args[0] as string[];
@@ -73,6 +73,6 @@ export const hookFactory: AccountHookFactory = (
         isLoading: isLoading as boolean,
         isInstalled: true,
         mutate,
-       // connect
+       //connect
     };
 }
