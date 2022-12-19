@@ -10,8 +10,6 @@ const Home: NextPage = () => {
     const {network} = useNetwork();
     const {magicWallet}=useFiatOnRamp();
 
-
-
     return (
         <BaseLayout>
 

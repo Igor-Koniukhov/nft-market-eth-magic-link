@@ -36,6 +36,7 @@ const Web3Provider: FunctionComponent = ({children}) => {
                 console.log(provider, " provider")
                 const contract =  await loadContract("NftMarket", provider);
 
+
                 const signer = provider.getSigner();
                 console.log(signer)
                 const signedContract = contract.connect(signer);

@@ -76,7 +76,6 @@ export const loadContract = async (
 
     const res = await fetch(`/contracts/${name}.json`);
     const Artifact = await res.json();
-    console.log(Artifact[NETWORK_ID])
 
     if (Artifact.networks[NETWORK_ID].address) {
         const contract = new ethers.Contract(
