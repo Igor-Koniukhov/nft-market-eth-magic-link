@@ -34,8 +34,10 @@ const NftCreate: NextPage = () => {
 
     const getSignedData = async () => {
         const messageToSign = await axios.get("/api/verify");
+        console.log(messageToSign, " message to sign")
         //const accounts = await ethereum?.request({method: "eth_requestAccounts"}) as string[];
         const accounts = await ethereum.listAccounts()
+        console.log(accounts)
         const account = accounts[0];
 
        /* const signedData = await ethereum?.request({

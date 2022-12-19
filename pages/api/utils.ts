@@ -30,8 +30,8 @@ export function withSession(handler: any) {
 }
 
 const url = process.env.NODE_ENV === "production" ?
-    process.env.INFURA_ROPSTEN_URL :
-    "http://127.0.0.1:7545"
+    process.env.INFURA_GOERLY_URL :
+    process.env.INFURA_GOERLY_URL
 
 export const addressCheckMiddleware = async (
     req: NextApiRequest & { session: Session },
@@ -39,7 +39,7 @@ export const addressCheckMiddleware = async (
 
     return new Promise((resolve, reject) => {
         const message = req.session.get("message-session");
-
+        console.log(message, " this is message")
         //could get access to server side, in our case ganache - http://127.0.0.1:7545
         const provider = new ethers.providers.JsonRpcProvider(url);
         //getting contract on server (TODO: contract for adding white/black list)
