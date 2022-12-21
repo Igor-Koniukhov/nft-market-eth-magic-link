@@ -84,7 +84,7 @@ const Profile: NextPage = () => {
                           )}
                         >
                           <img
-                            src={nft.meta.image}
+                            src={nft.meta.image as string}
                             alt=""
                             className={classNames(
                               true ? "" : "group-hover:opacity-75",
@@ -117,7 +117,7 @@ const Profile: NextPage = () => {
                   <div>
                     <div className="block w-full aspect-w-10 aspect-h-7 rounded-lg overflow-hidden">
                       <img
-                        src={activeNft.meta.image}
+                        src={activeNft.meta.image as string}
                         alt=""
                         className="object-cover"
                       />

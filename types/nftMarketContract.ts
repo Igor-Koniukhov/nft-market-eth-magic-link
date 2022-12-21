@@ -97,6 +97,7 @@ export type NftMarketContractMethodNames =
   | 'getOwnedNfts'
   | 'mintToken'
   | 'buyNft'
+  | 'buyNftWithMW'
   | 'placeNftOnSale';
 export interface ApprovalEventEmittedResponse {
   owner: string;
@@ -438,6 +439,17 @@ export interface NftMarketContract {
    * @param tokenId Type: uint256, Indexed: false
    */
   buyNft(
+    tokenId: BigNumberish,
+    overrides?: ContractTransactionOverrides
+  ): Promise<ContractTransaction>;
+  /**
+   * Payable: true
+   * Constant: false
+   * StateMutability: payable
+   * Type: function
+   * @param tokenId Type: uint256, Indexed: false
+   */
+  buyNftWithMW(
     tokenId: BigNumberish,
     overrides?: ContractTransactionOverrides
   ): Promise<ContractTransaction>;

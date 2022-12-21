@@ -35,7 +35,9 @@ contract NftMarket is ERC721URIStorage, Ownable {
         address creator,
         bool isListed
     );
-
+    event TestMessSender (
+        address sender
+    );
     constructor() ERC721("PumpkinNFT", "PNFT") {}
 
     //The difference is because in public functions,
@@ -137,6 +139,21 @@ contract NftMarket is ERC721URIStorage, Ownable {
 
         _transfer(owner, msg.sender, tokenId);
         payable(owner).transfer(msg.value);
+    }
+
+    function buyNftWithMW(
+        uint tokenId
+    ) public payable {
+        uint price = _idToNftItem[tokenId].price;
+        address owner = ERC721.ownerOf(tokenId);
+
+        require(msg.sender != owner, "You already own this NFT");
+        require(msg.value == price, "Please submit the asking price");
+
+        _idToNftItem[tokenId].isListed = false;
+        _listedItems.decrement();
+        emit TestMessSender(msg.sender);
+
     }
 
     function placeNftOnSale(uint tokenId, uint newPrice) public payable {

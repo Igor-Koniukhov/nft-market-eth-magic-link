@@ -2,26 +2,29 @@
 
 import {FunctionComponent} from "react";
 import {Nft} from "../../../../types/nft";
+import {useFiatOnRamp} from "@hooks/web3";
 
 type NftItemProps = {
     item: Nft;
     buyNft: (token: number, value: number) => Promise<void>;
+    buyNftWithMW: (token: number, value: number) => Promise<void>;
 }
 
 function shortifyAddress(address: string) {
     return `0x****${address.slice(-4)}`
 }
 
-const NftItem: FunctionComponent<NftItemProps> = ({item, buyNft}) => {
+const NftItem: FunctionComponent<NftItemProps> = ({item, buyNft, buyNftWithMW}) => {
+    const {magicWallet} = useFiatOnRamp();
     return (
         <>
             <div className="flex-1 bg-white p-6 flex flex-col justify-between">
                 <div className="flex-1">
-                        <details className="flex flex-col justify-between items-center">
-                            <summary className="text-xl font-semibold text-gray-900 text-center">{item.meta.name} </summary>
-                            <h3>Collection info:</h3>
-                            <p className="mt-3 mb-3 text-base text-gray-500 text-center">{item.meta.description}</p>
-                            <div className="flex-1">
+                    <details className="flex flex-col justify-between items-center">
+                        <summary className="text-xl font-semibold text-gray-900 text-center">{item.meta.name} </summary>
+                        <h3>Collection info:</h3>
+                        <p className="mt-3 mb-3 text-base text-gray-500 text-center">{item.meta.description}</p>
+                        <div className="flex-1">
                             <div className="flex justify-between items-center">
                                 <div className="flex items-center mt-2">
                                     <div>
@@ -40,14 +43,14 @@ const NftItem: FunctionComponent<NftItemProps> = ({item, buyNft}) => {
                                     Pumpkin NFT
                                 </p>
                             </div>
-                            </div>
-                        </details>
+                        </div>
+                    </details>
                 </div>
             </div>
             <div className="flex-shrink-0">
                 <img
                     className={`h-full w-full object-cover`}
-                    src={item.meta.image}
+                    src={item.meta.image as string}
                     alt="New NFT"
                 />
             </div>
@@ -100,8 +103,9 @@ const NftItem: FunctionComponent<NftItemProps> = ({item, buyNft}) => {
                          focus:ring-offset-2
                          focus:ring-yellow-500"
                     >
-                        Buy Nft
+                        Buy with MW
                     </button>
+
 
                 </div>
             </div>

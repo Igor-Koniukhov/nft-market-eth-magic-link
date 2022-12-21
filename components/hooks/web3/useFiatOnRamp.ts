@@ -1,13 +1,15 @@
 import {CryptoHookFactory} from "@_types/hooks";
 import useSWR from "swr";
 import {useState} from "react";
+import {ethers} from "ethers";
 
 
 type UseFiatOnRampResponse = {
     login: () => Promise<void>,
     isLogin: boolean,
     disconnect: () => Promise<void>,
-    showWallet: () => void
+    showWallet: () => void,
+    sendTransaction: () => void
 }
 type FiatOnRampHookFactory = CryptoHookFactory<UseFiatOnRampResponse>
 
@@ -15,7 +17,7 @@ export type UseFiatOnRampHook = ReturnType<FiatOnRampHookFactory>
 
 export const hookFactory: FiatOnRampHookFactory = (
     {
-        magic, magicProvider
+        magic, provider
     }
 ) => () => {
     const [isLogin, setIsLogin] = useState(false);
@@ -26,10 +28,9 @@ export const hookFactory: FiatOnRampHookFactory = (
         isValidating,
         ...swr
     } = useSWR(
-        magicProvider ? "web3/useFiatOnRamp" : null,
+        provider ? "web3/useFiatOnRamp" : null,
         async () => {
-            const accounts = await magicProvider!.listAccounts();
-            const account = accounts[0];
+            const account = await provider!.getSigner().getAddress();
 
             if (!account) {
                 throw "Cannot retrieve account! Please, connect to web3 wallet."
@@ -41,11 +42,10 @@ export const hookFactory: FiatOnRampHookFactory = (
 
 
     const login = async () => {
-        magicProvider?.listAccounts().then((accounts) => {
-            if (accounts[0]) {
+        provider?.getSigner().getAddress().then((account) => {
+            if (account) {
                 setIsLogin(true);
             }
-
         })
             .catch((error) => {
                 console.log(error, " console error");
@@ -66,6 +66,25 @@ export const hookFactory: FiatOnRampHookFactory = (
         console.log(" disconnected");
 
     };
+    const sendTransaction = async (to, NftPrice) => {
+        const signer = await provider!.getSigner();
+        const account = await signer.getAddress();
+        console.log(account)
+        const txnParams = {
+            from: account,
+            to: to,
+            value: ethers.utils.parseEther(NftPrice),
+            gasPrice: ethers.utils.formatEther("30")
+        };
+        provider
+            .sendTransaction(txnParams as any)
+            .then((receipt) => {
+                console.log("the txn receipt that was returned to the sdk:", receipt);
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    };
 
 
     return {
@@ -75,6 +94,7 @@ export const hookFactory: FiatOnRampHookFactory = (
         login,
         isLogin,
         disconnect,
-        showWallet
+        showWallet,
+        sendTransaction
     };
 }
