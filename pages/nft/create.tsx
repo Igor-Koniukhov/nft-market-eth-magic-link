@@ -17,7 +17,7 @@ const ALLOWED_FIELDS = ["name", "description", "image", "attributes"];
 
 const NftCreate: NextPage = () => {
     const router = useRouter();
-    const {ethereum, contract} = useWeb3();
+    const { provider, contract} = useWeb3();
     const {network} = useNetwork();
     const [nftURI, setNftURI] = useState("");
     const [price, setPrice] = useState("");
@@ -34,13 +34,14 @@ const NftCreate: NextPage = () => {
 
     const getSignedData = async () => {
         const messageToSign = await axios.get("/api/verify");
-        const accounts = await ethereum?.request({method: "eth_requestAccounts"}) as string[];
-        const account = accounts[0];
 
-        const signedData = await ethereum?.request({
-            method: "personal_sign",
-            params: [JSON.stringify(messageToSign.data), account, messageToSign.data.id]
-        })
+
+        const account = await provider.getSigner().getAddress()
+
+
+        const signedData = await provider.send(
+            "personal_sign",
+            [JSON.stringify(messageToSign.data), account, messageToSign.data.id])
 
         return {signedData, account};
     }
@@ -121,21 +122,13 @@ const NftCreate: NextPage = () => {
             const data = res.data as PinataRes;
             setNftURI(`${process.env.NEXT_PUBLIC_PINATA_DOMAIN}/ipfs/${data.IpfsHash}`);
         } catch (e: any) {
-            console.error(e.message);
+            console.error(e.message, " Something wrong with uploading metadata");
         }
     }
 
     const createNft = async () => {
-        try {
-            const nftRes = await axios.get(nftURI);
-            const content = nftRes.data;
-            console.log(content, " content from createNft")
 
-            Object.keys(content).forEach(key => {
-                if (!ALLOWED_FIELDS.includes(key)) {
-                    throw new Error("Invalid Json structure");
-                }
-            })
+        try {
 
             const tx = await contract?.mintToken(
                 nftURI,
@@ -156,7 +149,7 @@ const NftCreate: NextPage = () => {
 
 
         } catch (e: any) {
-            console.error(e.message);
+            console.error(e.message, " Something wrong with minting Nft");
         }
     }
     if (!network.isConnectedToNetwork) {
@@ -187,7 +180,6 @@ const NftCreate: NextPage = () => {
     return (
         <BaseLayout>
             <div>
-
                 {(nftURI || hasURI) ?
                     <div className="md:grid md:grid-cols-3 md:gap-6">
                         <div className="md:col-span-1">
@@ -325,7 +317,7 @@ const NftCreate: NextPage = () => {
                                         </div>
 
                                         {nftMeta.image ?
-                                            <img src={nftMeta.image} alt="" className="h-40 block mx-auto"/> :
+                                            <img src={nftMeta.image as string} alt="" className="h-40 block mx-auto"/> :
                                             <div>
                                                 <label className="block text-sm font-medium text-gray-700">Image</label>
                                                 <div

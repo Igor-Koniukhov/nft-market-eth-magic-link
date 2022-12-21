@@ -2,14 +2,13 @@
 import {Disclosure} from "@headlessui/react";
 import {MenuIcon, XIcon} from "@heroicons/react/outline";
 import {ActiveLink} from "..";
-import {useAccount, useFiatOnRamp, useNetwork} from "@hooks/web3";
+import {useAccount, useNetwork} from "@hooks/web3";
 import Walletbar from "./Walletbar";
 
 
 const navigation = [
     {name: "Marketplace", href: "/", current: true},
     {name: "Create (Pinata)", href: "/nft/create", current: false},
-    {name: "Create (Nft.storage)", href: "/nft/createOnNftStorage", current: false},
 ];
 
 function classNames(...classes: string[]) {
@@ -58,7 +57,6 @@ export default function Navbar({magicWallet}:any) {
                                     <div
                                         className="flex-1 flex items-center justify-center sm:items-stretch sm:justify-start">
 
-
                                         <div className="hidden sm:block sm:ml-6">
                                             <div className="flex space-x-4">
                                                 {navigation.map((item) => (
@@ -81,7 +79,6 @@ export default function Navbar({magicWallet}:any) {
                                     <div
                                         className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
 
-
                                         <button type="button" className="text-white" onClick={() => {
                                             magicWallet.disconnect();
                                         }}>
@@ -90,10 +87,8 @@ export default function Navbar({magicWallet}:any) {
                                         <Walletbar
                                             isInstalled={account.isInstalled}
                                             isLoading={account.isLoading}
-                                            connect={account.connect}
                                             account={account.data}
                                         />
-
                                         <div className="text-gray-300 self-center ml-2">
                   <span
                       className="inline-flex items-center px-2.5 py-0.5 rounded-md text-sm font-medium bg-yellow-100 text-yellow-800">

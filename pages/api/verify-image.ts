@@ -10,12 +10,14 @@ export default withSession(async (
     req: NextApiRequest & {session: Session},
     res: NextApiResponse
 ) => {
+
     if (req.method === "POST") {
         const {
             bytes,
             fileName,
             contentType
         } = req.body as FileReq;
+
 
         if (!bytes || !fileName || !contentType) {
             return res.status(422).send({message: "Image data are missing"});

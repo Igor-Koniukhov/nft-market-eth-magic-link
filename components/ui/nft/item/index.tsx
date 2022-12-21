@@ -15,16 +15,16 @@ function shortifyAddress(address: string) {
 }
 
 const NftItem: FunctionComponent<NftItemProps> = ({item, buyNft, buyNftWithMW}) => {
-    const {magicWallet}=useFiatOnRamp();
+    const {magicWallet} = useFiatOnRamp();
     return (
         <>
             <div className="flex-1 bg-white p-6 flex flex-col justify-between">
                 <div className="flex-1">
-                        <details className="flex flex-col justify-between items-center">
-                            <summary className="text-xl font-semibold text-gray-900 text-center">{item.meta.name} </summary>
-                            <h3>Collection info:</h3>
-                            <p className="mt-3 mb-3 text-base text-gray-500 text-center">{item.meta.description}</p>
-                            <div className="flex-1">
+                    <details className="flex flex-col justify-between items-center">
+                        <summary className="text-xl font-semibold text-gray-900 text-center">{item.meta.name} </summary>
+                        <h3>Collection info:</h3>
+                        <p className="mt-3 mb-3 text-base text-gray-500 text-center">{item.meta.description}</p>
+                        <div className="flex-1">
                             <div className="flex justify-between items-center">
                                 <div className="flex items-center mt-2">
                                     <div>
@@ -43,14 +43,14 @@ const NftItem: FunctionComponent<NftItemProps> = ({item, buyNft, buyNftWithMW}) 
                                     Pumpkin NFT
                                 </p>
                             </div>
-                            </div>
-                        </details>
+                        </div>
+                    </details>
                 </div>
             </div>
             <div className="flex-shrink-0">
                 <img
                     className={`h-full w-full object-cover`}
-                    src={item.meta.image}
+                    src={item.meta.image as string}
                     alt="New NFT"
                 />
             </div>
@@ -83,32 +83,6 @@ const NftItem: FunctionComponent<NftItemProps> = ({item, buyNft, buyNftWithMW}) 
                     <button
                         onClick={() => {
                             buyNft(item.tokenId, item.price);
-                        }}
-                        type="button"
-                        className="disabled:bg-slate-50
-                         disabled:text-slate-500
-                         disabled:border-slate-200
-                         disabled:shadow-none
-                         disabled:cursor-not-allowed
-                         mx-auto  block
-                         items-center
-                         px-4 py-2 border
-                         border-transparent
-                         text-base font-medium
-                         rounded-md shadow-sm
-                         text-white bg-yellow-600
-                         hover:bg-grey-700
-                         focus:outline-none
-                         focus:ring-2
-                         focus:ring-offset-2
-                         focus:ring-yellow-500"
-                    >
-                        Buy with MM
-                    </button>
-                    <button
-                        onClick={() => {
-                            magicWallet.sendTransaction(item.creator, item.price.toString())
-                            buyNftWithMW(item.tokenId, item.price);
                         }}
                         type="button"
                         className="disabled:bg-slate-50

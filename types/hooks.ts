@@ -1,16 +1,14 @@
-import {Contract, providers} from "ethers";
+import { ethers, providers} from "ethers";
 import Web3 from "web3";
-import {MetaMaskInpageProvider} from "@metamask/providers";
 import {SWRResponse} from "swr";
 import {NftMarketContract} from "@_types/nftMarketContract";
 
 export type Web3Dependencies = {
     provider: providers.Web3Provider;
     contract: NftMarketContract;
-    ethereum: MetaMaskInpageProvider;
+    ethereum: providers.Web3Provider;
     isLoading: boolean;
     magic: any;
-    magicProvider: Web3;
 }
 export type CryptoHookFactory<D=any, R= any, P=any> = {
     (d: Partial<Web3Dependencies>): CryptoHandlerHook<D, R, P>

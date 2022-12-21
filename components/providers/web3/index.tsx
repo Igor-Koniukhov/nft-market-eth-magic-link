@@ -1,22 +1,21 @@
 import { createContext, FunctionComponent, useContext, useEffect, useState } from "react"
 import { createDefaultState, createWeb3State, loadContract, Web3State, magicConnectProvider } from "./utils";
-import { ethers } from "ethers";
-import { MetaMaskInpageProvider } from "@metamask/providers";
+import { providers} from "ethers";
 import { NftMarketContract } from "@_types/nftMarketContract";
 
 const pageReload = () => { window.location.reload(); }
 
-const handleAccount = (ethereum: MetaMaskInpageProvider) => async () => {
-    const isLocked =  !(await ethereum._metamask.isUnlocked());
+const handleAccount = (ethereum: providers.Web3Provider) => async () => {
+    const isLocked =  !( ethereum.provider);
     if (isLocked) { pageReload(); }
 }
 
-const setGlobalListeners = (ethereum: MetaMaskInpageProvider) => {
+const setGlobalListeners = (ethereum: providers.Web3Provider) => {
     ethereum.on("chainChanged", pageReload);
     ethereum.on("accountsChanged", handleAccount(ethereum));
 }
 
-const removeGlobalListeners = (ethereum: MetaMaskInpageProvider) => {
+const removeGlobalListeners = (ethereum: providers.Web3Provider) => {
     ethereum?.removeListener("chainChanged", pageReload);
     ethereum?.removeListener("accountsChanged", handleAccount);
 }
@@ -29,30 +28,26 @@ const Web3Provider: FunctionComponent = ({children}) => {
     useEffect(() => {
         async function initWeb3() {
             try {
-                const provider = new ethers.providers.Web3Provider(window.ethereum as any);
-                const {magic, magicProvider} = await magicConnectProvider();
+                const {magic, provider} = await magicConnectProvider();
                 const contract =  await loadContract("NftMarket", provider);
-                console.log(contract)
-
-
-
                 const signer = provider.getSigner();
                 const signedContract = contract.connect(signer);
 
-                setTimeout(() => setGlobalListeners(window.ethereum), 500);
+                setTimeout(() => setGlobalListeners(magic.rpcProvider), 500);
                 setWeb3Api(createWeb3State({
                     ethereum: window.ethereum,
                     provider,
                     contract: signedContract as unknown as NftMarketContract,
                     isLoading: false,
-                    magic,
-                    magicProvider,
+                    magic
                 }))
             } catch(e) {
-                console.error(e, "Please, install web3 wallet");
+
+                console.error(e, "Please, install web3 wallet. Msg from providers/web3 - 53");
+
                 setWeb3Api((api) => createWeb3State({
                     ...api as any,
-                    isLoading: false,
+                    isLoading: true,
                 }))
             }
         }

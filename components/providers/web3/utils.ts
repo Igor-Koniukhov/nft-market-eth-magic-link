@@ -1,15 +1,14 @@
 import {setupHooks, Web3Hooks} from "@hooks/web3/setupHooks";
-import {MetaMaskInpageProvider} from "@metamask/providers";
 import {Web3Dependencies} from "@_types/hooks";
 import {Contract, ethers, providers} from "ethers";
-import {Magic, CustomNodeConfiguration} from "magic-sdk";
+import {Magic} from "magic-sdk";
 import {ConnectExtension} from "@magic-ext/connect";
-import Web3 from "web3";
+
 
 
 declare global {
     interface Window {
-        ethereum: MetaMaskInpageProvider;
+        ethereum: providers.Web3Provider;
     }
 }
 
@@ -42,7 +41,6 @@ export const createWeb3State = (
         contract,
         isLoading,
         magic,
-        magicProvider,
     }: Web3Dependencies) => {
     return {
         ethereum,
@@ -50,7 +48,6 @@ export const createWeb3State = (
         contract,
         isLoading,
         magic,
-        magicProvider,
         hooks: setupHooks(
             {
                 ethereum,
@@ -58,7 +55,6 @@ export const createWeb3State = (
                 contract,
                 isLoading,
                 magic,
-                magicProvider,
             }
         )
     }
@@ -84,25 +80,29 @@ export const loadContract = async (
             Artifact.abi,
             provider
         )
-
         return contract;
     } else {
         return Promise.reject(`Contract: [${name}] cannot be loaded!`);
     }
 }
 
-/*const customNodeOptions = {
+const OptimismNodeOptions = {
     rpcUrl: "https://goerli.optimism.io",
     chainId: 420
-};*/
-export const magicConnectProvider = async () : Promise<{magic: any, magicProvider: Web3}> =>{
-    const magic = new Magic("pk_live_8EBC0E6F41C015D8", {
+};
+const PolygonNodeOptions = {
+    rpcUrl: 'https://polygon-rpc.com/', // Polygon RPC URL
+    chainId: 137, // Polygon chain id
+}
+export const magicConnectProvider = async () : Promise<{magic: any, provider: providers.Web3Provider}> =>{
+    const magic = new Magic("pk_live_DE9DCFDD500A3F8D", {
         network: 'goerli',
         locale: "en_US",
         extensions: [new ConnectExtension()]
     } );
 
-  const magicProvider = new Web3(magic.rpcProvider as any);
+    const provider = new ethers.providers.Web3Provider(magic.rpcProvider as any);
+    console.log(provider)
 
-  return {magic, magicProvider};
+  return {magic, provider};
 }

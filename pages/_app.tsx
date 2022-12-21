@@ -1,9 +1,6 @@
 import "../styles/globals.css";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import React from "react";
-
-
-import type { AppProps } from "next/app";
 import { Web3Provider} from "@providers";
 
 
