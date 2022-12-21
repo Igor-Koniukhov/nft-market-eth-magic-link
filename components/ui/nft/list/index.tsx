@@ -8,7 +8,7 @@ const NftList: FunctionComponent = () => {
     return (
         <div className="mt-12 max-w-lg mx-auto grid gap-5 lg:grid-cols-3 lg:max-w-none">
             {nfts.data?.map(nft =>
-                <div key={nft.meta.image} className="flex flex-col rounded-lg shadow-lg overflow-hidden">
+                <div key={nft.meta.image as string} className="flex flex-col rounded-lg shadow-lg overflow-hidden">
                     <NftItem
                         item={nft}
                         buyNft={nfts.buyNft}

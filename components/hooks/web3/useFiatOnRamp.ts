@@ -73,14 +73,11 @@ export const hookFactory: FiatOnRampHookFactory = (
         const txnParams = {
             from: account,
             to: to,
-            value: magic.utils.toWei(NftPrice, "ether"),
-            gasPrice: magic.utils.toWei("30", "gwei")
+            value: ethers.utils.parseEther(NftPrice),
+            gasPrice: ethers.utils.formatEther("30")
         };
-        magic.eth
+        provider
             .sendTransaction(txnParams as any)
-            .on("transactionHash", (hash) => {
-                console.log("the txn hash that was returned to the sdk:", hash);
-            })
             .then((receipt) => {
                 console.log("the txn receipt that was returned to the sdk:", receipt);
             })

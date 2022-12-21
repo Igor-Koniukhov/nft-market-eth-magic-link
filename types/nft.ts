@@ -30,12 +30,6 @@ export type FileReq = {
     contentType: string;
 }
 
-export type FileReqForNftStore = {
-    file:  globalThis.File;
-    fileName: string;
-    contentType: string;
-}
-
 export type PinataRes = {
     IpfsHash: string;
     PinSize: number;
@@ -43,8 +37,3 @@ export type PinataRes = {
     isDuplicate: boolean;
 }
 
-export type NftStoreRes ={
-    ipnft: string;
-    url: string;
-
-}

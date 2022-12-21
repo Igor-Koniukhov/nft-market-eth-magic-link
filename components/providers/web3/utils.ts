@@ -1,9 +1,9 @@
 import {setupHooks, Web3Hooks} from "@hooks/web3/setupHooks";
 import {Web3Dependencies} from "@_types/hooks";
 import {Contract, ethers, providers} from "ethers";
-import {Magic, CustomNodeConfiguration} from "magic-sdk";
+import {Magic} from "magic-sdk";
 import {ConnectExtension} from "@magic-ext/connect";
-import Web3 from "web3";
+
 
 
 declare global {
@@ -85,10 +85,14 @@ export const loadContract = async (
     }
 }
 
-const customNodeOptions = {
+const OptimismNodeOptions = {
     rpcUrl: "https://goerli.optimism.io",
     chainId: 420
 };
+const PolygonNodeOptions = {
+    rpcUrl: 'https://polygon-rpc.com/', // Polygon RPC URL
+    chainId: 137, // Polygon chain id
+}
 export const magicConnectProvider = async () : Promise<{magic: any, provider: providers.Web3Provider}> =>{
     const magic = new Magic("pk_live_DE9DCFDD500A3F8D", {
         network: 'goerli',
@@ -97,6 +101,7 @@ export const magicConnectProvider = async () : Promise<{magic: any, provider: pr
     } );
 
     const provider = new ethers.providers.Web3Provider(magic.rpcProvider as any);
+    console.log(provider)
 
   return {magic, provider};
 }
