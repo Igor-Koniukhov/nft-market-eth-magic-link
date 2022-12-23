@@ -6,6 +6,7 @@ const URL = "https://api.coingecko.com/api/v3/coins/ethereum?localization=false&
 const fetcher = async url => {
   const res = await fetch(url)
   const json = await res.json()
+  console.log(json.market_data.ath)
 
   return json.market_data.current_price.usd ?? null
 }
@@ -20,4 +21,5 @@ export const useEthPrice = () => {
 
   return { eth: { data, ...rest}}
 }
+
 

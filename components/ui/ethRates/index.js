@@ -9,7 +9,7 @@ export default function EthRates() {
     const {magicWallet} = useFiatOnRamp();
 
     return (
-            <div className="flex flex-column text-center drop-shadow rounded-md mr-2 bg-orange-500 max-w-fit">
+            <div className="flex flex-column  text-center drop-shadow rounded-md mr-2 bg-orange-500 max-w-fit">
             <button type="button" className="
             flex
             flex-row
@@ -38,7 +38,7 @@ export default function EthRates() {
 
 
             </button>
-                <div className="text-sm text-white-500">Current eth Price:</div>
+                <div className="text-sm text-white font-bold">Current eth Price:</div>
                 <div className="flex items-center justify-center">
                     {eth.data ?
                         <>
@@ -48,7 +48,7 @@ export default function EthRates() {
                             width="35"
                             src="/images/small-eth.webp"
                         />
-                            <span className="text-xl font-bold">
+                            <span className="text-xl font-bold text-white">
                 = {eth.data}$
               </span>
                         </> :

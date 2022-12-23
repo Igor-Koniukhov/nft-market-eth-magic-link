@@ -3,6 +3,7 @@
 import {FunctionComponent} from "react";
 import {Nft} from "../../../../types/nft";
 import {useEthPrice} from "../../../hooks/useEthPrice";
+import {useMarketData} from "../../../hooks/useMarketData";
 
 
 type NftItemProps = {
@@ -17,6 +18,7 @@ function shortifyAddress(address: string) {
 
 const NftItem: FunctionComponent<NftItemProps> = ({item, buyNft, buyNftWithMW}) => {
     const {eth} = useEthPrice()
+
 
     return (
         <>
