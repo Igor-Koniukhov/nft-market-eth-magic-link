@@ -2,7 +2,8 @@
 
 import {FunctionComponent} from "react";
 import {Nft} from "../../../../types/nft";
-import {useFiatOnRamp} from "@hooks/web3";
+import {useEthPrice} from "../../../hooks/useEthPrice";
+
 
 type NftItemProps = {
     item: Nft;
@@ -15,7 +16,8 @@ function shortifyAddress(address: string) {
 }
 
 const NftItem: FunctionComponent<NftItemProps> = ({item, buyNft, buyNftWithMW}) => {
-    const {magicWallet} = useFiatOnRamp();
+    const {eth} = useEthPrice()
+    console.log(eth.data)
     return (
         <>
             <div className="flex-1 bg-white p-6 flex flex-col justify-between">
@@ -55,7 +57,11 @@ const NftItem: FunctionComponent<NftItemProps> = ({item, buyNft, buyNftWithMW}) 
                 />
             </div>
             <div className="flex-1 bg-white p-6 flex flex-col justify-around">
-
+                <div className="flex justify-center items-center">
+                    {item.price}
+                    <img className="h-6" src="/images/small-eth.webp" alt="ether icon"/>
+                    =  {(item.price * eth.data).toFixed(2)} $
+                </div>
                 <div className="overflow-hidden mb-4 flex justify-around">
                     <dl className="-mx-4 -mt-4 flex flex-wrap">
                         <div className="flex flex-col px-4 pt-4">
@@ -65,6 +71,7 @@ const NftItem: FunctionComponent<NftItemProps> = ({item, buyNft, buyNftWithMW}) 
                                     {item.price}
                                     <img className="h-6" src="/images/small-eth.webp" alt="ether icon"/>
                                 </div>
+
                             </dd>
                         </div>
                         {item.meta.attributes.map(attribute =>
@@ -78,7 +85,9 @@ const NftItem: FunctionComponent<NftItemProps> = ({item, buyNft, buyNftWithMW}) 
                             </div>
                         )}
                     </dl>
+
                 </div>
+
                 <div>
                     <button
                         onClick={() => {
