@@ -9,17 +9,14 @@ export default function EthRates() {
     const {magicWallet} = useFiatOnRamp();
 
     return (
-            <div className="flex drop-shadow rounded-md mr-2">
+            <div className="flex flex-column text-center drop-shadow rounded-md mr-2 bg-orange-500 max-w-fit">
             <button type="button" className="
             flex
-            flex-column
+            flex-row
             z-20
             items-center
             justify-center
             rounded-md
-            border
-            border-transparent
-            bg-orange-500
             px-10 py-10
             font-bold
             text-lg
@@ -31,16 +28,26 @@ export default function EthRates() {
                     onClick={() => {
                         magicWallet.showWallet()
                     }}>SHOW WALLET
+                <Image
+                    className="mx-1"
+
+                    height="50"
+                    width="55"
+                    src="/images/wallet.png"
+                />
+
+
+            </button>
                 <div className="text-sm text-white-500">Current eth Price:</div>
                 <div className="flex items-center justify-center">
                     {eth.data ?
                         <>
-                         1 <Image
-                                layout="fixed"
-                                height="35"
-                                width="35"
-                                src="/images/small-eth.webp"
-                            />
+                            1 <Image
+                            layout="fixed"
+                            height="35"
+                            width="35"
+                            src="/images/small-eth.webp"
+                        />
                             <span className="text-xl font-bold">
                 = {eth.data}$
               </span>
@@ -50,9 +57,6 @@ export default function EthRates() {
                         </div>
                     }
                 </div>
-
-            </button>
-
 
             </div>
 
