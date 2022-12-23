@@ -1,15 +1,6 @@
 
-import { CryptoHookFactory } from "@_types/hooks";
+import { CryptoHookFactory, NETWORKS } from "@_types/hooks";
 import useSWR from "swr";
-
-const NETWORKS: {[k: string]: string} = {
-    1: "Ethereum Main Network",
-    5: "Goerli Test Network",
-    56: "Binance Smart Chain",
-    420: "Optimism Goerli",
-    137: "Polygon",
-    1337: "Ganache",
-}
 
 const targetId = process.env.NEXT_PUBLIC_TARGET_CHAIN_ID as string;
 const targetNetwork = NETWORKS[targetId];

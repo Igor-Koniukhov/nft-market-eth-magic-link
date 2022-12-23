@@ -10,6 +10,25 @@ export type Web3Dependencies = {
     isLoading: boolean;
     magic: any;
 }
+export const NETWORKS: {[k: string]: string} = {
+    1: "Ethereum Main Network",
+    5: "Goerli Test Network",
+    56: "Binance Smart Chain",
+    420: "Optimism Goerli",
+    137: "Polygon",
+    1337: "Ganache",
+}
+
+export const NETS = {
+    1: "Ethereum Main Network",
+    5: "Goerli Test Network",
+    56: "Binance Smart Chain",
+    420: "Optimism Goerli",
+    137: "Polygon",
+    1337: "Ganache",
+}
+
+
 export type CryptoHookFactory<D=any, R= any, P=any> = {
     (d: Partial<Web3Dependencies>): CryptoHandlerHook<D, R, P>
 }

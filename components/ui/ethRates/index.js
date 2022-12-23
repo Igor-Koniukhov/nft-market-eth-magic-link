@@ -9,7 +9,6 @@ export default function EthRates() {
     const {magicWallet} = useFiatOnRamp();
 
     return (
-
             <div className="flex drop-shadow rounded-md mr-2">
             <button type="button" className="
             flex
