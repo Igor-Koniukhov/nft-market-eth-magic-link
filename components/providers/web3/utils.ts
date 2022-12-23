@@ -24,10 +24,15 @@ export const createDefaultState = () => {
     return {
         ethereum: null,
         provider: null,
+        providerOptimism: null,
+        providerPolygon: null,
         contract: null,
+        contractOptimism: null,
+        contractPolygon: null,
         isLoading: true,
         magic: null,
-        magicProvider: null,
+        magicPolygon: null,
+        magicOptimism: null,
         hooks: setupHooks({isLoading: true} as any)
     }
 }
@@ -36,23 +41,41 @@ export const createWeb3State = (
     {
         ethereum,
         provider,
+        providerOptimism,
+        providerPolygon,
         contract,
+        contractOptimism,
+        contractPolygon,
         isLoading,
         magic,
+        magicOptimism,
+        magicPolygon,
     }: Web3Dependencies) => {
     return {
         ethereum,
         provider,
+        providerOptimism,
+        providerPolygon,
         contract,
+        contractOptimism,
+        contractPolygon,
         isLoading,
         magic,
+        magicOptimism,
+        magicPolygon,
         hooks: setupHooks(
             {
                 ethereum,
                 provider,
+                providerOptimism,
+                providerPolygon,
                 contract,
+                contractOptimism,
+                contractPolygon,
                 isLoading,
                 magic,
+                magicOptimism,
+                magicPolygon,
             }
         )
     }
@@ -83,17 +106,21 @@ export const loadContract = async (
     }
 }
 
-const OptimismNodeOptions = {
+export const OptimismNodeOptions = {
     rpcUrl: "https://goerli.optimism.io",
     chainId: 420
 };
-const PolygonNodeOptions = {
-    rpcUrl: 'https://polygon-rpc.com/', // Polygon RPC URL
-    chainId: 137, // Polygon chain id
+export const PolygonNodeOptions = {
+    rpcUrl: 'https://polygon-rpc.com/',
+    chainId: 137,
 }
-export const magicConnectProvider = async () : Promise<{magic: any, provider: providers.Web3Provider}> =>{
+export const GoerliNodeOptions = 'goerli'
+
+
+export const magicConnectProvider = async (net: any) : Promise<{magic: any, provider: providers.Web3Provider}> =>{
+
     const magic = new Magic("pk_live_DE9DCFDD500A3F8D", {
-        network: 'goerli',
+        network: net,
         locale: "en_US",
         extensions: [new ConnectExtension()]
     } );
@@ -101,5 +128,6 @@ export const magicConnectProvider = async () : Promise<{magic: any, provider: pr
     const provider = new ethers.providers.Web3Provider(magic.rpcProvider as any);
     console.log(provider)
 
-  return {magic, provider};
+    return {magic, provider};
+
 }

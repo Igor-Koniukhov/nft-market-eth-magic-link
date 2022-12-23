@@ -12,7 +12,6 @@ const NftList: FunctionComponent = () => {
                     <NftItem
                         item={nft}
                         buyNft={nfts.buyNft}
-                        buyNftWithMW={nfts.buyNftWithMW}
                     />
                 </div>
             )}

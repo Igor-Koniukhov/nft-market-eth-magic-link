@@ -3,20 +3,19 @@
 import {FunctionComponent} from "react";
 import {Nft} from "../../../../types/nft";
 import {useEthPrice} from "../../../hooks/useEthPrice";
-import {useMarketData} from "../../../hooks/useMarketData";
+
 
 
 type NftItemProps = {
     item: Nft;
     buyNft: (token: number, value: number) => Promise<void>;
-    buyNftWithMW: (token: number, value: number) => Promise<void>;
 }
 
 function shortifyAddress(address: string) {
     return `0x****${address.slice(-4)}`
 }
 
-const NftItem: FunctionComponent<NftItemProps> = ({item, buyNft, buyNftWithMW}) => {
+const NftItem: FunctionComponent<NftItemProps> = ({item, buyNft}) => {
     const {eth} = useEthPrice()
 
 

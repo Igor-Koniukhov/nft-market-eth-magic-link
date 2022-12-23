@@ -1,14 +1,19 @@
-import { ethers, providers} from "ethers";
-import Web3 from "web3";
+import { providers} from "ethers";
 import {SWRResponse} from "swr";
 import {NftMarketContract} from "@_types/nftMarketContract";
 
 export type Web3Dependencies = {
-    provider: providers.Web3Provider;
-    contract: NftMarketContract;
     ethereum: providers.Web3Provider;
+    provider: providers.Web3Provider;
+    providerOptimism: providers.Web3Provider;
+    providerPolygon: providers.Web3Provider;
+    contract: NftMarketContract;
+    contractOptimism: NftMarketContract;
+    contractPolygon: NftMarketContract;
     isLoading: boolean;
     magic: any;
+    magicOptimism: any;
+    magicPolygon: any;
 }
 export const NETWORKS: {[k: string]: string} = {
     1: "Ethereum Main Network",
