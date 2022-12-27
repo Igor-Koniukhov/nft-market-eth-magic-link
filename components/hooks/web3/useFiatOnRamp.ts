@@ -41,15 +41,19 @@ export const hookFactory: FiatOnRampHookFactory = (
     )
 
 
-    const login = async () => {
-        provider?.getSigner().getAddress().then((account) => {
-            if (account) {
-                setIsLogin(true);
-            }
-        })
-            .catch((error) => {
-                console.log(error, " console error");
-            });
+    const login = async (networkName: string) => {
+        console.log(networkName)
+            provider?.getSigner().getAddress().then((account) => {
+                if (account) {
+                    setIsLogin(true);
+
+
+                }
+            })
+                .catch((error) => {
+                    console.log(error, " console error");
+                });
+
     };
 
     const showWallet = () => {
@@ -98,3 +102,6 @@ export const hookFactory: FiatOnRampHookFactory = (
         sendTransaction
     };
 }
+
+//src="https://lh3.googleusercontent.com/a/AEdFTp4gPNsg4V8zL4NTXSKsmLicx_tk6Li60L96ef9nOQ=s96-c"
+//thumbnailPhoto

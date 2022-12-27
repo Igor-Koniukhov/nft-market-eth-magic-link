@@ -5,26 +5,16 @@ import {NftMarketContract} from "@_types/nftMarketContract";
 export type Web3Dependencies = {
     ethereum: providers.Web3Provider;
     provider: providers.Web3Provider;
-    providerOptimism: providers.Web3Provider;
-    providerPolygon: providers.Web3Provider;
     contract: NftMarketContract;
-    contractOptimism: NftMarketContract;
-    contractPolygon: NftMarketContract;
     isLoading: boolean;
     magic: any;
-    magicOptimism: any;
-    magicPolygon: any;
 }
 export const NETWORKS: {[k: string]: string} = {
-    1: "Ethereum Main Network",
     5: "Goerli Test Network",
-    56: "Binance Smart Chain",
     420: "Optimism Goerli",
-    137: "Polygon",
+    80001: "Polygon",
     1337: "Ganache",
 }
-
-
 
 
 export type CryptoHookFactory<D=any, R= any, P=any> = {

@@ -3,10 +3,10 @@ import {
     createDefaultState,
     createWeb3State,
     GoerliNodeOptions,
+    PolygonNodeOptions,
+    OptimismNodeOptions,
     loadContract,
     magicConnectProvider,
-    OptimismNodeOptions,
-    PolygonNodeOptions,
     Web3State
 } from "./utils";
 import {providers} from "ethers";
@@ -33,14 +33,19 @@ const removeGlobalListeners = (ethereum: providers.Web3Provider) => {
     ethereum?.removeListener("accountsChanged", handleAccount);
 }
 
+const GoerliKey = "pk_live_DE9DCFDD500A3F8D";
+const OptimismKey = "pk_live_C0FCEEB9D164A225";
+const PolygonKey = "pk_live_9994154C6904B112";
+const NETWORK_ID = process.env.NEXT_PUBLIC_NETWORK_ID;
+
 const Web3Context = createContext<Web3State>(createDefaultState());
 
 const Web3Provider: FunctionComponent = ({children}) => {
     const [web3Api, setWeb3Api] = useState<Web3State>(createDefaultState());
 
-    const initContractInNetwork = async (network: any) => {
-        const magic = await magicConnectProvider(network);
-        const netContract = await loadContract("NftMarket", magic.provider);
+    const initContractInNetwork = async (key: string, network: any, contractName: string) => {
+        const magic = await magicConnectProvider(key, network);
+        const netContract = await loadContract(contractName, magic.provider, NETWORK_ID);
         const signerNet = magic.provider.getSigner();
         const signedContractNet = netContract.connect(signerNet);
         return {magic, signedContractNet}
@@ -49,63 +54,18 @@ const Web3Provider: FunctionComponent = ({children}) => {
     useEffect(() => {
         async function initWeb3() {
             try {
-                const goerly = initContractInNetwork(GoerliNodeOptions)
-                goerly.then(data => {
+                const web3 = initContractInNetwork(GoerliKey, GoerliNodeOptions, "NftMarket")
+                web3.then(data => {
                     setTimeout(() => setGlobalListeners(data.magic.magic.rpcProvider), 500);
                     setWeb3Api(createWeb3State({
                         ethereum: window.ethereum,
                         provider: data.magic.provider,
-                        providerPolygon: web3Api.providerPolygon,
-                        providerOptimism: web3Api.providerOptimism,
                         contract: data.signedContractNet as unknown as NftMarketContract,
-                        contractOptimism: web3Api.contractOptimism,
-                        contractPolygon: web3Api.contractPolygon,
                         isLoading: false,
                         magic: data.magic.magic,
-                        magicOptimism: web3Api.magicOptimism,
-                        magicPolygon: web3Api.magicPolygon
                     }))
 
                 })
-
-                const optimism = initContractInNetwork(OptimismNodeOptions)
-                optimism.then(data => {
-                    setTimeout(() => setGlobalListeners(data.magic.magic.rpcProvider), 500);
-                    setWeb3Api(createWeb3State({
-                        ethereum: window.ethereum,
-                        provider: web3Api.provider,
-                        providerPolygon: web3Api.providerPolygon,
-                        providerOptimism: data.magic.provider,
-                        contract: web3Api.contract,
-                        contractOptimism: data.signedContractNet as unknown as NftMarketContract,
-                        contractPolygon: web3Api.contractPolygon,
-                        isLoading: false,
-                        magic: web3Api.magic,
-                        magicOptimism: data.magic.magic,
-                        magicPolygon: web3Api.magicPolygon
-                    }))
-
-                })
-
-                const polygon = initContractInNetwork(PolygonNodeOptions)
-                polygon.then(data => {
-                    setTimeout(() => setGlobalListeners(data.magic.magic.rpcProvider), 500);
-                    setWeb3Api(createWeb3State({
-                        ethereum: window.ethereum,
-                        provider: web3Api.provider,
-                        providerPolygon: data.magic.provider,
-                        providerOptimism: web3Api.providerPolygon,
-                        contract: web3Api.contract,
-                        contractOptimism: web3Api.contractPolygon,
-                        contractPolygon: data.signedContractNet as unknown as NftMarketContract,
-                        isLoading: false,
-                        magic: web3Api.magic,
-                        magicOptimism: web3Api.magicPolygon,
-                        magicPolygon: data.magic.magic
-                    }))
-
-                })
-
 
             } catch (e) {
 

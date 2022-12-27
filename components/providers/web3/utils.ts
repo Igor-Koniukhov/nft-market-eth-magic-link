@@ -3,6 +3,7 @@ import {Web3Dependencies} from "@_types/hooks";
 import {Contract, ethers, providers} from "ethers";
 import {Magic} from "magic-sdk";
 import {ConnectExtension} from "@magic-ext/connect";
+import Web3 from "web3";
 
 declare global {
     interface Window {
@@ -41,41 +42,23 @@ export const createWeb3State = (
     {
         ethereum,
         provider,
-        providerOptimism,
-        providerPolygon,
         contract,
-        contractOptimism,
-        contractPolygon,
         isLoading,
-        magic,
-        magicOptimism,
-        magicPolygon,
+        magic
     }: Web3Dependencies) => {
     return {
         ethereum,
         provider,
-        providerOptimism,
-        providerPolygon,
         contract,
-        contractOptimism,
-        contractPolygon,
         isLoading,
         magic,
-        magicOptimism,
-        magicPolygon,
         hooks: setupHooks(
             {
                 ethereum,
                 provider,
-                providerOptimism,
-                providerPolygon,
                 contract,
-                contractOptimism,
-                contractPolygon,
                 isLoading,
-                magic,
-                magicOptimism,
-                magicPolygon,
+                magic
             }
         )
     }
@@ -85,18 +68,19 @@ const NETWORK_ID = process.env.NEXT_PUBLIC_NETWORK_ID;
 
 export const loadContract = async (
     name: string,  // NftMarket
-    provider: providers.Web3Provider
+    provider: providers.Web3Provider,
+    net_id: string
 ): Promise<Contract> => {
-    if (!NETWORK_ID) {
+    if (!net_id) {
         return Promise.reject("Network ID is not defined!");
     }
 
     const res = await fetch(`/contracts/${name}.json`);
     const Artifact = await res.json();
 
-    if (Artifact.networks[NETWORK_ID].address) {
+    if (Artifact.networks[net_id].address) {
         const contract = new ethers.Contract(
-            Artifact.networks[NETWORK_ID].address,
+            Artifact.networks[net_id].address,
             Artifact.abi,
             provider
         )
@@ -111,22 +95,22 @@ export const OptimismNodeOptions = {
     chainId: 420
 };
 export const PolygonNodeOptions = {
-    rpcUrl: 'https://polygon-rpc.com/',
-    chainId: 137,
+    rpcUrl: 'https://rpc-mumbai.maticvigil.com/"', // Polygon RPC URL
+    chainId: 80001, // Polygon chain id
 }
 export const GoerliNodeOptions = 'goerli'
 
 
-export const magicConnectProvider = async (net: any) : Promise<{magic: any, provider: providers.Web3Provider}> =>{
+export const magicConnectProvider = async (apiKey: string, net: any) : Promise<{magic: any, provider: providers.Web3Provider}> =>{
 
-    const magic = new Magic("pk_live_DE9DCFDD500A3F8D", {
+    const magic = new Magic(apiKey, {
         network: net,
         locale: "en_US",
         extensions: [new ConnectExtension()]
     } );
 
     const provider = new ethers.providers.Web3Provider(magic.rpcProvider as any);
-    console.log(provider)
+    const web3 = new Web3(magic.rpcProvider as any);
 
     return {magic, provider};
 

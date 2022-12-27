@@ -44,6 +44,32 @@ module.exports = {
             gasPrice: 35713903845,
             confirmations: 2,
             timeoutBlocks: 200
+        },
+        optimism: {
+            provider: function() {
+                return new HDWalletProvider(
+                    keys.PRIVATE_KEY_OPTIMISM,
+                    keys.INFURA_OPTIMISM_URL
+                )
+            },
+            network_id: 420,
+            gas: 5500000,
+            gasPrice: 35713903845,
+            confirmations: 2,
+            timeoutBlocks: 200
+        },
+        polygon: {
+            provider: function() {
+                return new HDWalletProvider(
+                    keys.PRIVATE_KEY_POLYGON,
+                    keys.INFURA_POLYGON_URL
+                )
+            },
+            network_id: 137,
+            gas: 5500000,
+            gasPrice: 35713903845,
+            confirmations: 2,
+            timeoutBlocks: 200
         }
     },
     compilers: {

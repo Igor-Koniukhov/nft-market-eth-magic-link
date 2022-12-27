@@ -4,6 +4,8 @@ import {MenuIcon, XIcon} from "@heroicons/react/outline";
 import {ActiveLink} from "..";
 import {useAccount, useNetwork} from "@hooks/web3";
 import Walletbar from "./Walletbar";
+import {NETWORKS} from "@_types/hooks";
+import {useState} from "react";
 
 
 const navigation = [
@@ -17,6 +19,14 @@ function classNames(...classes: string[]) {
 export default function Navbar({magicWallet}:any) {
     const {account} = useAccount();
     const {network} = useNetwork();
+    const {targetNetwork} = network
+    const [networkNameState, setNetworkName] = useState("Goerli Test Network")
+
+    const handleChangeNetwork = (e) => {
+        console.log(e.target.value, )
+        setNetworkName(e.target.selectedOptions[0].text);
+
+    }
 
     // @ts-ignore
     return (
@@ -32,9 +42,23 @@ export default function Navbar({magicWallet}:any) {
                                     alt="Workflow"
                                 />
                             </div>
+
+                            <label htmlFor="net-select">NETWORKS: </label>
+                            <br/>
+                            <select id="net-select" onChange={handleChangeNetwork}>
+                                {Object.entries(NETWORKS).map((value, index) =>
+                                    <option
+                                        key={index}
+                                        value={value[0]}
+                                       // selected={targetNetwork === value[1] ? true : false}
+
+                                    >{value[1]}</option>
+                                )}
+                            </select>
+
                             {!magicWallet.isLogin &&
                                 <button type="button" className="text-white ml-auto p-2" onClick={() => {
-                                    magicWallet.login()
+                                    magicWallet.login(networkNameState)
                                 }}>
                                     login
                                 </button>}
