@@ -1,10 +1,10 @@
-
-import { CryptoHookFactory } from "@_types/hooks";
-import { Nft } from "@_types/nft";
-import { ethers } from "ethers";
-import { useCallback } from "react";
-import { toast } from "react-toastify";
+import {CryptoHookFactory} from "@_types/hooks";
+import {Nft} from "@_types/nft";
+import {ethers} from "ethers";
+import {useCallback} from "react";
+import {toast} from "react-toastify";
 import useSWR from "swr";
+
 
 type UseListedNftsResponse = {
     buyNft: (token: number, value: number) => Promise<void>
@@ -14,7 +14,11 @@ type ListedNftsHookFactory = CryptoHookFactory<Nft[], UseListedNftsResponse>
 
 export type UseListedNftsHook = ReturnType<ListedNftsHookFactory>
 
-export const hookFactory: ListedNftsHookFactory = ({contract}) => () => {
+export const hookFactory: ListedNftsHookFactory = ({
+                                                       contract,
+                                                       provider,
+                                                       magic
+                                                   }) => (signedTransaction: string | Promise<string>) => {
     const {data, ...swr} = useSWR(
         contract ? "web3/useListedNfts" : null,
         async () => {
@@ -42,6 +46,24 @@ export const hookFactory: ListedNftsHookFactory = ({contract}) => () => {
 
     const _contract = contract;
     const buyNft = useCallback(async (tokenId: number, value: number) => {
+        const account = await provider!.getSigner().getAddress();
+        const balance = ethers.utils.formatEther(
+            await provider.getBalance(account), // Balance is in wei
+        );
+
+      const getOwner= await _contract.ownerOf(tokenId)
+        if(getOwner===account){
+            alert(`You already owner`)
+            return
+        }
+        if (balance <= value.toString()) {
+            alert(`Insufficient balance: ${balance}, Please top up on : ${value} eth` )
+            magic.connect.showWallet().catch((e: any) => {
+                console.log(e);
+            });
+
+        }
+
 
         try {
             const result = await _contract!.buyNft(
@@ -57,14 +79,16 @@ export const hookFactory: ListedNftsHookFactory = ({contract}) => () => {
                     error: "Processing error"
                 }
             );
+
         } catch (e) {
+
             console.error(e.message);
         }
     }, [_contract])
     const buyNftWithMW = useCallback(async (tokenId: number, value: number) => {
 
         try {
-            const result = await _contract!.buyNftWithMW(
+            const result = await _contract!.buyNft(
                 tokenId, {
                     value: ethers.utils.parseEther(value.toString())
                 }

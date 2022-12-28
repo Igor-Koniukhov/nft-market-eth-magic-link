@@ -2,6 +2,7 @@ import {CryptoHookFactory} from "@_types/hooks";
 import useSWR from "swr";
 import {useState} from "react";
 import {ethers} from "ethers";
+import {parseEther} from "ethers/lib/utils";
 
 
 type UseFiatOnRampResponse = {
@@ -40,20 +41,16 @@ export const hookFactory: FiatOnRampHookFactory = (
         },{}
     )
 
-
     const login = async (networkName: string) => {
         console.log(networkName)
             provider?.getSigner().getAddress().then((account) => {
                 if (account) {
                     setIsLogin(true);
-
-
                 }
             })
                 .catch((error) => {
                     console.log(error, " console error");
                 });
-
     };
 
     const showWallet = () => {
@@ -73,13 +70,16 @@ export const hookFactory: FiatOnRampHookFactory = (
     const sendTransaction = async (to, NftPrice) => {
         const signer = await provider!.getSigner();
         const account = await signer.getAddress();
-        console.log(account)
+
+
         const txnParams = {
             from: account,
             to: to,
-            value: ethers.utils.parseEther(NftPrice),
+            value: parseEther(NftPrice.toString()),
             gasPrice: ethers.utils.formatEther("30")
         };
+
+
         provider
             .sendTransaction(txnParams as any)
             .then((receipt) => {
@@ -103,5 +103,3 @@ export const hookFactory: FiatOnRampHookFactory = (
     };
 }
 
-//src="https://lh3.googleusercontent.com/a/AEdFTp4gPNsg4V8zL4NTXSKsmLicx_tk6Li60L96ef9nOQ=s96-c"
-//thumbnailPhoto

@@ -1,14 +1,16 @@
 /* eslint-disable @next/next/no-img-element */
 
-import {FunctionComponent} from "react";
+import {FunctionComponent, useEffect, useState} from "react";
 import {Nft} from "../../../../types/nft";
 import {useEthPrice} from "../../../hooks/useEthPrice";
-
+import {useWeb3} from "@providers/web3";
+import {ethers} from "ethers";
 
 
 type NftItemProps = {
     item: Nft;
     buyNft: (token: number, value: number) => Promise<void>;
+
 }
 
 function shortifyAddress(address: string) {
@@ -17,7 +19,41 @@ function shortifyAddress(address: string) {
 
 const NftItem: FunctionComponent<NftItemProps> = ({item, buyNft}) => {
     const {eth} = useEthPrice()
+    const {contract, provider} = useWeb3()
+    const [isOwner, setIsOwner] = useState(false)
+    const [balanceState, setBalanceState] = useState(null)
 
+    const defaultButtonStyle = `disabled:bg-slate-50
+    disabled:text-slate-500
+    disabled:border-slate-200
+    disabled:shadow-none
+    disabled:cursor-not-allowed
+    mx-auto  block
+    items-center
+    px-4 py-2 border
+    border-transparent
+    text-base font-medium
+    rounded-md shadow-sm    
+    hover:bg-grey-700
+    focus:outline-none
+    focus:ring-2
+    focus:ring-offset-2
+    focus:ring-yellow-500`
+
+    useEffect(() => {
+        const checkIsOwner = async () => {
+            const account = await provider!.getSigner().getAddress();
+            const owner = await contract.ownerOf(item.tokenId)
+            const balance = ethers.utils.formatEther(
+                await provider.getBalance(account), // Balance is in wei
+            );
+            setBalanceState(balance)
+            if (owner === account) {
+                setIsOwner(true)
+            }
+        }
+        checkIsOwner()
+    }, [balanceState, isOwner])
 
     return (
         <>
@@ -61,7 +97,7 @@ const NftItem: FunctionComponent<NftItemProps> = ({item, buyNft}) => {
                 <div className="flex justify-center items-center">
                     {item.price}
                     <img className="h-6" src="/images/small-eth.webp" alt="ether icon"/>
-                    =  {(item.price * eth.data).toFixed(2)} $
+                    = {(item.price * eth.data).toFixed(2)} $
                 </div>
                 <div className="overflow-hidden mb-4 flex justify-around">
                     <dl className="-mx-4 -mt-4 flex flex-wrap">
@@ -94,26 +130,12 @@ const NftItem: FunctionComponent<NftItemProps> = ({item, buyNft}) => {
                         onClick={() => {
                             buyNft(item.tokenId, item.price);
                         }}
+                        disabled={isOwner ? true : false}
                         type="button"
-                        className="disabled:bg-slate-50
-                         disabled:text-slate-500
-                         disabled:border-slate-200
-                         disabled:shadow-none
-                         disabled:cursor-not-allowed
-                         mx-auto  block
-                         items-center
-                         px-4 py-2 border
-                         border-transparent
-                         text-base font-medium
-                         rounded-md shadow-sm
-                         text-white bg-yellow-600
-                         hover:bg-grey-700
-                         focus:outline-none
-                         focus:ring-2
-                         focus:ring-offset-2
-                         focus:ring-yellow-500"
+                        className={`${defaultButtonStyle} ${isOwner ? `text-black bg-yellow-600` : `text-white bg-yellow-600`}`}
                     >
-                        Buy with MW
+                        {isOwner ? `You are owner` : `Buy with MW`}
+
                     </button>
 
 

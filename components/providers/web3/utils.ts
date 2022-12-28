@@ -110,8 +110,6 @@ export const magicConnectProvider = async (apiKey: string, net: any) : Promise<{
     } );
 
     const provider = new ethers.providers.Web3Provider(magic.rpcProvider as any);
-    const web3 = new Web3(magic.rpcProvider as any);
 
     return {magic, provider};
-
 }
