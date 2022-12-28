@@ -45,3 +45,12 @@ export const useFiatOnRamp = () => {
         magicWallet: swrRes
     }
 }
+
+export const useTransak = () => {
+    const hooks = useHooks();
+    const swrRes = hooks.useTransak();
+
+    return {
+        transakWallet: swrRes
+    }
+}

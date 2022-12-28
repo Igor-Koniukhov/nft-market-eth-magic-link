@@ -1,11 +1,9 @@
-import {ethers} from "ethers";
+
 import {Session, withIronSession} from "next-iron-session";
 import * as util from "ethereumjs-util";
 import contract from "../../public/contracts/NftMarket.json";
 import {NextApiRequest, NextApiResponse} from "next";
-import {NftMarketContract} from "@_types/nftMarketContract";
-import {Blob, NFTStorage, File} from "nft.storage";
-import * as fs from "fs";
+
 
 const NETWORKS = {
     "1337": "Ganache",
@@ -17,6 +15,9 @@ const targetNetwork = process.env.NEXT_PUBLIC_NETWORK_ID as keyof NETWORK;
 export const contractAddress = contract["networks"][targetNetwork]["address"];
 export const pinataApiKey = process.env.PINATA_API_KEY as string;
 export const pinataSecretApiKey = process.env.PINATA_SECRET_API_KEY as string;
+export const transakApiKey = process.env.TRANSAK_API_KEY as string;
+export const envTransak = process.env.TRANSAK_ENV as string;
+
 
 export function withSession(handler: any) {
     return withIronSession(handler, {

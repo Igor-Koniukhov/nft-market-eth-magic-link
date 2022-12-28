@@ -3,7 +3,6 @@ import {Web3Dependencies} from "@_types/hooks";
 import {Contract, ethers, providers} from "ethers";
 import {Magic} from "magic-sdk";
 import {ConnectExtension} from "@magic-ext/connect";
-import Web3 from "web3";
 
 declare global {
     interface Window {

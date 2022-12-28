@@ -23,7 +23,10 @@
       "@providers": ["components/providers"],
       "@providers/*": ["components/providers/*"],
       "@hooks": ["components/hooks"],
-      "@hooks/*": ["components/hooks/*"]
+      "@hooks/*": ["components/hooks/*"],
+      "@api": ["pages/api"],
+      "@api/*": ["pages/api/*"],
+
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],

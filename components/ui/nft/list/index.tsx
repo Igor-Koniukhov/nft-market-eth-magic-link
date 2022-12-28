@@ -1,11 +1,12 @@
 import {FunctionComponent} from "react";
 import NftItem from "../item";
-import {useListedNfts} from "@hooks/web3";
+import {useListedNfts, useTransak} from "@hooks/web3";
 
 
 
 const NftList: FunctionComponent = () => {
     const {nfts} = useListedNfts();
+    const{transakWallet}=useTransak()
 
     return (
         <div className="mt-12 max-w-lg mx-auto grid gap-5 lg:grid-cols-3 lg:max-w-none">
@@ -14,6 +15,7 @@ const NftList: FunctionComponent = () => {
                     <NftItem
                         item={nft}
                         buyNft={nfts.buyNft}
+                        transakWallet={transakWallet.showTransakWallet}
                     />
                 </div>
             )}

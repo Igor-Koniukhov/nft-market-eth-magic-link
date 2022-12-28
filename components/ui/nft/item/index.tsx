@@ -5,11 +5,22 @@ import {Nft} from "../../../../types/nft";
 import {useEthPrice} from "../../../hooks/useEthPrice";
 import {useWeb3} from "@providers/web3";
 import {ethers} from "ethers";
+import  keys  from "../../../../keys.json";
+
 
 
 type NftItemProps = {
     item: Nft;
     buyNft: (token: number, value: number) => Promise<void>;
+    transakWallet: (
+        cryptoCurrency: string,
+        fiatValue: string,
+        address: string,
+        fiatCurrency: string,
+        customersEmail: string,
+        apiKey: string,
+        env: string,
+    ) => Promise<void>;
 
 }
 
@@ -17,10 +28,11 @@ function shortifyAddress(address: string) {
     return `0x****${address.slice(-4)}`
 }
 
-const NftItem: FunctionComponent<NftItemProps> = ({item, buyNft}) => {
+const NftItem: FunctionComponent<NftItemProps> = ({item, buyNft, transakWallet}) => {
     const {eth} = useEthPrice()
     const {contract, provider} = useWeb3()
     const [isOwner, setIsOwner] = useState(false)
+    const [ownerAddress, setOwnerAddress]=useState(null)
     const [balanceState, setBalanceState] = useState(null)
 
     const defaultButtonStyle = `disabled:bg-slate-50
@@ -44,6 +56,7 @@ const NftItem: FunctionComponent<NftItemProps> = ({item, buyNft}) => {
         const checkIsOwner = async () => {
             const account = await provider!.getSigner().getAddress();
             const owner = await contract.ownerOf(item.tokenId)
+            setOwnerAddress(owner)
             const balance = ethers.utils.formatEther(
                 await provider.getBalance(account), // Balance is in wei
             );
@@ -135,6 +148,25 @@ const NftItem: FunctionComponent<NftItemProps> = ({item, buyNft}) => {
                         className={`${defaultButtonStyle} ${isOwner ? `text-black bg-yellow-600` : `text-white bg-yellow-600`}`}
                     >
                         {isOwner ? `You are owner` : `Buy with MW`}
+
+                    </button>
+                    <button
+                        onClick={() => {
+                            transakWallet(
+                                'GoerliETH',
+                                `${(item.price * eth.data).toFixed(2)}`,
+                                `${ownerAddress}`,
+                                'USD',
+                                'ikoniukhov@gmail.com',
+                                `${keys.TRANSAK_API_KEY}`,
+                                `${keys.TRANSAK_ENV}`
+                                );
+                        }}
+                        disabled={isOwner ? true : false}
+                        type="button"
+                        className={`${defaultButtonStyle} ${isOwner ? `text-black bg-yellow-600` : `text-white bg-yellow-600`}`}
+                    >
+                        {isOwner ? `You are owner` : `Buy with TW`}
 
                     </button>
 

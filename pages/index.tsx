@@ -16,16 +16,13 @@ const Home: NextPage = () => {
 
     useEffect(() => {
         const checkIsOwner = async () => {
-            if (isConnected){
+            if (isConnected) {
                 const account = await provider!.getSigner().getAddress();
-
                 const balance = ethers.utils.formatEther(
                     await provider!.getBalance(account), // Balance is in wei
                 );
                 setBalanceState(balance)
             }
-
-
         }
         checkIsOwner()
     }, [isConnected])
