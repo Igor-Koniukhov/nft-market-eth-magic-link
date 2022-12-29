@@ -7,6 +7,9 @@ import {useWeb3} from "@providers/web3";
 import {ethers} from "ethers";
 import  keys  from "../../../../keys.json";
 
+const transakApiKey = process.env.TRANSAK_API_KEY
+const transakEnv= process.env.TRANSAK_ENV
+
 
 
 type NftItemProps = {
@@ -20,6 +23,8 @@ type NftItemProps = {
         customersEmail: string,
         apiKey: string,
         env: string,
+        tokenId: number,
+        value: number
     ) => Promise<void>;
 
 }
@@ -32,8 +37,9 @@ const NftItem: FunctionComponent<NftItemProps> = ({item, buyNft, transakWallet})
     const {eth} = useEthPrice()
     const {contract, provider} = useWeb3()
     const [isOwner, setIsOwner] = useState(false)
-    const [ownerAddress, setOwnerAddress]=useState(null)
+    const [addressState, setAddress]=useState(null)
     const [balanceState, setBalanceState] = useState(null)
+
 
     const defaultButtonStyle = `disabled:bg-slate-50
     disabled:text-slate-500
@@ -56,7 +62,7 @@ const NftItem: FunctionComponent<NftItemProps> = ({item, buyNft, transakWallet})
         const checkIsOwner = async () => {
             const account = await provider!.getSigner().getAddress();
             const owner = await contract.ownerOf(item.tokenId)
-            setOwnerAddress(owner)
+            setAddress(account)
             const balance = ethers.utils.formatEther(
                 await provider.getBalance(account), // Balance is in wei
             );
@@ -155,11 +161,13 @@ const NftItem: FunctionComponent<NftItemProps> = ({item, buyNft, transakWallet})
                             transakWallet(
                                 'GoerliETH',
                                 `${(item.price * eth.data).toFixed(2)}`,
-                                `${ownerAddress}`,
+                                `${addressState}`,
                                 'USD',
                                 'ikoniukhov@gmail.com',
                                 `${keys.TRANSAK_API_KEY}`,
-                                `${keys.TRANSAK_ENV}`
+                                `${keys.TRANSAK_ENV}`,
+                                item.tokenId,
+                                item.price
                                 );
                         }}
                         disabled={isOwner ? true : false}
