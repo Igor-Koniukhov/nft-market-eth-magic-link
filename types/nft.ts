@@ -1,4 +1,3 @@
-import {Blob, File} from "nft.storage";
 export type Trait = "fury" | "scary";
 
 export type NftAttribute = {
