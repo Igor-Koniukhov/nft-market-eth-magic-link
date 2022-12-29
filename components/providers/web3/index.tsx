@@ -3,8 +3,6 @@ import {
     createDefaultState,
     createWeb3State,
     GoerliNodeOptions,
-    PolygonNodeOptions,
-    OptimismNodeOptions,
     loadContract,
     magicConnectProvider,
     Web3State
@@ -37,12 +35,10 @@ const GoerliKey = "pk_live_DE9DCFDD500A3F8D";
 const OptimismKey = "pk_live_C0FCEEB9D164A225";
 const PolygonKey = "pk_live_9994154C6904B112";
 const NETWORK_ID = process.env.NEXT_PUBLIC_NETWORK_ID;
-
 const Web3Context = createContext<Web3State>(createDefaultState());
 
 const Web3Provider: FunctionComponent = ({children}) => {
     const [web3Api, setWeb3Api] = useState<Web3State>(createDefaultState());
-
     const initContractInNetwork = async (key: string, network: any, contractName: string) => {
         const magic = await magicConnectProvider(key, network);
         const netContract = await loadContract(contractName, magic.provider, NETWORK_ID);
@@ -99,7 +95,6 @@ export function useHooks() {
 }
 
 export default Web3Provider;
-
 
 
 

@@ -1,7 +1,7 @@
 import {v4 as uuidv4} from "uuid";
 import {Session} from "next-iron-session";
 import {NextApiRequest, NextApiResponse} from "next";
-import {addressCheckMiddleware, contractAddress, pinataApiKey, pinataSecretApiKey, withSession} from "./utils";
+import {addressCheckMiddleware, contractAddress, pinataApiKey, pinataSecretApiKey, transakApiKey, withSession} from "./utils";
 import {NftMeta} from "@_types/nft";
 import axios from "axios";
 
@@ -14,7 +14,6 @@ export default withSession(async (req: NextApiRequest & { session: Session }, re
                 return res.status(422).send("All fields of the form should be filed!")
             }
             await addressCheckMiddleware(req, res);
-
             const jsonRes = await axios.post('https://api.pinata.cloud/pinning/pinJSONToIPFS', {
                 pinataMetadata: {
                     name: uuidv4()

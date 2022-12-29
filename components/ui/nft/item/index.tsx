@@ -1,15 +1,13 @@
 /* eslint-disable @next/next/no-img-element */
 
-import {FunctionComponent, useEffect, useState} from "react";
+import React, {FunctionComponent, useEffect, useState} from "react";
 import {Nft} from "../../../../types/nft";
 import {useEthPrice} from "../../../hooks/useEthPrice";
 import {useWeb3} from "@providers/web3";
 import {ethers} from "ethers";
-import  keys  from "../../../../keys.json";
 
-const transakApiKey = process.env.TRANSAK_API_KEY
-const transakEnv= process.env.TRANSAK_ENV
-
+const TRANSAK_API_KEY = process.env.NEXT_PUBLIC_TRANSAK_API_KEY;
+const TRANSAK_ENV = process.env.NEXT_PUBLIC_TRANSAK_ENV;
 
 
 type NftItemProps = {
@@ -33,13 +31,14 @@ function shortifyAddress(address: string) {
     return `0x****${address.slice(-4)}`
 }
 
+
+
 const NftItem: FunctionComponent<NftItemProps> = ({item, buyNft, transakWallet}) => {
     const {eth} = useEthPrice()
     const {contract, provider} = useWeb3()
     const [isOwner, setIsOwner] = useState(false)
     const [addressState, setAddress]=useState(null)
     const [balanceState, setBalanceState] = useState(null)
-
 
     const defaultButtonStyle = `disabled:bg-slate-50
     disabled:text-slate-500
@@ -164,8 +163,8 @@ const NftItem: FunctionComponent<NftItemProps> = ({item, buyNft, transakWallet})
                                 `${addressState}`,
                                 'USD',
                                 'ikoniukhov@gmail.com',
-                                `${keys.TRANSAK_API_KEY}`,
-                                `${keys.TRANSAK_ENV}`,
+                                `${TRANSAK_API_KEY}`,
+                                `${TRANSAK_ENV}`,
                                 item.tokenId,
                                 item.price
                                 );

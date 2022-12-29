@@ -1,4 +1,3 @@
-
 import {Session, withIronSession} from "next-iron-session";
 import * as util from "ethereumjs-util";
 import contract from "../../public/contracts/NftMarket.json";
@@ -15,8 +14,6 @@ const targetNetwork = process.env.NEXT_PUBLIC_NETWORK_ID as keyof NETWORK;
 export const contractAddress = contract["networks"][targetNetwork]["address"];
 export const pinataApiKey = process.env.PINATA_API_KEY as string;
 export const pinataSecretApiKey = process.env.PINATA_SECRET_API_KEY as string;
-export const transakApiKey = process.env.TRANSAK_API_KEY as string;
-export const envTransak = process.env.TRANSAK_ENV as string;
 
 
 export function withSession(handler: any) {
@@ -29,6 +26,12 @@ export function withSession(handler: any) {
     })
 }
 
+export const getTransakKey = async () => {
+    return {
+        transakApiKey: process.env.TRANSAK_API_KEY as string,
+        envTransak: process.env.TRANSAK_ENV as string,
+    }
+}
 
 
 export const addressCheckMiddleware = async (
@@ -49,12 +52,8 @@ export const addressCheckMiddleware = async (
 
         const pubKey = util.ecrecover(util.toBuffer(nonce), v, r, s);
 
-
         const addrBuffer = util.pubToAddress(pubKey);
         const address = util.bufferToHex(addrBuffer);
-
-        console.log(address, " address")
-        console.log(req.body.address.toLowerCase(), " address from body req")
 
 
         if (address === req.body.address.toLowerCase()) {

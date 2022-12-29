@@ -3,13 +3,14 @@ import type { NextPage } from "next";
 import { BaseLayout } from "@ui";
 import {Nft} from "@_types/nft";
 import {useOwnedNfts} from "@hooks/web3";
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 
 const tabs = [{ name: "Your Collection", href: "#", current: true }];
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
+
 
 const Profile: NextPage = () => {
   const {nfts}=useOwnedNfts();

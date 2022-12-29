@@ -6,8 +6,12 @@ import Footer from "../footer/Footer";
 
 
 
+
 interface Props {
-  children: React.ReactNode;}
+  children: React.ReactNode;
+}
+
+
 const BaseLayout: FunctionComponent<Props> = ({ children }) => {
   const {magicWallet} = useFiatOnRamp();
   return (

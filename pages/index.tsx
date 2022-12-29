@@ -8,6 +8,7 @@ import {useEffect, useState} from "react";
 import {ethers} from "ethers";
 
 
+
 const Home: NextPage = () => {
     const {network} = useNetwork();
     const isConnected = network.isConnectedToNetwork

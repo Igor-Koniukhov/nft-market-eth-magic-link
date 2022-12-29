@@ -4,9 +4,12 @@ import {Contract, ethers, providers} from "ethers";
 import {Magic} from "magic-sdk";
 import {ConnectExtension} from "@magic-ext/connect";
 
+
+
 declare global {
     interface Window {
         ethereum: providers.Web3Provider;
+
     }
 }
 
