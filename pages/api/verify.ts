@@ -1,7 +1,7 @@
 import {v4 as uuidv4} from "uuid";
 import {Session} from "next-iron-session";
 import {NextApiRequest, NextApiResponse} from "next";
-import {addressCheckMiddleware, contractAddress, pinataApiKey, pinataSecretApiKey, transakApiKey, withSession} from "./utils";
+import {addressCheckMiddleware, contractAddress, pinataApiKey, pinataSecretApiKey, withSession} from "./utils";
 import {NftMeta} from "@_types/nft";
 import axios from "axios";
 

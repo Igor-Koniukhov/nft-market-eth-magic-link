@@ -26,12 +26,6 @@ export function withSession(handler: any) {
     })
 }
 
-export const getTransakKey = async () => {
-    return {
-        transakApiKey: process.env.TRANSAK_API_KEY as string,
-        envTransak: process.env.TRANSAK_ENV as string,
-    }
-}
 
 
 export const addressCheckMiddleware = async (
