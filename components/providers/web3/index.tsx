@@ -31,10 +31,9 @@ const removeGlobalListeners = (ethereum: providers.Web3Provider) => {
     ethereum?.removeListener("accountsChanged", handleAccount);
 }
 
-const GoerliKey = "pk_live_DE9DCFDD500A3F8D";
-const OptimismKey = "pk_live_C0FCEEB9D164A225";
-const PolygonKey = "pk_live_9994154C6904B112";
+
 const NETWORK_ID = process.env.NEXT_PUBLIC_NETWORK_ID;
+const MAGIK_PK_FOR_GOERLI_NET = process.env.NEXT_PUBLIC_MAGIK_PK_FOR_GOERLI_NET;
 const Web3Context = createContext<Web3State>(createDefaultState());
 
 const Web3Provider: FunctionComponent = ({children}) => {
@@ -50,7 +49,7 @@ const Web3Provider: FunctionComponent = ({children}) => {
     useEffect(() => {
         async function initWeb3() {
             try {
-                const web3 = initContractInNetwork(GoerliKey, GoerliNodeOptions, "NftMarket")
+                const web3 = initContractInNetwork(MAGIK_PK_FOR_GOERLI_NET, GoerliNodeOptions, "NftMarket")
                 web3.then(data => {
                     setTimeout(() => setGlobalListeners(data.magic.magic.rpcProvider), 500);
                     setWeb3Api(createWeb3State({

@@ -19,6 +19,7 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 ### Building frontend part of the app:
 - [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 - [Magic.link](https://magic.link/) - is a developer SDK that integrates with your application to enable passwordless Web3 onboarding (no seed phrases) and authentication using magic links.
+- [Transak](https://docs.transak.com/docs) - implemented in the project for buying Nft's "in one click" with fiats. [How get API key](https://docs.transak.com/docs/partner-faqs) 
   In that project used [Magic Connect](https://magic.link/connect) - Magic Connect is a fully-featured, global web3 wallet.
 - [SWR React Hooks for Data Fetching](https://swr.vercel.app/). With SWR components will get a stream of data updates constantly and automatically.
   And the UI will be always fast and reactive. The name “SWR” is derived from stale-while-revalidate, a HTTP cache invalidation strategy popularized by HTTP RFC 5861.
