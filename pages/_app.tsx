@@ -7,8 +7,10 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {Provider} from "react-redux";
 
+
 // @ts-ignore
 function MyApp({ Component, pageProps }: React.Component) {
+
 
 
     return (

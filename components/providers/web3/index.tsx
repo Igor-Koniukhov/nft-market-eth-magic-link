@@ -2,7 +2,6 @@ import {createContext, FunctionComponent, useContext, useEffect, useState} from 
 import {
     createDefaultState,
     createWeb3State,
-    GoerliNodeOptions,
     GoerliOptionNode,
     loadContract,
     magicConnectProvider,
@@ -10,7 +9,6 @@ import {
 } from "./utils";
 import {providers} from "ethers";
 import {NftMarketContract} from "@_types/nftMarketContract";
-import {wrapper} from "../../../store/store";
 
 const pageReload = () => {
     window.location.reload();
