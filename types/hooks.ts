@@ -13,7 +13,6 @@ export const NETWORKS: {[k: string]: string} = {
     5: "Goerli Test Network",
     420: "Optimism Goerli",
     80001: "Polygon",
-    1337: "Ganache",
 }
 
 

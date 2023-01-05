@@ -6,6 +6,8 @@ import {useAccount, useNetwork} from "@hooks/web3";
 import Walletbar from "./Walletbar";
 import {NETWORKS} from "@_types/hooks";
 import {useState} from "react";
+import {useDispatch, useSelector} from "react-redux";
+import {selectNameNetwork, setNameNetwork} from "../../../store/slices/networkSlice";
 
 
 const navigation = [
@@ -14,16 +16,22 @@ const navigation = [
 ];
 
 function classNames(...classes: string[]) {
-    return classes.filter(Boolean).join(" ");}
+    return classes.filter(Boolean).join(" ");
+}
 
-export default function Navbar({magicWallet}:any) {
+export default function Navbar({magicWallet}: any) {
     const {account} = useAccount();
     const {network} = useNetwork();
     const {targetNetwork} = network
     const [networkNameState, setNetworkName] = useState("Goerli Test Network")
+    const dispatch = useDispatch();
+    const networkName = useSelector(selectNameNetwork);
 
     const handleChangeNetwork = (e) => {
-        console.log(e.target.value, )
+        e.preventDefault()
+        dispatch(
+            setNameNetwork(e.target.selectedOptions[0].text )
+        )
         setNetworkName(e.target.selectedOptions[0].text);
 
     }
@@ -50,7 +58,7 @@ export default function Navbar({magicWallet}:any) {
                                     <option
                                         key={index}
                                         value={value[0]}
-                                       // selected={targetNetwork === value[1] ? true : false}
+                                        // selected={targetNetwork === value[1] ? true : false}
 
                                     >{value[1]}</option>
                                 )}
@@ -127,7 +135,7 @@ export default function Navbar({magicWallet}:any) {
                           {network.isLoading ?
                               "..." :
                               account.isInstalled ?
-                                  network.data :
+                                  networkName :
                                   "<- Install "
                           }
                       </button>

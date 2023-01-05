@@ -1,14 +1,18 @@
-import {createContext, FunctionComponent, ReactElement, ReactNode, useContext, useEffect, useState} from "react"
+import {createContext, FunctionComponent, useContext, useEffect, useState} from "react"
 import {
     createDefaultState,
     createWeb3State,
     GoerliOptionNode,
     loadContract,
     magicConnectProvider,
+    OptimismNodeOptions,
+    PolygonNodeOptions,
     Web3State
 } from "./utils";
 import {providers} from "ethers";
 import {NftMarketContract} from "@_types/nftMarketContract";
+import {useSelector} from "react-redux";
+import {selectNameNetwork} from "../../../store/slices/networkSlice";
 
 
 const pageReload = () => {
@@ -37,8 +41,11 @@ const NETWORK_ID = process.env.NEXT_PUBLIC_NETWORK_ID;
 const MAGIK_PK_FOR_GOERLI_NET = process.env.NEXT_PUBLIC_MAGIK_PK_FOR_GOERLI_NET;
 const Web3Context = createContext<Web3State>(createDefaultState());
 
+
 const Web3Provider: FunctionComponent<any> = ({children}) => {
+
     const [web3Api, setWeb3Api] = useState<Web3State>(createDefaultState());
+    const [netNameState, setNetNameState]=useState(GoerliOptionNode)
     const initContractInNetwork = async (key: string, network: any, contractName: string) => {
         const magic = await magicConnectProvider(key, network);
         console.log(magic, " this is magic")
@@ -47,11 +54,45 @@ const Web3Provider: FunctionComponent<any> = ({children}) => {
         const signedContractNet = netContract.connect(signerNet);
         return {magic, signedContractNet}
     }
+    let networkName = useSelector(selectNameNetwork);
+    useEffect(() => {
+        let isLoad = false;
+        if (!isLoad){
+            const switchNetworkName = () => {
+
+                switch (networkName) {
+                    case 'Optimism Goerli':
+                        setNetNameState(OptimismNodeOptions);
+                        break;
+                    case 'Polygon':
+                        setNetNameState(PolygonNodeOptions)
+                        break
+
+                    case 'Goerli Test Network':
+                        setNetNameState(GoerliOptionNode);
+                        break;
+                }
+            }
+            switchNetworkName();
+        }
+        return ()=>{
+            isLoad=false;
+        }
+
+    }, [networkName]);
+
+
+
+console.log(netNameState)
+
 
     useEffect(() => {
+        let isLoad = false
+
+
         async function initWeb3() {
             try {
-                const web3 = initContractInNetwork(MAGIK_PK_FOR_GOERLI_NET, GoerliOptionNode, "NftMarket")
+                const web3 = initContractInNetwork(MAGIK_PK_FOR_GOERLI_NET, netNameState, "NftMarket")
                 web3.then(data => {
                     setTimeout(() => setGlobalListeners(data.magic.magic.rpcProvider), 500);
                     setWeb3Api(createWeb3State({
@@ -75,9 +116,14 @@ const Web3Provider: FunctionComponent<any> = ({children}) => {
             }
         }
 
-        initWeb3();
-        return () => removeGlobalListeners(window.ethereum);
-    }, [])
+            initWeb3();
+
+
+        return () => {
+            removeGlobalListeners(window.ethereum);
+
+        }
+    }, [netNameState])
 
     return (
         <Web3Context.Provider value={web3Api}>

@@ -95,7 +95,7 @@ export const OptimismNodeOptions = {
     chainId: 420
 };
 export const PolygonNodeOptions = {
-    rpcUrl: 'https://rpc-mumbai.maticvigil.com/"', // Polygon RPC URL
+    rpcUrl: 'https://rpc-mumbai.maticvigil.com/', // Polygon RPC URL
     chainId: 80001, // Polygon chain id
 }
 

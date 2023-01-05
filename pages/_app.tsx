@@ -1,30 +1,29 @@
 import "../styles/globals.css";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import React from "react";
-import { Web3Provider} from "@providers";
+import {Web3Provider} from "@providers";
 import {wrapper} from "../store/store";
-import { ToastContainer } from 'react-toastify';
+import {ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {Provider} from "react-redux";
 
 
-// @ts-ignore
-function MyApp({ Component, pageProps }: React.Component) {
-
-
+function MyApp({Component, ...rest}) {
+    console.log(wrapper)
+    let {store, props} = wrapper.useWrappedStore(rest)
+    const {pageProps} = props;
 
     return (
-    <React.Fragment>
-        <ToastContainer/>
+        <React.Fragment>
+            <ToastContainer/>
+            <Provider store={store}>
             <Web3Provider>
-
-                <Component {...pageProps} />
-
+                    <Component {...pageProps} />
             </Web3Provider>
+            </Provider>
 
-
-    </React.Fragment>
-  );
+        </React.Fragment>
+    );
 }
 
 export default MyApp;
