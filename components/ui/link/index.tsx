@@ -20,7 +20,7 @@ const ActiveLink: FunctionComponent<LinkProps> = ({children, ...props}) => {
   }
 
   return (
-    <Link {...props}>
+    <Link {...props} legacyBehavior>
       {
         React.cloneElement(children, {className})
       }

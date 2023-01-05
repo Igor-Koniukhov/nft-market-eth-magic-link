@@ -1,4 +1,4 @@
-import {createContext, FunctionComponent, useContext, useEffect, useState} from "react"
+import {createContext, FunctionComponent, ReactElement, ReactNode, useContext, useEffect, useState} from "react"
 import {
     createDefaultState,
     createWeb3State,
@@ -9,6 +9,7 @@ import {
 } from "./utils";
 import {providers} from "ethers";
 import {NftMarketContract} from "@_types/nftMarketContract";
+
 
 const pageReload = () => {
     window.location.reload();
@@ -36,7 +37,7 @@ const NETWORK_ID = process.env.NEXT_PUBLIC_NETWORK_ID;
 const MAGIK_PK_FOR_GOERLI_NET = process.env.NEXT_PUBLIC_MAGIK_PK_FOR_GOERLI_NET;
 const Web3Context = createContext<Web3State>(createDefaultState());
 
-const Web3Provider: FunctionComponent = ({children}) => {
+const Web3Provider: FunctionComponent<any> = ({children}) => {
     const [web3Api, setWeb3Api] = useState<Web3State>(createDefaultState());
     const initContractInNetwork = async (key: string, network: any, contractName: string) => {
         const magic = await magicConnectProvider(key, network);
