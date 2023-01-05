@@ -6,6 +6,7 @@ type UseAccountResponse = {
     connect: () => void;
     isLoading: boolean;
     isInstalled: boolean;
+
 }
 
 type AccountHookFactory = CryptoHookFactory<string, UseAccountResponse>
@@ -18,7 +19,7 @@ export const hookFactory: AccountHookFactory = (
         ethereum,
         isLoading
     }
-    ) => () => {
+) => () => {
 
     const {
         data,
@@ -62,11 +63,12 @@ export const hookFactory: AccountHookFactory = (
         console.log(ethereum, " this is ethereum on connect")
         try {
 
-           // ethereum?._sdk_access_field_descriptors.request({method: "eth_requestAccounts"});
+            // ethereum?.request({method: "eth_requestAccounts"});
         } catch (e) {
             console.error(e);
         }
     }
+
 
     return {
         ...swr,
@@ -75,6 +77,6 @@ export const hookFactory: AccountHookFactory = (
         isLoading: isLoading as boolean,
         isInstalled: true,
         mutate,
-       connect
+        connect,
     };
 }

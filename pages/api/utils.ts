@@ -45,6 +45,7 @@ export const addressCheckMiddleware = async (
         const {v, r, s} = util.fromRpcSig(req.body.signature);
 
         const pubKey = util.ecrecover(util.toBuffer(nonce), v, r, s);
+        console.log(util.bufferToHex(pubKey), " this is pub key")
 
         const addrBuffer = util.pubToAddress(pubKey);
         const address = util.bufferToHex(addrBuffer);

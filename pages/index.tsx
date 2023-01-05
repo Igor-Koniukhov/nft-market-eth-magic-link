@@ -1,24 +1,32 @@
 /* eslint-disable @next/next/no-img-element */
 import type {NextPage} from 'next';
 import {BaseLayout, EthRates, NftList} from '@ui';
-import {useNetwork} from '@hooks/web3';
+import {useAccount, useNetwork} from '@hooks/web3';
 import {ExclamationIcon} from '@heroicons/react/solid';
 import {useWeb3} from "@providers/web3";
 import {useEffect, useState} from "react";
 import {ethers} from "ethers";
+import {useSelector} from "react-redux";
+import {setIsNetwork} from "../store/slice/networkSlice";
+
 
 
 
 const Home: NextPage = () => {
     const {network} = useNetwork();
+    const {account} =useAccount();
     const isConnected = network.isConnectedToNetwork
     const {provider} = useWeb3()
     const [balanceState, setBalanceState] = useState(null)
 
+
+
     useEffect(() => {
+
         const checkIsOwner = async () => {
-            if (isConnected) {
+            if ( isConnected) {
                 const account = await provider!.getSigner().getAddress();
+
                 const balance = ethers.utils.formatEther(
                     await provider!.getBalance(account), // Balance is in wei
                 );
@@ -26,6 +34,7 @@ const Home: NextPage = () => {
             }
         }
         checkIsOwner()
+
     }, [isConnected])
 
 
@@ -33,6 +42,7 @@ const Home: NextPage = () => {
         <BaseLayout>
             <h3> Your balance: </h3>
             <h4>{balanceState} Eth</h4>
+
             <div className="relative bg-gray-50 pt-16 pb-20 px-4 sm:px-6 lg:pt-24 lg:pb-28 lg:px-8">
                 <EthRates/>
                 <div className="relative">

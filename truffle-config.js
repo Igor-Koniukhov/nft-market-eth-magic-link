@@ -5,6 +5,7 @@ const keys = require("./keys.json");
 
 const HDWalletProvider = require('@truffle/hdwallet-provider');
 
+
 module.exports = {
     contracts_build_directory: "./public/contracts",
     networks: {
@@ -45,6 +46,7 @@ module.exports = {
             confirmations: 2,
             timeoutBlocks: 200
         },
+
         optimism: {
             provider: function() {
                 return new HDWalletProvider(
@@ -67,7 +69,7 @@ module.exports = {
             },
             network_id: 137,
             gas: 5500000,
-            gasPrice: 35713903845,
+            gasPrice: 35013903845,
             confirmations: 2,
             timeoutBlocks: 200
         }

@@ -5,7 +5,6 @@ import {Magic} from "magic-sdk";
 import {ConnectExtension} from "@magic-ext/connect";
 
 
-
 declare global {
     interface Window {
         ethereum: providers.Web3Provider;
@@ -22,20 +21,19 @@ export type Web3State = {
     hooks: Web3Hooks;
 } & Nullable<Web3Dependencies>
 
+export type NetworkState = {
+    isNetwork: boolean;
+    networkName: string;
+    networkId: string;
+}
 
 export const createDefaultState = () => {
     return {
         ethereum: null,
         provider: null,
-        providerOptimism: null,
-        providerPolygon: null,
         contract: null,
-        contractOptimism: null,
-        contractPolygon: null,
         isLoading: true,
         magic: null,
-        magicPolygon: null,
-        magicOptimism: null,
         hooks: setupHooks({isLoading: true} as any)
     }
 }
@@ -100,16 +98,23 @@ export const PolygonNodeOptions = {
     rpcUrl: 'https://rpc-mumbai.maticvigil.com/"', // Polygon RPC URL
     chainId: 80001, // Polygon chain id
 }
-export const GoerliNodeOptions = 'goerli'
 
 
-export const magicConnectProvider = async (apiKey: string, net: any) : Promise<{magic: any, provider: providers.Web3Provider}> =>{
+export const GoerliOptionNode = {
+    rpcUrl: "https://rpc.ankr.com/eth_goerli",
+    chainId: 5
+};
+
+export const GoerliNodeOptions = 'eth'
+
+
+export const magicConnectProvider = async (apiKey: string, net: any): Promise<{ magic: any, provider: providers.Web3Provider }> => {
 
     const magic = new Magic(apiKey, {
         network: net,
         locale: "en_US",
         extensions: [new ConnectExtension()]
-    } );
+    });
 
     const provider = new ethers.providers.Web3Provider(magic.rpcProvider as any);
 

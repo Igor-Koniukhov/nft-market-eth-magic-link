@@ -3,12 +3,14 @@ import {
     createDefaultState,
     createWeb3State,
     GoerliNodeOptions,
+    GoerliOptionNode,
     loadContract,
     magicConnectProvider,
     Web3State
 } from "./utils";
 import {providers} from "ethers";
 import {NftMarketContract} from "@_types/nftMarketContract";
+import {wrapper} from "../../../store/store";
 
 const pageReload = () => {
     window.location.reload();
@@ -40,6 +42,7 @@ const Web3Provider: FunctionComponent = ({children}) => {
     const [web3Api, setWeb3Api] = useState<Web3State>(createDefaultState());
     const initContractInNetwork = async (key: string, network: any, contractName: string) => {
         const magic = await magicConnectProvider(key, network);
+        console.log(magic, " this is magic")
         const netContract = await loadContract(contractName, magic.provider, NETWORK_ID);
         const signerNet = magic.provider.getSigner();
         const signedContractNet = netContract.connect(signerNet);
@@ -49,7 +52,7 @@ const Web3Provider: FunctionComponent = ({children}) => {
     useEffect(() => {
         async function initWeb3() {
             try {
-                const web3 = initContractInNetwork(MAGIK_PK_FOR_GOERLI_NET, GoerliNodeOptions, "NftMarket")
+                const web3 = initContractInNetwork(MAGIK_PK_FOR_GOERLI_NET, GoerliOptionNode, "NftMarket")
                 web3.then(data => {
                     setTimeout(() => setGlobalListeners(data.magic.magic.rpcProvider), 500);
                     setWeb3Api(createWeb3State({

@@ -58,19 +58,27 @@ const NftItem: FunctionComponent<NftItemProps> = ({item, buyNft, transakWallet})
     focus:ring-yellow-500`
 
     useEffect(() => {
-        const checkIsOwner = async () => {
-            const account = await provider!.getSigner().getAddress();
-            const owner = await contract.ownerOf(item.tokenId)
-            setAddress(account)
-            const balance = ethers.utils.formatEther(
-                await provider.getBalance(account), // Balance is in wei
-            );
-            setBalanceState(balance)
-            if (owner === account) {
-                setIsOwner(true)
+        let isBalanceSet = false
+        if(!isBalanceSet){
+            const checkIsOwner = async () => {
+                const account = await provider!.getSigner().getAddress();
+                const owner = await contract.ownerOf(item.tokenId)
+                setAddress(account)
+                const balance = ethers.utils.formatEther(
+                    await provider.getBalance(account), // Balance is in wei
+                );
+                setBalanceState(balance)
+                if (owner === account) {
+                    setIsOwner(true)
+                }
             }
+            checkIsOwner()
+            console.log(isOwner)
         }
-        checkIsOwner()
+
+        return ()=>{
+            isBalanceSet=false
+        }
     }, [balanceState, isOwner])
 
     return (
