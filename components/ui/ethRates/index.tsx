@@ -1,12 +1,18 @@
-import {useEthPrice} from "../../hooks/useEthPrice";
+import {useEthPrice} from "@hooks/useEthPrice";
 import Loader from "../loader";
-import Image from "next/image"
-import {useFiatOnRamp} from "../../hooks/web3";
+import Image from "next/image";
+import {useWeb3} from "../../providers/web3";
 
 
 export default function EthRates() {
     const {eth} = useEthPrice()
-    const {magicWallet} = useFiatOnRamp();
+   const {magic}=useWeb3();
+
+    const showWallet = () => {
+        magic.connect.showWallet().catch((e: any) => {
+            console.log(e," wallet connection error");
+        });
+    };
 
     return (
             <div className="flex flex-column  text-center drop-shadow rounded-md mr-2 bg-orange-500 max-w-fit">
@@ -26,16 +32,15 @@ export default function EthRates() {
             md:py-4 md:px-10
             md:text-lg"
                     onClick={() => {
-                        magicWallet.showWallet()
+                        showWallet()
                     }}>SHOW WALLET
                 <Image
                     className="mx-1"
-
+                    alt="wallet image"
                     height="50"
                     width="55"
                     src="/images/wallet.png"
                 />
-
 
             </button>
                 <div className="text-sm text-white font-bold">Current eth Price:</div>
@@ -43,6 +48,7 @@ export default function EthRates() {
                     {eth.data ?
                         <>
                             1 <Image
+                            alt="eth symbol"
                             layout="fixed"
                             height="35"
                             width="35"

@@ -4,6 +4,9 @@ import { HYDRATE } from 'next-redux-wrapper';
 const initialState = {
     netState: false,
     nameNetwork: "Goerli Test Network",
+    networkId: "5",
+    account:"",
+    balance:"",
 };
 
 export const networkSlice = createSlice({
@@ -15,6 +18,15 @@ export const networkSlice = createSlice({
         },
         setNameNetwork(state, action) {
             state.nameNetwork = action.payload;
+        },
+        setNetworkId(state, action){
+            state.networkId = action.payload;
+        },
+        setAccount(state, action){
+            state.account = action.payload;
+        },
+        setBalance(state, action){
+            state.balance = action.payload;
         },
 
         extraReducers: {
@@ -29,7 +41,10 @@ export const networkSlice = createSlice({
     },
 });
 
-export const { setNameNetwork, setNetState } = networkSlice.actions;
+export const { setNameNetwork, setNetState, setNetworkId, setAccount, setBalance } = networkSlice.actions;
 export const selectNetState = (state) => state.network.netState;
+export const selectNetworkId = (state) => state.network.networkId;
 export const selectNameNetwork = (state) => state.network.nameNetwork;
+export const selectAccount = (state) => state.network.account;
+export const selectBalance = (state) => state.network.balance;
 export default networkSlice.reducer;

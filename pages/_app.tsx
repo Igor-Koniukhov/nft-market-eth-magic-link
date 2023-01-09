@@ -9,10 +9,8 @@ import {Provider} from "react-redux";
 
 
 function MyApp({Component, ...rest}) {
-    console.log(wrapper)
     let {store, props} = wrapper.useWrappedStore(rest)
     const {pageProps} = props;
-
     return (
         <React.Fragment>
             <ToastContainer/>

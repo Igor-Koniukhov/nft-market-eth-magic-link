@@ -34,11 +34,7 @@ const NftCreate: NextPage = () => {
 
     const getSignedData = async () => {
         const messageToSign = await axios.get("/api/verify");
-
-
-        const account = await provider.getSigner().getAddress()
-
-
+        const account = await provider.getSigner().getAddress();
         const signedData = await provider.send(
             "personal_sign",
             [JSON.stringify(messageToSign.data), account, messageToSign.data.id])

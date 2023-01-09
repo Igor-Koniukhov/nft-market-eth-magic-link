@@ -5,9 +5,11 @@ import {ActiveLink} from "..";
 import {useAccount, useNetwork} from "@hooks/web3";
 import Walletbar from "./Walletbar";
 import {NETWORKS} from "@_types/hooks";
-import {useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {selectNameNetwork, setNameNetwork} from "../../../store/slices/networkSlice";
+import {selectNameNetwork, setAccount, setBalance, setNameNetwork} from "../../../store/slices/networkSlice";
+import {selectAuthState, setAuthState} from "../../../store/slices/authSlice";
+import {useWeb3} from "@providers/web3";
+import {ethers} from "ethers";
 
 
 const navigation = [
@@ -19,24 +21,59 @@ function classNames(...classes: string[]) {
     return classes.filter(Boolean).join(" ");
 }
 
-export default function Navbar({magicWallet}: any) {
+export default function Navbar() {
+    const isLogin = useSelector(selectAuthState);
     const {account} = useAccount();
     const {network} = useNetwork();
-    const {targetNetwork} = network
-    const [networkNameState, setNetworkName] = useState("Goerli Test Network")
+    const {provider, magic} = useWeb3();
     const dispatch = useDispatch();
     const networkName = useSelector(selectNameNetwork);
 
-    const handleChangeNetwork = (e) => {
-        e.preventDefault()
-        dispatch(
-            setNameNetwork(e.target.selectedOptions[0].text )
-        )
-        setNetworkName(e.target.selectedOptions[0].text);
-
+    const setBalanceForNet = async ()=>{
+        provider?.getSigner().getAddress().then((account) => {
+            if (account) {
+                provider!.getBalance(account).then(balance => {
+                    console.log(ethers.utils.formatEther(balance), " this is balance")
+                    dispatch(setBalance(ethers.utils.formatEther(balance)))
+                })
+                dispatch(setAccount(account.toString()));
+            }
+        })
+            .catch((error) => {
+                console.log(error, " console error");
+            });
     }
 
-    // @ts-ignore
+    const handleChangeNetwork = (e) => {
+        e.preventDefault()
+        dispatch(setNameNetwork(e.target.selectedOptions[0].text))
+        setBalanceForNet();
+    }
+
+    const login = async () => {
+        provider?.getSigner().getAddress().then((account) => {
+            if (account) {
+                provider!.getBalance(account).then(balance => {
+                    console.log(ethers.utils.formatEther(balance), " this is balance")
+                    dispatch(setBalance(ethers.utils.formatEther(balance)))
+                })
+                dispatch(setAuthState(true));
+                dispatch(setAccount(account.toString()));
+            }
+        })
+            .catch((error) => {
+                console.log(error, " console error");
+            });
+    };
+
+    const disconnect = async () => {
+        await magic.connect.disconnect().catch((e: any) => {
+            console.log(e, " disconnection error");
+        });
+        dispatch(setAuthState(false))
+        console.log(" disconnected");
+    };
+
     return (
         <Disclosure as="nav" className="bg-gray-800">
             {({open}) => (
@@ -64,15 +101,15 @@ export default function Navbar({magicWallet}: any) {
                                 )}
                             </select>
 
-                            {!magicWallet.isLogin &&
+                            {!isLogin &&
                                 <button type="button" className="text-white ml-auto p-2" onClick={() => {
-                                    magicWallet.login(networkNameState)
+                                    login()
                                 }}>
                                     login
                                 </button>}
 
                             {
-                                magicWallet.isLogin &&
+                                isLogin &&
                                 <>
                                     <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
                                         {/* Mobile menu button*/}
@@ -112,7 +149,7 @@ export default function Navbar({magicWallet}: any) {
                                         className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
 
                                         <button type="button" className="text-white" onClick={() => {
-                                            magicWallet.disconnect();
+                                            disconnect();
                                         }}>
                                             logout
                                         </button>

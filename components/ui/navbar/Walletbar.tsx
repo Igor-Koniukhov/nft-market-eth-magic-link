@@ -43,12 +43,10 @@ const Walletbar: FunctionComponent<WalletbarProps> = (
        }
    });
 
-
     const copyToClipBoard = async (event: { stopPropagation: () => void; }) => {
         event.stopPropagation()
         await navigator.clipboard.writeText(String(account));
     }
-
 
     if (isLoading) {
         return (

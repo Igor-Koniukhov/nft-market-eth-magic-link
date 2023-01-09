@@ -94,6 +94,10 @@ export const OptimismNodeOptions = {
     rpcUrl: "https://goerli.optimism.io",
     chainId: 420
 };
+export const GanacheNodeOptions = {
+    rpcUrl: "https://127.0.0.1:7545",
+    chainId: 1337
+};
 export const PolygonNodeOptions = {
     rpcUrl: 'https://rpc-mumbai.maticvigil.com/', // Polygon RPC URL
     chainId: 80001, // Polygon chain id
@@ -104,8 +108,6 @@ export const GoerliOptionNode = {
     rpcUrl: "https://rpc.ankr.com/eth_goerli",
     chainId: 5
 };
-
-export const GoerliNodeOptions = 'eth'
 
 
 export const magicConnectProvider = async (apiKey: string, net: any): Promise<{ magic: any, provider: providers.Web3Provider }> => {
