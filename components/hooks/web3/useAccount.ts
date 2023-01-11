@@ -1,6 +1,7 @@
 import {CryptoHookFactory} from "@_types/hooks";
 import {useEffect} from "react";
 import useSWR from "swr";
+import {ethers} from "ethers";
 
 type UseAccountResponse = {
     connect: () => void;
@@ -44,9 +45,9 @@ export const hookFactory: AccountHookFactory = (
     )
 
     useEffect(() => {
-        ethereum?.on("accountsChanged", handleAccountsChanged);
+        provider?.on("accountsChanged", handleAccountsChanged);
         return () => {
-            ethereum?.removeListener("accountsChanged", handleAccountsChanged);
+            provider?.removeListener("accountsChanged", handleAccountsChanged);
         }
     })
 
@@ -60,13 +61,27 @@ export const hookFactory: AccountHookFactory = (
     }
 
     const connect = async () => {
-        console.log(ethereum, " this is ethereum on connect")
+        console.log(provider, " this is ethereum on connect")
         try {
 
-            // ethereum?.request({method: "eth_requestAccounts"});
+            //ethereum?.request({method: "eth_requestAccounts"});
         } catch (e) {
             console.error(e);
         }
+    }
+
+    const balanceState = async () => {
+       await provider?.getSigner().getAddress().then((account: string) => {
+            if (account) {
+                provider!.getBalance(account).then(balance => {
+                   return  ethers.utils.formatEther(balance)
+                })
+
+            }
+        })
+            .catch((error) => {
+                console.log(error, " console error");
+            });
     }
 
 
@@ -78,5 +93,6 @@ export const hookFactory: AccountHookFactory = (
         isInstalled: true,
         mutate,
         connect,
+
     };
 }

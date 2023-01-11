@@ -29,7 +29,8 @@ export default function Navbar() {
     const dispatch = useDispatch();
     const networkName = useSelector(selectNameNetwork);
 
-    const setBalanceForNet = async ()=>{
+
+    const setBalanceForNet = async () => {
         provider?.getSigner().getAddress().then((account) => {
             if (account) {
                 provider!.getBalance(account).then(balance => {
@@ -44,10 +45,11 @@ export default function Navbar() {
             });
     }
 
-    const handleChangeNetwork = (e) => {
+    const handleChangeNetwork = async (e) => {
         e.preventDefault()
         dispatch(setNameNetwork(e.target.selectedOptions[0].text))
-        setBalanceForNet();
+
+
     }
 
     const login = async () => {
@@ -70,7 +72,8 @@ export default function Navbar() {
         await magic.connect.disconnect().catch((e: any) => {
             console.log(e, " disconnection error");
         });
-        dispatch(setAuthState(false))
+        dispatch(setAuthState(false));
+        localStorage.removeItem("network")
         console.log(" disconnected");
     };
 
@@ -95,7 +98,7 @@ export default function Navbar() {
                                     <option
                                         key={index}
                                         value={value[0]}
-                                        // selected={targetNetwork === value[1] ? true : false}
+                                        selected={networkName === value[1] ? true : false}
 
                                     >{value[1]}</option>
                                 )}

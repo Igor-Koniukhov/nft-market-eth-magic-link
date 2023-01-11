@@ -1,9 +1,10 @@
 
 import { CryptoHookFactory, NETWORKS } from "@_types/hooks";
 import useSWR from "swr";
+import {useSelector} from "react-redux";
+import {selectNetworkId} from "../../../store/slices/networkSlice";
 
-const targetId = process.env.NEXT_PUBLIC_TARGET_CHAIN_ID as string;
-const targetNetwork = NETWORKS[targetId];
+
 
 type UseNetworkResponse = {
     isLoading: boolean;
@@ -21,7 +22,6 @@ export const hookFactory: NetworkHookFactory = ({provider, isLoading}) => () => 
         provider ? "web3/useNetwork" : null,
         async () => {
             const chainId = (await provider!.getNetwork()).chainId;
-
             if (!chainId) {
                 throw "Cannot retreive network. Please, refresh browser or connect to other one."
             }
@@ -31,8 +31,14 @@ export const hookFactory: NetworkHookFactory = ({provider, isLoading}) => () => 
             revalidateOnFocus: false
         }
     )
+    //const targetId = process.env.NEXT_PUBLIC_TARGET_CHAIN_ID as string;
+    const targetId = useSelector(selectNetworkId) as string;
+    const targetNetwork = NETWORKS[targetId];
 
-    const isSupported = data === targetNetwork;
+    console.log(data, " data ")
+
+    //const isSupported = data===targetNetwork;
+    const isSupported = true;
 
     return {
         ...swr,

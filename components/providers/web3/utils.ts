@@ -7,7 +7,7 @@ import {ConnectExtension} from "@magic-ext/connect";
 
 declare global {
     interface Window {
-        ethereum: providers.Web3Provider;
+        provider: providers.Web3Provider;
 
     }
 }
@@ -64,8 +64,6 @@ export const createWeb3State = (
     }
 }
 
-const NETWORK_ID = process.env.NEXT_PUBLIC_NETWORK_ID;
-
 export const loadContract = async (
     name: string,  // NftMarket
     provider: providers.Web3Provider,
@@ -94,15 +92,10 @@ export const OptimismNodeOptions = {
     rpcUrl: "https://goerli.optimism.io",
     chainId: 420
 };
-export const GanacheNodeOptions = {
-    rpcUrl: "https://127.0.0.1:7545",
-    chainId: 1337
-};
 export const PolygonNodeOptions = {
     rpcUrl: 'https://rpc-mumbai.maticvigil.com/', // Polygon RPC URL
     chainId: 80001, // Polygon chain id
 }
-
 
 export const GoerliOptionNode = {
     rpcUrl: "https://rpc.ankr.com/eth_goerli",

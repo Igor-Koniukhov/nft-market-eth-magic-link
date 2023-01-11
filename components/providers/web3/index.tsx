@@ -7,41 +7,41 @@ import {
     magicConnectProvider,
     OptimismNodeOptions,
     PolygonNodeOptions,
-    GanacheNodeOptions,
     Web3State
 } from "./utils";
-import {ethers, providers} from "ethers";
+
+import {providers} from "ethers";
 import {NftMarketContract} from "@_types/nftMarketContract";
 import {useDispatch, useSelector} from "react-redux";
 import {
     selectNameNetwork,
-    selectNetworkId,
-    setAccount,
-    setBalance,
+    selectNetworkId, setNameNetwork,
     setNetworkId
 } from "../../../store/slices/networkSlice";
-import {setAuthState} from "../../../store/slices/authSlice";
+
 
 
 const pageReload = () => {
     window.location.reload();
 }
 
-const handleAccount = (ethereum: providers.Web3Provider) => async () => {
-    const isLocked = !(ethereum.provider);
+const handleAccount = (provider: providers.Web3Provider) => async () => {
+    console.log(" accountsChacnged")
+    const isLocked = !(provider.provider);
     if (isLocked) {
         pageReload();
     }
 }
 
-const setGlobalListeners = (ethereum: providers.Web3Provider) => {
-    ethereum.on("chainChanged", pageReload);
-    ethereum.on("accountsChanged", handleAccount(ethereum));
+
+const setGlobalListeners = (provider: providers.Web3Provider) => {
+    provider.on("chainChanged", pageReload);
+    provider.on("accountsChanged", handleAccount(provider));
 }
 
-const removeGlobalListeners = (ethereum: providers.Web3Provider) => {
-    ethereum?.removeListener("chainChanged", pageReload);
-    ethereum?.removeListener("accountsChanged", handleAccount);
+const removeGlobalListeners = (provider: providers.Web3Provider) => {
+    provider?.removeListener("chainChanged", pageReload);
+    provider?.removeListener("accountsChanged", handleAccount);
 }
 
 
@@ -63,6 +63,13 @@ const Web3Provider: FunctionComponent<any> = ({children}) => {
         const signedContractNet = netContract.connect(signerNet);
         return {magic, signedContractNet}
     }
+
+    useEffect(() => {
+        const previousSessionNetwork  = localStorage.getItem("network") || "Goerli Test Network"
+        console.log(previousSessionNetwork, " network in storaged")
+        dispatch(setNameNetwork(previousSessionNetwork))
+    }, []);
+
     let networkName = useSelector(selectNameNetwork);
 
 
@@ -75,19 +82,18 @@ const Web3Provider: FunctionComponent<any> = ({children}) => {
                     case 'Optimism Goerli':
                         setNetNameState(OptimismNodeOptions);
                         dispatch(setNetworkId('420'));
+                        localStorage.setItem("network","Optimism Goerli" )
                         break;
                     case 'Polygon':
                         setNetNameState(PolygonNodeOptions)
                         dispatch(setNetworkId('80001'));
+                        localStorage.setItem("network","Polygon" )
                         break
 
                     case 'Goerli Test Network':
                         setNetNameState(GoerliOptionNode);
                         dispatch(setNetworkId('5'));
-                        break;
-                    case 'Ganache':
-                        setNetNameState(GanacheNodeOptions);
-                        dispatch(setNetworkId('1337'));
+                        localStorage.setItem("network","Goerli Test Network" )
                         break;
                 }
             }
@@ -108,7 +114,7 @@ const Web3Provider: FunctionComponent<any> = ({children}) => {
                 web3.then(data => {
                     setTimeout(() => setGlobalListeners(data.magic.magic.rpcProvider), 500);
                     setWeb3Api(createWeb3State({
-                        ethereum: window.ethereum,
+                        ethereum: window.provider,
                         provider: data.magic.provider,
                         contract: data.signedContractNet as unknown as NftMarketContract,
                         isLoading: false,
@@ -128,7 +134,7 @@ const Web3Provider: FunctionComponent<any> = ({children}) => {
             initWeb3();
 
         return () => {
-            removeGlobalListeners(window.ethereum);
+            removeGlobalListeners(window.provider);
         }
     }, [netNameState])
 

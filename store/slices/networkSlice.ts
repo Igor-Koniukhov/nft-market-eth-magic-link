@@ -3,7 +3,7 @@ import { HYDRATE } from 'next-redux-wrapper';
 
 const initialState = {
     netState: false,
-    nameNetwork: "Goerli Test Network",
+    nameNetwork:  "",
     networkId: "5",
     account:"",
     balance:"",
