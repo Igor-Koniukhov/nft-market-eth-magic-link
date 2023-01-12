@@ -1,30 +1,20 @@
-import {useEthPrice} from "@hooks/useEthPrice";
-import Loader from "../loader";
-import Image from "next/image";
-import {useWeb3} from "../../providers/web3";
+import {useEthPrice} from "@hooks/useEthPrice"
+import Loader from "../loader"
+import Image from "next/image"
+import {useWeb3} from "../../providers/web3"
 
 
 export default function EthRates() {
     const {eth} = useEthPrice()
-    const {provider} = useWeb3();
+    const {provider} = useWeb3()
 
     const showWallet = () => {
         // @ts-ignore
         provider.provider.sdk.connect.showWallet().catch((e: any) => {
-            console.log(e, " wallet connection error");
-        });
+            console.log(e, " wallet connection error")
+        })
 
-    };
-    const handleProvider = () => {
-        // @ts-ignore
-        console.log(provider.provider.sdk.connect.__sdk_access_field_descriptors__, " from show wallet")
-        // @ts-ignore
-        console.log(provider.provider.sdk.connect.utils.storage, " from show wallet")
-        // @ts-ignore
-        console.log(provider.provider.sdk.connect.__sdk_access_field_descriptors__, " from show wallet")
-        // @ts-ignore
-        console.log(provider.provider.sdk.connect.__is_initialized__, " from show wallet")
-    };
+    }
 
     return (
         <div className="flex flex-column  text-center drop-shadow rounded-md mr-2 bg-orange-500 max-w-fit">
@@ -55,14 +45,12 @@ export default function EthRates() {
                 />
 
             </button>
-            <button type="button" onClick={handleProvider}>Click</button>
             <div className="text-sm text-white font-bold">Current eth Price:</div>
             <div className="flex items-center justify-center">
                 {eth.data ?
                     <>
                         1 <Image
                         alt="eth symbol"
-                        layout="fixed"
                         height="35"
                         width="35"
                         src="/images/small-eth.webp"
@@ -76,9 +64,6 @@ export default function EthRates() {
                     </div>
                 }
             </div>
-
         </div>
-
-
     )
 }

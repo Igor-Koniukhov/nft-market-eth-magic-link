@@ -1,34 +1,33 @@
 /* eslint-disable @next/next/no-img-element */
-import type {NextPage} from "next";
-import {BaseLayout} from "@ui";
-import {Nft} from "@_types/nft";
-import {useAccount, useOwnedNfts} from "@hooks/web3";
-import React, {useEffect, useState} from "react";
-import {useWeb3} from "@providers/web3";
+import type {NextPage} from "next"
+import {BaseLayout} from "@ui"
+import {Nft} from "@_types/nft"
+import {useAccount, useOwnedNfts} from "@hooks/web3"
+import React, {useEffect, useState} from "react"
+import {useWeb3} from "@providers/web3"
 
-const tabs = [{name: "Your Collection", href: "#", current: true}];
+const tabs = [{name: "Your Collection", href: "#", current: true}]
 
 function classNames(...classes: string[]) {
-    return classes.filter(Boolean).join(" ");
+    return classes.filter(Boolean).join(" ")
 }
 
-
 const Profile: NextPage = () => {
-    const {nfts} = useOwnedNfts();
-    const [activeNft, setActiveNft] = useState<Nft>();
-    const {account} = useAccount();
+    const {nfts} = useOwnedNfts()
+    const [activeNft, setActiveNft] = useState<Nft>()
+    const {account} = useAccount()
     const [blockState, setBlockState] = useState({})
     const [transactionState, setTransactionState] = useState({})
 
     useEffect(() => {
         if (nfts.data && nfts.data.length > 0) {
-            setActiveNft(nfts.data[0]);
+            setActiveNft(nfts.data[0])
         }
-        return () => setActiveNft(undefined);
+        return () => setActiveNft(undefined)
     }, [nfts.data])
 
-    const {provider} = useWeb3();
-    const [transactionsCount, setTransactionsCount] = useState(null);
+    const {provider} = useWeb3()
+    const [transactionsCount, setTransactionsCount] = useState(null)
     const getData = async () => {
         await provider.getTransactionCount(account.data).then(data => {
             setTransactionsCount(data)
@@ -38,14 +37,12 @@ const Profile: NextPage = () => {
             console.log(data, " tx from hash")
         })
 
-
-
     }
 
     const getNetwork = async () => {
         await provider.getNetwork().then(data => {
             console.log(data, " network")
-        });
+        })
         Object.entries(blockState).map((value: [string, any], index: number) => {
             console.log(index, value[1])
         })
@@ -67,7 +64,7 @@ const Profile: NextPage = () => {
         await provider.getBlockNumber().then(data => {
             provider.getBlockWithTransactions(data).then(data => {
                 const a = reduceData(data)
-                setBlockState(a.blockMap);
+                setBlockState(a.blockMap)
                 const tx = reduceData(data.transactions)
                 setTransactionState(tx.blockMap)
 
@@ -310,7 +307,7 @@ const Profile: NextPage = () => {
                 )}
             </div>
         </BaseLayout>
-    );
-};
+    )
+}
 
-export default Profile;
+export default Profile

@@ -1,16 +1,16 @@
 /* eslint-disable @next/next/no-img-element */
 
-import {Menu} from "@headlessui/react";
-import Link from "next/link";
-import {createRef, FunctionComponent, LegacyRef, useEffect} from "react";
+import {Menu} from "@headlessui/react"
+import Link from "next/link"
+import {createRef, FunctionComponent, LegacyRef, useEffect} from "react"
 // @ts-ignore
-import jazzicon from '@metamask/jazzicon';
+import jazzicon from '@metamask/jazzicon'
 
 
 type WalletbarProps = {
-    isLoading: boolean;
-    isInstalled: boolean;
-    account: string | undefined;
+    isLoading: boolean
+    isInstalled: boolean
+    account: string | undefined
 
 }
 
@@ -25,27 +25,27 @@ const Walletbar: FunctionComponent<WalletbarProps> = (
         account
     }) => {
 
-    let avatarRef:  LegacyRef<HTMLDivElement> | undefined   = createRef();
+    let avatarRef:  LegacyRef<HTMLDivElement> | undefined   = createRef()
    useEffect(() => {
        // @ts-ignore
-       let element = avatarRef.current ;
+       let element = avatarRef.current 
        if (element && account) {
-           const addr = account.slice(2, 10);
-           const seed = parseInt(addr, 16);
-           const icon = jazzicon(32, seed); //generates a size 32 icon
+           const addr = account.slice(2, 10)
+           const seed = parseInt(addr, 16)
+           const icon = jazzicon(32, seed) //generates a size 32 icon
            // @ts-ignore
            if (element.firstChild) {
                // @ts-ignore
-               element.removeChild(element.firstChild);
+               element.removeChild(element.firstChild)
            }
            // @ts-ignore
-           element.appendChild(icon);
+           element.appendChild(icon)
        }
-   });
+   })
 
-    const copyToClipBoard = async (event: { stopPropagation: () => void; }) => {
+    const copyToClipBoard = async (event: { stopPropagation: () => void }) => {
         event.stopPropagation()
-        await navigator.clipboard.writeText(String(account));
+        await navigator.clipboard.writeText(String(account))
     }
 
     if (isLoading) {
@@ -126,7 +126,7 @@ const Walletbar: FunctionComponent<WalletbarProps> = (
             <div>
                 <button
                     onClick={() => {
-                        window.open('https://metamask.io', '_ blank');
+                        window.open('https://metamask.io', '_ blank')
                     }}
                     type="button"
                     className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-full shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
@@ -138,4 +138,4 @@ const Walletbar: FunctionComponent<WalletbarProps> = (
     }
 }
 
-export default Walletbar;
+export default Walletbar
