@@ -2,70 +2,114 @@ import {createContext, FunctionComponent, useContext, useEffect, useState} from 
 import {
     createDefaultState,
     createWeb3State,
-    GoerliNodeOptions,
-    loadContract,
-    magicConnectProvider,
+    GoerliOptionNode,
+    initContractInNetwork,
+    OptimismNodeOptions,
+    PolygonNodeOptions,
     Web3State
 } from "./utils";
+
 import {providers} from "ethers";
 import {NftMarketContract} from "@_types/nftMarketContract";
+import {useDispatch, useSelector} from "react-redux";
+import {selectNameNetwork, selectNetworkId, setNameNetwork, setNetworkId} from "../../../store/slices/networkSlice";
+import {NETWORKS} from "@_types/hooks";
+import {setAuthState} from "../../../store/slices/authSlice";
+import {CustomNodeConfiguration} from "magic-sdk";
+
+const DEFAULT_NET_ID = process.env.NEXT_PUBLIC_DEFAULT_CHAIN_ID;
+const MAGIK_PK_FOR_GOERLI_NET = process.env.NEXT_PUBLIC_MAGIK_PK_FOR_GOERLI_NET;
 
 const pageReload = () => {
     window.location.reload();
 }
 
-const handleAccount = (ethereum: providers.Web3Provider) => async () => {
-    const isLocked = !(ethereum.provider);
+const handleAccount = (provider: providers.Web3Provider) => async () => {
+    // @ts-ignore
+    const isLocked = !(provider.provider.sdk.connect.__is_initialized__);
     if (isLocked) {
         pageReload();
     }
 }
 
-const setGlobalListeners = (ethereum: providers.Web3Provider) => {
-    ethereum.on("chainChanged", pageReload);
-    ethereum.on("accountsChanged", handleAccount(ethereum));
+const setGlobalListeners = (provider: providers.Web3Provider) => {
+    provider.on("chainChanged", pageReload);
+    provider.on("networksChanged", handleAccount(provider));
 }
 
-const removeGlobalListeners = (ethereum: providers.Web3Provider) => {
-    ethereum?.removeListener("chainChanged", pageReload);
-    ethereum?.removeListener("accountsChanged", handleAccount);
+const removeGlobalListeners = (provider: providers.Web3Provider) => {
+    provider?.removeListener("chainChanged", pageReload);
+    provider?.removeListener("networksChanged", handleAccount);
 }
 
-
-const NETWORK_ID = process.env.NEXT_PUBLIC_NETWORK_ID;
-const MAGIK_PK_FOR_GOERLI_NET = process.env.NEXT_PUBLIC_MAGIK_PK_FOR_GOERLI_NET;
 const Web3Context = createContext<Web3State>(createDefaultState());
 
-const Web3Provider: FunctionComponent = ({children}) => {
-    const [web3Api, setWeb3Api] = useState<Web3State>(createDefaultState());
-    const initContractInNetwork = async (key: string, network: any, contractName: string) => {
-        const magic = await magicConnectProvider(key, network);
-        const netContract = await loadContract(contractName, magic.provider, NETWORK_ID);
-        const signerNet = magic.provider.getSigner();
-        const signedContractNet = netContract.connect(signerNet);
-        return {magic, signedContractNet}
+const Web3Provider: FunctionComponent<any> = ({children}) => {
+    const [web3Api, setWeb3Api] = useState<Web3State>(createDefaultState())
+    const dispatch = useDispatch();
+    const [netNameState, setNetNameState] = useState(GoerliOptionNode)
+    let netId = useSelector(selectNetworkId) || DEFAULT_NET_ID
+    let networkName = useSelector(selectNameNetwork)
+
+    useEffect(() => {
+        const setPreviousOptions = () => {
+            if (localStorage.getItem("isLogin") === "1") {
+                dispatch(setAuthState(true))
+            }
+            dispatch(setNameNetwork(localStorage.getItem("network") || NETWORKS[DEFAULT_NET_ID]))
+            dispatch(setNetworkId(localStorage.getItem("networkId") || DEFAULT_NET_ID))
+        }
+        setPreviousOptions()
+    }, []);
+
+    const setNodeOptions = (options: CustomNodeConfiguration) => {
+        setNetNameState(options as unknown as any);
+        dispatch(setNetworkId(`${options.chainId}`))
+        localStorage.setItem("network", NETWORKS[options.chainId])
+        localStorage.setItem("networkId", `${options.chainId}`)
     }
+    useEffect(() => {
+        let isLoad = true;
+        if (!isLoad) {
+            const switchNetworkName = () => {
+                switch (networkName) {
+                    case NETWORKS[OptimismNodeOptions.chainId]:
+                        setNodeOptions(OptimismNodeOptions);
+                        break;
+                    case NETWORKS[PolygonNodeOptions.chainId]:
+                        setNodeOptions(PolygonNodeOptions)
+                        break
+
+                    case NETWORKS[GoerliOptionNode.chainId]:
+                        setNodeOptions(GoerliOptionNode)
+                        break;
+                }
+            }
+            switchNetworkName();
+        }
+        return () => {
+            isLoad = false;
+        }
+
+    }, [networkName]);
 
     useEffect(() => {
         async function initWeb3() {
             try {
-                const web3 = initContractInNetwork(MAGIK_PK_FOR_GOERLI_NET, GoerliNodeOptions, "NftMarket")
+                const web3 = initContractInNetwork(MAGIK_PK_FOR_GOERLI_NET, netNameState, "NftMarket", netId)
                 web3.then(data => {
-                    setTimeout(() => setGlobalListeners(data.magic.magic.rpcProvider), 500);
+                    setTimeout(() => setGlobalListeners(data.provider), 500);
                     setWeb3Api(createWeb3State({
-                        ethereum: window.ethereum,
-                        provider: data.magic.provider,
+                        ethereum: window.provider,
+                        provider: data.provider,
                         contract: data.signedContractNet as unknown as NftMarketContract,
                         isLoading: false,
-                        magic: data.magic.magic,
-                    }))
 
+                    }))
                 })
 
             } catch (e) {
-
                 console.error(e, "Please, install web3 wallet. Msg from providers/web3 - 53");
-
                 setWeb3Api((api) => createWeb3State({
                     ...api as any,
                     isLoading: true,
@@ -73,9 +117,13 @@ const Web3Provider: FunctionComponent = ({children}) => {
             }
         }
 
-        initWeb3();
-        return () => removeGlobalListeners(window.ethereum);
-    }, [])
+        initWeb3().catch(e => {
+            console.error(e)
+        })
+        return () => {
+            removeGlobalListeners(web3Api.provider);
+        }
+    }, [netNameState])
 
     return (
         <Web3Context.Provider value={web3Api}>

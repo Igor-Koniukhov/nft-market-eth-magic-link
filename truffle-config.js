@@ -5,6 +5,7 @@ const keys = require("./keys.json");
 
 const HDWalletProvider = require('@truffle/hdwallet-provider');
 
+
 module.exports = {
     contracts_build_directory: "./public/contracts",
     networks: {
@@ -14,61 +15,47 @@ module.exports = {
             network_id: "*"
         },
         ganache_local: {
-            provider: function() {
+            provider: function () {
                 return new HDWalletProvider(process.env.MNEMONIC, "http://127.0.0.1:7545", AccountIndex)
             },
             network_id: 1337
         },
-        ropsten: {
-            provider: function() {
-                return new HDWalletProvider(
-                    keys.PRIVATE_KEY_ROPSTEN,
-                    keys.INFURA_ROPSTEN_URL
-                )
-            },
-            network_id: 3,
-            gas: 5500000,
-            gasPrice: 20000000000,
-            confirmations: 2,
-            timeoutBlocks: 200
-        },
         goerli: {
-            provider: function() {
+            provider: function () {
                 return new HDWalletProvider(
                     keys.PRIVATE_KEY_GOERLI,
-                    keys.INFURA_GOERLI_URL
+                    keys.ALCHEMY_GOERLI_URL
                 )
             },
             network_id: 5,
             gas: 5500000,
-            gasPrice: 35713903845,
+            gasPrice: 57320601395,
             confirmations: 2,
             timeoutBlocks: 200
         },
+
         optimism: {
-            provider: function() {
+            provider: function () {
                 return new HDWalletProvider(
                     keys.PRIVATE_KEY_OPTIMISM,
-                    keys.INFURA_OPTIMISM_URL
+                    keys.ALCHEMY_OPTIMISM_URL
                 )
             },
             network_id: 420,
             gas: 5500000,
-            gasPrice: 35713903845,
-            confirmations: 2,
+            networkCheckTimeout: 10000,
             timeoutBlocks: 200
         },
         polygon: {
-            provider: function() {
+            provider: function () {
                 return new HDWalletProvider(
                     keys.PRIVATE_KEY_POLYGON,
-                    keys.INFURA_POLYGON_URL
+                    keys.ALCHEMY_POLYGON_URL
                 )
             },
-            network_id: 137,
+            network_id: 80001,
             gas: 5500000,
-            gasPrice: 35713903845,
-            confirmations: 2,
+            networkCheckTimeout: 10000,
             timeoutBlocks: 200
         }
     },

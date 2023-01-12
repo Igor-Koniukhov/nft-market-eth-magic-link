@@ -38,6 +38,8 @@ contract NftMarket is ERC721URIStorage, Ownable {
 
     constructor() ERC721("PumpkinNFT", "PNFT") {}
 
+    //constructor(string memory _name,string memory _symbol) ERC721(_name, _symbol) {}
+
     //The difference is because in public functions,
     //Solidity immediately copies array arguments to memory,
     // while external functions can read directly from calldata.
@@ -226,3 +228,4 @@ contract NftMarket is ERC721URIStorage, Ownable {
         _allNfts.pop();
     }
 }
+

@@ -34,11 +34,7 @@ const NftCreate: NextPage = () => {
 
     const getSignedData = async () => {
         const messageToSign = await axios.get("/api/verify");
-
-
-        const account = await provider.getSigner().getAddress()
-
-
+        const account = await provider.getSigner().getAddress();
         const signedData = await provider.send(
             "personal_sign",
             [JSON.stringify(messageToSign.data), account, messageToSign.data.id])
@@ -58,7 +54,6 @@ const NftCreate: NextPage = () => {
 
         try {
             const {signedData, account} = await getSignedData();
-            console.log(signedData, " signed data")
             const promise = axios.post("/api/verify-image", {
                 address: account,
                 signature: signedData,
@@ -144,7 +139,7 @@ const NftCreate: NextPage = () => {
                 }
             )
              router.push('/')
-            window.location.reload()
+            //window.location.reload()
 
 
 
@@ -215,7 +210,7 @@ const NftCreate: NextPage = () => {
                                         <div className='mb-4 p-4'>
                                             <div className="font-bold">Your metadata:</div>
                                             <div>
-                                                <Link href={nftURI}>
+                                                <Link href={nftURI} legacyBehavior>
                                                     <a className="underline text-indigo-600">
                                                         {nftURI}
                                                     </a>

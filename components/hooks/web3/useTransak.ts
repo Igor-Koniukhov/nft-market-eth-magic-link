@@ -88,7 +88,9 @@ export const hookFactory: TransakHookFactory = (
             themeColor: '#FFA500', // App theme color
             fiatCurrency: `${fiatCurrency}`, // If you want to limit fiat selection eg 'GBP'
             email: `${customersEmail}`, // Your customer's email address
-            redirectURL: '/' // Redirect URL of your app
+            redirectURL: '/', // Redirect URL of your app
+
+
         });
 
 

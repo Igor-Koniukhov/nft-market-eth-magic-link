@@ -14,14 +14,16 @@ type ListedNftsHookFactory = CryptoHookFactory<Nft[], UseListedNftsResponse>
 
 export type UseListedNftsHook = ReturnType<ListedNftsHookFactory>
 
-export const hookFactory: ListedNftsHookFactory = ({
-                                                       contract,
-                                                       provider,
-                                                       magic
-                                                   }) => (signedTransaction: string | Promise<string>) => {
-    const {data, ...swr} = useSWR(
+export const hookFactory: ListedNftsHookFactory = (
+    {
+        contract,
+        provider,
+    }
+) => (signedTransaction: string | Promise<string>) => {
+    const {data, mutate, ...swr} = useSWR(
         contract ? "web3/useListedNfts" : null,
         async () => {
+
             const nfts = [] as Nft[];
             const coreNfts = await contract!.getAllNftsOnSale();
 
@@ -41,6 +43,8 @@ export const hookFactory: ListedNftsHookFactory = ({
             }
 
             return nfts;
+        },{
+            shouldRetryOnError:true,
         }
     )
 
@@ -51,20 +55,18 @@ export const hookFactory: ListedNftsHookFactory = ({
             await provider.getBalance(account), // Balance is in wei
         );
 
-      const getOwner= await _contract.ownerOf(tokenId)
-        if(getOwner===account){
+        const getOwner = await _contract.ownerOf(tokenId)
+        if (getOwner === account) {
             alert(`You already owner`)
             return
         }
         if (balance <= value.toString()) {
-            alert(`Insufficient balance: ${balance}, Please top up on : ${value} eth` )
-            magic.connect.showWallet().catch((e: any) => {
+            alert(`Insufficient balance: ${balance}, Please top up on : ${value} eth`)
+            // @ts-ignore
+            provider.provider.sdk.connect.showWallet().catch((e: any) => {
                 console.log(e);
             });
-
         }
-
-
         try {
             const result = await _contract!.buyNft(
                 tokenId, {
@@ -81,12 +83,11 @@ export const hookFactory: ListedNftsHookFactory = ({
             );
 
         } catch (e) {
-
             console.error(e.message);
         }
     }, [_contract])
-    const buyNftWithMW = useCallback(async (tokenId: number, value: number) => {
 
+    const buyNftWithMW = useCallback(async (tokenId: number, value: number) => {
         try {
             const result = await _contract!.buyNft(
                 tokenId, {
@@ -112,5 +113,6 @@ export const hookFactory: ListedNftsHookFactory = ({
         buyNft,
         buyNftWithMW,
         data: data || [],
+        mutate
     };
 }

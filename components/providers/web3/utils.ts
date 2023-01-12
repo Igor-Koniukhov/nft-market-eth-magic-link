@@ -1,14 +1,14 @@
 import {setupHooks, Web3Hooks} from "@hooks/web3/setupHooks";
 import {Web3Dependencies} from "@_types/hooks";
 import {Contract, ethers, providers} from "ethers";
-import {Magic} from "magic-sdk";
+import {CustomNodeConfiguration, Magic} from "magic-sdk";
 import {ConnectExtension} from "@magic-ext/connect";
-
-
+import {Web3Provider} from "@providers";
+import {ExternalProvider} from "@ethersproject/providers";
 
 declare global {
     interface Window {
-        ethereum: providers.Web3Provider;
+        provider: providers.Web3Provider;
 
     }
 }
@@ -22,20 +22,18 @@ export type Web3State = {
     hooks: Web3Hooks;
 } & Nullable<Web3Dependencies>
 
+export type NetworkState = {
+    isNetwork: boolean;
+    networkName: string;
+    networkId: string;
+}
 
 export const createDefaultState = () => {
     return {
         ethereum: null,
         provider: null,
-        providerOptimism: null,
-        providerPolygon: null,
         contract: null,
-        contractOptimism: null,
-        contractPolygon: null,
         isLoading: true,
-        magic: null,
-        magicPolygon: null,
-        magicOptimism: null,
         hooks: setupHooks({isLoading: true} as any)
     }
 }
@@ -46,27 +44,22 @@ export const createWeb3State = (
         provider,
         contract,
         isLoading,
-        magic
     }: Web3Dependencies) => {
     return {
         ethereum,
         provider,
         contract,
         isLoading,
-        magic,
         hooks: setupHooks(
             {
                 ethereum,
                 provider,
                 contract,
                 isLoading,
-                magic
             }
         )
     }
 }
-
-const NETWORK_ID = process.env.NEXT_PUBLIC_NETWORK_ID;
 
 export const loadContract = async (
     name: string,  // NftMarket
@@ -97,21 +90,29 @@ export const OptimismNodeOptions = {
     chainId: 420
 };
 export const PolygonNodeOptions = {
-    rpcUrl: 'https://rpc-mumbai.maticvigil.com/"', // Polygon RPC URL
+    rpcUrl: 'https://rpc-mumbai.maticvigil.com/', // Polygon RPC URL
     chainId: 80001, // Polygon chain id
 }
-export const GoerliNodeOptions = 'goerli'
+
+export const GoerliOptionNode = {
+    rpcUrl: "https://rpc.ankr.com/eth_goerli",
+    chainId: 5
+};
 
 
-export const magicConnectProvider = async (apiKey: string, net: any) : Promise<{magic: any, provider: providers.Web3Provider}> =>{
-
-    const magic = new Magic(apiKey, {
+const magicInit = (apiKey: string, net: CustomNodeConfiguration) => {
+    return new Magic(apiKey, {
         network: net,
         locale: "en_US",
         extensions: [new ConnectExtension()]
-    } );
+    })
+}
 
-    const provider = new ethers.providers.Web3Provider(magic.rpcProvider as any);
-
-    return {magic, provider};
+export const initContractInNetwork = async (key: string, network: any, contractName: string, network_id: string) => {
+    const magic = await magicInit(key, network);
+    const provider = new ethers.providers.Web3Provider(magic.rpcProvider as ExternalProvider );
+    const netContract = await loadContract(contractName, provider, network_id);
+    const signerNet = provider.getSigner();
+    const signedContractNet = netContract.connect(signerNet);
+    return {provider, signedContractNet}
 }

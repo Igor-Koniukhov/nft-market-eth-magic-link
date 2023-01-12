@@ -5,7 +5,18 @@ import {ActiveLink} from "..";
 import {useAccount, useNetwork} from "@hooks/web3";
 import Walletbar from "./Walletbar";
 import {NETWORKS} from "@_types/hooks";
-import {useState} from "react";
+import {useDispatch, useSelector} from "react-redux";
+import {
+    selectNameNetwork,
+    selectNetworkId,
+    setAccount,
+    setBalance,
+    setNameNetwork,
+    setNetworkId
+} from "../../../store/slices/networkSlice";
+import {selectAuthState, setAuthState} from "../../../store/slices/authSlice";
+import {useWeb3} from "@providers/web3";
+import {ethers} from "ethers";
 
 
 const navigation = [
@@ -14,21 +25,52 @@ const navigation = [
 ];
 
 function classNames(...classes: string[]) {
-    return classes.filter(Boolean).join(" ");}
+    return classes.filter(Boolean).join(" ");
+}
 
-export default function Navbar({magicWallet}:any) {
+export default function Navbar() {
+    const isLogin = useSelector(selectAuthState);
     const {account} = useAccount();
     const {network} = useNetwork();
-    const {targetNetwork} = network
-    const [networkNameState, setNetworkName] = useState("Goerli Test Network")
+    const {provider} = useWeb3();
+    const dispatch = useDispatch();
+    const networkName = useSelector(selectNameNetwork);
+    const networkId = useSelector(selectNetworkId);
 
-    const handleChangeNetwork = (e) => {
-        console.log(e.target.value, )
-        setNetworkName(e.target.selectedOptions[0].text);
 
+    const handleChangeNetwork = async (e) => {
+        e.preventDefault()
+        dispatch(setNameNetwork(e.target.selectedOptions[0].text))
+        dispatch(setNetworkId(e.target.value.toString()));
     }
 
-    // @ts-ignore
+    const login = async () => {
+        provider?.getSigner().getAddress().then((account) => {
+            if (account) {
+                localStorage.setItem("isLogin", "1")
+                dispatch(setAuthState(true));
+                dispatch(setAccount(account.toString()));
+                provider!.getBalance(account).then(balance => {
+                    dispatch(setBalance(ethers.utils.formatEther(balance)))
+                })
+            }
+        })
+            .catch((error) => {
+                console.log(error, " login error");
+            });
+    };
+
+    const disconnect = async () => {
+        // @ts-ignore
+        await provider.provider.sdk.connect.disconnect().catch((e: any) => {
+            console.log(e, " disconnection error");
+        });
+        dispatch(setAuthState(false));
+        localStorage.removeItem("network")
+        localStorage.removeItem("networkId")
+        localStorage.removeItem("isLogin")
+    };
+
     return (
         <Disclosure as="nav" className="bg-gray-800">
             {({open}) => (
@@ -45,26 +87,25 @@ export default function Navbar({magicWallet}:any) {
 
                             <label htmlFor="net-select">NETWORKS: </label>
                             <br/>
-                            <select id="net-select" onChange={handleChangeNetwork}>
+                            <select id="net-select" value={networkId} onChange={handleChangeNetwork}>
                                 {Object.entries(NETWORKS).map((value, index) =>
                                     <option
                                         key={index}
                                         value={value[0]}
-                                       // selected={targetNetwork === value[1] ? true : false}
-
+                                        //selected={networkName === value[1] ? true : false}
                                     >{value[1]}</option>
                                 )}
                             </select>
 
-                            {!magicWallet.isLogin &&
+                            {!isLogin &&
                                 <button type="button" className="text-white ml-auto p-2" onClick={() => {
-                                    magicWallet.login(networkNameState)
+                                    login()
                                 }}>
                                     login
                                 </button>}
 
                             {
-                                magicWallet.isLogin &&
+                                isLogin &&
                                 <>
                                     <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
                                         {/* Mobile menu button*/}
@@ -104,7 +145,7 @@ export default function Navbar({magicWallet}:any) {
                                         className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
 
                                         <button type="button" className="text-white" onClick={() => {
-                                            magicWallet.disconnect();
+                                            disconnect();
                                         }}>
                                             logout
                                         </button>
@@ -127,7 +168,7 @@ export default function Navbar({magicWallet}:any) {
                           {network.isLoading ?
                               "..." :
                               account.isInstalled ?
-                                  network.data :
+                                  networkName :
                                   "<- Install "
                           }
                       </button>

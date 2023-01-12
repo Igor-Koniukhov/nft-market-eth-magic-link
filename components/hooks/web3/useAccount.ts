@@ -6,6 +6,7 @@ type UseAccountResponse = {
     connect: () => void;
     isLoading: boolean;
     isInstalled: boolean;
+
 }
 
 type AccountHookFactory = CryptoHookFactory<string, UseAccountResponse>
@@ -15,10 +16,9 @@ export type UseAccountHook = ReturnType<AccountHookFactory>
 export const hookFactory: AccountHookFactory = (
     {
         provider,
-        ethereum,
         isLoading
     }
-    ) => () => {
+) => () => {
 
     const {
         data,
@@ -30,11 +30,9 @@ export const hookFactory: AccountHookFactory = (
         async () => {
             const accounts = await provider!.listAccounts();
             const account = accounts[0];
-
             if (!account) {
                 throw "Cannot retrieve account! Please, connect to web3 wallet."
             }
-
             return account;
         }, {
             revalidateOnFocus: false,
@@ -43,9 +41,9 @@ export const hookFactory: AccountHookFactory = (
     )
 
     useEffect(() => {
-        ethereum?.on("accountsChanged", handleAccountsChanged);
+        provider?.on("accountsChanged", handleAccountsChanged);
         return () => {
-            ethereum?.removeListener("accountsChanged", handleAccountsChanged);
+            provider?.removeListener("accountsChanged", handleAccountsChanged);
         }
     })
 
@@ -59,14 +57,13 @@ export const hookFactory: AccountHookFactory = (
     }
 
     const connect = async () => {
-        console.log(ethereum, " this is ethereum on connect")
         try {
-
-           // ethereum?._sdk_access_field_descriptors.request({method: "eth_requestAccounts"});
+            await provider.provider?.request({method: "eth_requestAccounts"});
         } catch (e) {
             console.error(e);
         }
     }
+
 
     return {
         ...swr,
@@ -75,6 +72,7 @@ export const hookFactory: AccountHookFactory = (
         isLoading: isLoading as boolean,
         isInstalled: true,
         mutate,
-       connect
+        connect,
+
     };
 }

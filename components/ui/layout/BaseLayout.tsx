@@ -1,24 +1,22 @@
 import React, { FunctionComponent } from "react";
 import Navbar from "../navbar";
-import {useFiatOnRamp} from "@hooks/web3";
 import LoginContent from "./LoginContent"
 import Footer from "../footer/Footer";
-
-
+import {useSelector} from "react-redux";
+import {selectAuthState} from "../../../store/slices/authSlice";
 
 
 interface Props {
   children: React.ReactNode;
 }
 
-
 const BaseLayout: FunctionComponent<Props> = ({ children }) => {
-  const {magicWallet} = useFiatOnRamp();
+  const isLogin = useSelector(selectAuthState);
   return (
     <>
-    <Navbar magicWallet={magicWallet}/>
+    <Navbar/>
     <div className="py-16 bg-gray-50 overflow-hidden min-h-screen">
-      {magicWallet.isLogin ?
+      {isLogin ?
           <div className="max-w-7xl mx-auto px-4 space-y-8 sm:px-6 lg:px-8">{children}</div> :
           <>
             <LoginContent/>

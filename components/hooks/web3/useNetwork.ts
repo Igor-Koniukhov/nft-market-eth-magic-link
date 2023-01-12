@@ -1,9 +1,11 @@
 
 import { CryptoHookFactory, NETWORKS } from "@_types/hooks";
 import useSWR from "swr";
+import {useSelector} from "react-redux";
+import {selectNetworkId} from "../../../store/slices/networkSlice";
+import {useEffect} from "react";
 
-const targetId = process.env.NEXT_PUBLIC_TARGET_CHAIN_ID as string;
-const targetNetwork = NETWORKS[targetId];
+
 
 type UseNetworkResponse = {
     isLoading: boolean;
@@ -17,13 +19,12 @@ type NetworkHookFactory = CryptoHookFactory<string, UseNetworkResponse>
 export type UseNetworkHook = ReturnType<NetworkHookFactory>
 
 export const hookFactory: NetworkHookFactory = ({provider, isLoading}) => () => {
-    const {data, isValidating, ...swr} = useSWR(
+    const {data, mutate, isValidating, ...swr} = useSWR(
         provider ? "web3/useNetwork" : null,
         async () => {
             const chainId = (await provider!.getNetwork()).chainId;
-
             if (!chainId) {
-                throw "Cannot retreive network. Please, refresh browser or connect to other one."
+                throw "Cannot retreive network."
             }
 
             return NETWORKS[chainId];
@@ -31,8 +32,26 @@ export const hookFactory: NetworkHookFactory = ({provider, isLoading}) => () => 
             revalidateOnFocus: false
         }
     )
+    useEffect(() => {
+        provider?.on("networksChanged", handleNetworksChanged);
+        return () => {
+            provider?.removeListener("networksChanged", handleNetworksChanged);
+        }
+    })
 
-    const isSupported = data === targetNetwork;
+    const handleNetworksChanged = (network: string) => {
+        if (network.length === 0) {
+            console.error("Please, connect to Web3 wallet");
+        } else if (network !== data) {
+            mutate(network);
+        }
+    }
+
+    const targetId = useSelector(selectNetworkId) as string;
+    const targetNetwork = NETWORKS[targetId];
+
+    //const isSupported = data===targetNetwork;
+    const isSupported = true;
 
     return {
         ...swr,
@@ -42,5 +61,6 @@ export const hookFactory: NetworkHookFactory = ({provider, isLoading}) => () => 
         isSupported,
         isConnectedToNetwork: !isLoading && isSupported,
         isLoading: isLoading as boolean,
+        mutate,
     };
 }
