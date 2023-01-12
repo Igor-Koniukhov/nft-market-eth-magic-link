@@ -69,28 +69,21 @@ const Web3Provider: FunctionComponent<any> = ({children}) => {
         localStorage.setItem("networkId", `${options.chainId}`)
     }
     useEffect(() => {
-        let isLoad = true;
-        if (!isLoad) {
-            const switchNetworkName = () => {
-                switch (networkName) {
-                    case NETWORKS[OptimismNodeOptions.chainId]:
-                        setNodeOptions(OptimismNodeOptions);
-                        break;
-                    case NETWORKS[PolygonNodeOptions.chainId]:
-                        setNodeOptions(PolygonNodeOptions)
-                        break
+        const switchNetworkName = () => {
+            switch (networkName) {
+                case NETWORKS[OptimismNodeOptions.chainId]:
+                    setNodeOptions(OptimismNodeOptions);
+                    break;
+                case NETWORKS[PolygonNodeOptions.chainId]:
+                    setNodeOptions(PolygonNodeOptions)
+                    break
 
-                    case NETWORKS[GoerliOptionNode.chainId]:
-                        setNodeOptions(GoerliOptionNode)
-                        break;
-                }
+                case NETWORKS[GoerliOptionNode.chainId]:
+                    setNodeOptions(GoerliOptionNode)
+                    break;
             }
-            switchNetworkName();
         }
-        return () => {
-            isLoad = false;
-        }
-
+        switchNetworkName();
     }, [networkName]);
 
     useEffect(() => {
