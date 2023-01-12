@@ -1,7 +1,6 @@
 import {CryptoHookFactory} from "@_types/hooks";
 import {useEffect} from "react";
 import useSWR from "swr";
-import {ethers} from "ethers";
 
 type UseAccountResponse = {
     connect: () => void;
@@ -17,7 +16,6 @@ export type UseAccountHook = ReturnType<AccountHookFactory>
 export const hookFactory: AccountHookFactory = (
     {
         provider,
-        ethereum,
         isLoading
     }
 ) => () => {
@@ -32,11 +30,9 @@ export const hookFactory: AccountHookFactory = (
         async () => {
             const accounts = await provider!.listAccounts();
             const account = accounts[0];
-
             if (!account) {
                 throw "Cannot retrieve account! Please, connect to web3 wallet."
             }
-
             return account;
         }, {
             revalidateOnFocus: false,
@@ -61,27 +57,11 @@ export const hookFactory: AccountHookFactory = (
     }
 
     const connect = async () => {
-        console.log(provider, " this is ethereum on connect")
         try {
-
-            //ethereum?.request({method: "eth_requestAccounts"});
+            await provider.provider?.request({method: "eth_requestAccounts"});
         } catch (e) {
             console.error(e);
         }
-    }
-
-    const balanceState = async () => {
-       await provider?.getSigner().getAddress().then((account: string) => {
-            if (account) {
-                provider!.getBalance(account).then(balance => {
-                   return  ethers.utils.formatEther(balance)
-                })
-
-            }
-        })
-            .catch((error) => {
-                console.log(error, " console error");
-            });
     }
 
 

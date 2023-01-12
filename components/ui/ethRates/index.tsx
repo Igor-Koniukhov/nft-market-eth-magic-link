@@ -6,16 +6,28 @@ import {useWeb3} from "../../providers/web3";
 
 export default function EthRates() {
     const {eth} = useEthPrice()
-   const {magic}=useWeb3();
+    const {provider} = useWeb3();
 
     const showWallet = () => {
-        magic.connect.showWallet().catch((e: any) => {
-            console.log(e," wallet connection error");
+        // @ts-ignore
+        provider.provider.sdk.connect.showWallet().catch((e: any) => {
+            console.log(e, " wallet connection error");
         });
+
+    };
+    const handleProvider = () => {
+        // @ts-ignore
+        console.log(provider.provider.sdk.connect.__sdk_access_field_descriptors__, " from show wallet")
+        // @ts-ignore
+        console.log(provider.provider.sdk.connect.utils.storage, " from show wallet")
+        // @ts-ignore
+        console.log(provider.provider.sdk.connect.__sdk_access_field_descriptors__, " from show wallet")
+        // @ts-ignore
+        console.log(provider.provider.sdk.connect.__is_initialized__, " from show wallet")
     };
 
     return (
-            <div className="flex flex-column  text-center drop-shadow rounded-md mr-2 bg-orange-500 max-w-fit">
+        <div className="flex flex-column  text-center drop-shadow rounded-md mr-2 bg-orange-500 max-w-fit">
             <button type="button" className="
             flex
             flex-row
@@ -43,28 +55,29 @@ export default function EthRates() {
                 />
 
             </button>
-                <div className="text-sm text-white font-bold">Current eth Price:</div>
-                <div className="flex items-center justify-center">
-                    {eth.data ?
-                        <>
-                            1 <Image
-                            alt="eth symbol"
-                            layout="fixed"
-                            height="35"
-                            width="35"
-                            src="/images/small-eth.webp"
-                        />
-                            <span className="text-xl font-bold text-white">
+            <button type="button" onClick={handleProvider}>Click</button>
+            <div className="text-sm text-white font-bold">Current eth Price:</div>
+            <div className="flex items-center justify-center">
+                {eth.data ?
+                    <>
+                        1 <Image
+                        alt="eth symbol"
+                        layout="fixed"
+                        height="35"
+                        width="35"
+                        src="/images/small-eth.webp"
+                    />
+                        <span className="text-xl font-bold text-white">
                 = {eth.data}$
               </span>
-                        </> :
-                        <div className="w-full flex justify-center">
-                            <Loader size="md"/>
-                        </div>
-                    }
-                </div>
-
+                    </> :
+                    <div className="w-full flex justify-center">
+                        <Loader size="md"/>
+                    </div>
+                }
             </div>
+
+        </div>
 
 
     )

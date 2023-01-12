@@ -6,7 +6,14 @@ import {useAccount, useNetwork} from "@hooks/web3";
 import Walletbar from "./Walletbar";
 import {NETWORKS} from "@_types/hooks";
 import {useDispatch, useSelector} from "react-redux";
-import {selectNameNetwork, setAccount, setBalance, setNameNetwork} from "../../../store/slices/networkSlice";
+import {
+    selectNameNetwork,
+    selectNetworkId,
+    setAccount,
+    setBalance,
+    setNameNetwork,
+    setNetworkId
+} from "../../../store/slices/networkSlice";
 import {selectAuthState, setAuthState} from "../../../store/slices/authSlice";
 import {useWeb3} from "@providers/web3";
 import {ethers} from "ethers";
@@ -25,56 +32,43 @@ export default function Navbar() {
     const isLogin = useSelector(selectAuthState);
     const {account} = useAccount();
     const {network} = useNetwork();
-    const {provider, magic} = useWeb3();
+    const {provider} = useWeb3();
     const dispatch = useDispatch();
     const networkName = useSelector(selectNameNetwork);
+    const networkId = useSelector(selectNetworkId);
 
-
-    const setBalanceForNet = async () => {
-        provider?.getSigner().getAddress().then((account) => {
-            if (account) {
-                provider!.getBalance(account).then(balance => {
-                    console.log(ethers.utils.formatEther(balance), " this is balance")
-                    dispatch(setBalance(ethers.utils.formatEther(balance)))
-                })
-                dispatch(setAccount(account.toString()));
-            }
-        })
-            .catch((error) => {
-                console.log(error, " console error");
-            });
-    }
 
     const handleChangeNetwork = async (e) => {
         e.preventDefault()
         dispatch(setNameNetwork(e.target.selectedOptions[0].text))
-
-
+        dispatch(setNetworkId(e.target.value.toString()));
     }
 
     const login = async () => {
         provider?.getSigner().getAddress().then((account) => {
             if (account) {
-                provider!.getBalance(account).then(balance => {
-                    console.log(ethers.utils.formatEther(balance), " this is balance")
-                    dispatch(setBalance(ethers.utils.formatEther(balance)))
-                })
+                localStorage.setItem("isLogin", "1")
                 dispatch(setAuthState(true));
                 dispatch(setAccount(account.toString()));
+                provider!.getBalance(account).then(balance => {
+                    dispatch(setBalance(ethers.utils.formatEther(balance)))
+                })
             }
         })
             .catch((error) => {
-                console.log(error, " console error");
+                console.log(error, " login error");
             });
     };
 
     const disconnect = async () => {
-        await magic.connect.disconnect().catch((e: any) => {
+        // @ts-ignore
+        await provider.provider.sdk.connect.disconnect().catch((e: any) => {
             console.log(e, " disconnection error");
         });
         dispatch(setAuthState(false));
         localStorage.removeItem("network")
-        console.log(" disconnected");
+        localStorage.removeItem("networkId")
+        localStorage.removeItem("isLogin")
     };
 
     return (
@@ -93,13 +87,12 @@ export default function Navbar() {
 
                             <label htmlFor="net-select">NETWORKS: </label>
                             <br/>
-                            <select id="net-select" onChange={handleChangeNetwork}>
+                            <select id="net-select" value={networkId} onChange={handleChangeNetwork}>
                                 {Object.entries(NETWORKS).map((value, index) =>
                                     <option
                                         key={index}
                                         value={value[0]}
-                                        selected={networkName === value[1] ? true : false}
-
+                                        //selected={networkName === value[1] ? true : false}
                                     >{value[1]}</option>
                                 )}
                             </select>

@@ -4,7 +4,7 @@ import { HYDRATE } from 'next-redux-wrapper';
 const initialState = {
     netState: false,
     nameNetwork:  "",
-    networkId: "5",
+    networkId: "",
     account:"",
     balance:"",
 };
@@ -20,7 +20,7 @@ export const networkSlice = createSlice({
             state.nameNetwork = action.payload;
         },
         setNetworkId(state, action){
-            state.networkId = action.payload;
+            state.networkId = action.payload  ;
         },
         setAccount(state, action){
             state.account = action.payload;

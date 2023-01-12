@@ -9,7 +9,6 @@ const makeStore = () =>
         reducer: {
             [authSlice.name]:authSlice.reducer,
             [networkSlice.name]:networkSlice.reducer,
-
         },
         devTools: true,
     });

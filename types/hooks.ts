@@ -7,7 +7,6 @@ export type Web3Dependencies = {
     provider: providers.Web3Provider;
     contract: NftMarketContract;
     isLoading: boolean;
-    magic: any;
 }
 export const NETWORKS: {[k: string]: string} = {
     5: "Goerli Test Network",

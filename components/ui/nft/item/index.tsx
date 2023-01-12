@@ -5,6 +5,8 @@ import {Nft} from "../../../../types/nft";
 import {useEthPrice} from "../../../hooks/useEthPrice";
 import {useWeb3} from "@providers/web3";
 import {ethers} from "ethers";
+import {useSelector} from "react-redux";
+import {selectNetworkId} from "../../../../store/slices/networkSlice";
 
 const TRANSAK_API_KEY = process.env.NEXT_PUBLIC_TRANSAK_API_KEY;
 const TRANSAK_ENV = process.env.NEXT_PUBLIC_TRANSAK_ENV;
@@ -34,11 +36,12 @@ function shortifyAddress(address: string) {
 
 
 const NftItem: FunctionComponent<NftItemProps> = ({item, buyNft, transakWallet}) => {
-    const {eth} = useEthPrice()
-    const {contract, provider} = useWeb3()
-    const [isOwner, setIsOwner] = useState(false)
-    const [addressState, setAddress]=useState(null)
-    const [balanceState, setBalanceState] = useState(null)
+    const {eth} = useEthPrice();
+    const {contract, provider} = useWeb3();
+    const [isOwner, setIsOwner] = useState(false);
+    const [addressState, setAddress]=useState(null);
+    const [balanceState, setBalanceState] = useState(null);
+    const {networkId}=useSelector(selectNetworkId);
 
     const defaultButtonStyle = `disabled:bg-slate-50
     disabled:text-slate-500
@@ -73,13 +76,12 @@ const NftItem: FunctionComponent<NftItemProps> = ({item, buyNft, transakWallet})
                 }
             }
             checkIsOwner()
-            console.log(isOwner)
         }
 
         return ()=>{
             isBalanceSet=false
         }
-    }, [balanceState, isOwner])
+    }, [balanceState, isOwner, networkId])
 
     return (
         <>

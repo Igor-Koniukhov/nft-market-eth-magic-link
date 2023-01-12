@@ -8,7 +8,6 @@ import {ExclamationIcon} from '@heroicons/react/solid';
 const Home: NextPage = () => {
     const {network} = useNetwork();
 
-
     return (
         <BaseLayout>
 
