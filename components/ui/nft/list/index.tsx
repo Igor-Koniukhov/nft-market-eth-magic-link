@@ -13,12 +13,11 @@ const NftList: FunctionComponent = () => {
     const {mutate} = useSWRConfig()
     const {contract} = useWeb3()
     const networkId = useSelector(selectNetworkId)
-    const _contract = contract
+
 
     useEffect(() => {
-        mutate(_contract ? "web3/useListedNfts" : null, nfts.data, {populateCache: true})
-    }, [networkId, _contract])
-
+        mutate(contract ? "web3/useListedNfts" : null, nfts.data, {populateCache: true})
+    }, [networkId])
     return (
         <div className="mt-12 max-w-lg mx-auto grid gap-5 lg:grid-cols-3 lg:max-w-none">
             {nfts.data?.map(nft =>
