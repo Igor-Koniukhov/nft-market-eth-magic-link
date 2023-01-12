@@ -3,15 +3,9 @@ import {Web3Dependencies} from "@_types/hooks";
 import {Contract, ethers, providers} from "ethers";
 import {CustomNodeConfiguration, Magic} from "magic-sdk";
 import {ConnectExtension} from "@magic-ext/connect";
-import {Web3Provider} from "@providers";
-import {ExternalProvider} from "@ethersproject/providers";
 
-declare global {
-    interface Window {
-        provider: providers.Web3Provider;
 
-    }
-}
+const MAGIK_PK_FOR_GOERLI_NET = process.env.NEXT_PUBLIC_MAGIK_PK_FOR_GOERLI_NET
 
 type Nullable<T> = {
     [P in keyof T]: T[P] | null;
@@ -22,15 +16,8 @@ export type Web3State = {
     hooks: Web3Hooks;
 } & Nullable<Web3Dependencies>
 
-export type NetworkState = {
-    isNetwork: boolean;
-    networkName: string;
-    networkId: string;
-}
-
 export const createDefaultState = () => {
     return {
-        ethereum: null,
         provider: null,
         contract: null,
         isLoading: true,
@@ -40,19 +27,16 @@ export const createDefaultState = () => {
 
 export const createWeb3State = (
     {
-        ethereum,
         provider,
         contract,
         isLoading,
     }: Web3Dependencies) => {
     return {
-        ethereum,
         provider,
         contract,
         isLoading,
         hooks: setupHooks(
             {
-                ethereum,
                 provider,
                 contract,
                 isLoading,
@@ -100,19 +84,24 @@ export const GoerliOptionNode = {
 };
 
 
-const magicInit = (apiKey: string, net: CustomNodeConfiguration) => {
-    return new Magic(apiKey, {
-        network: net,
+const magicInit = (network: CustomNodeConfiguration) => {
+    return new Magic(MAGIK_PK_FOR_GOERLI_NET, {
+        network: network,
         locale: "en_US",
         extensions: [new ConnectExtension()]
     })
 }
 
-export const initContractInNetwork = async (key: string, network: any, contractName: string, network_id: string) => {
-    const magic = await magicInit(key, network);
-    const provider = new ethers.providers.Web3Provider(magic.rpcProvider as ExternalProvider );
-    const netContract = await loadContract(contractName, provider, network_id);
-    const signerNet = provider.getSigner();
-    const signedContractNet = netContract.connect(signerNet);
-    return {provider, signedContractNet}
+export const initContractInNetwork = async (network: CustomNodeConfiguration, contractName: string) => {
+
+    const magic = magicInit(network)
+    const provider = new ethers.providers.Web3Provider(magic.rpcProvider as any)
+    const netContract = await loadContract(contractName, provider, `${network.chainId}`)
+    const signerNet = provider.getSigner()
+    const signedContractNet = netContract.connect(signerNet)
+
+    return {
+        provider,
+        signedContractNet
+    }
 }
