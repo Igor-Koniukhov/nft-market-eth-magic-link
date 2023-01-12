@@ -3,7 +3,6 @@ import {SWRResponse} from "swr";
 import {NftMarketContract} from "@_types/nftMarketContract";
 
 export type Web3Dependencies = {
-    ethereum: providers.Web3Provider;
     provider: providers.Web3Provider;
     contract: NftMarketContract;
     isLoading: boolean;
