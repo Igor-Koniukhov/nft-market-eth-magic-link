@@ -67,7 +67,6 @@ const Web3Provider: FunctionComponent<any> = ({children}) => {
         }
     }
 
-
     useEffect(() => {
         async function initWeb3() {
             console.log(" initWeb3")

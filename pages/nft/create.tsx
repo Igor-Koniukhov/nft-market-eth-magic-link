@@ -139,8 +139,6 @@ const NftCreate: NextPage = () => {
                 }
             )
              router.push('/')
-            //window.location.reload()
-
 
 
         } catch (e: any) {
