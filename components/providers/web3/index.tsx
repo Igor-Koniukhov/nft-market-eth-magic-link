@@ -45,28 +45,28 @@ const removeGlobalListeners = (provider: providers.Web3Provider) => {
 const Web3Context = createContext<Web3State>(createDefaultState());
 
 const Web3Provider: FunctionComponent<any> = ({children}) => {
-    const [web3Api, setWeb3Api] = useState<Web3State>(createDefaultState());
+    const [web3Api, setWeb3Api] = useState<Web3State>(createDefaultState())
     const dispatch = useDispatch();
     const [netNameState, setNetNameState] = useState(GoerliOptionNode)
-    let netId = useSelector(selectNetworkId) || DEFAULT_NET_ID;
-    let networkName = useSelector(selectNameNetwork);
+    let netId = useSelector(selectNetworkId) || DEFAULT_NET_ID
+    let networkName = useSelector(selectNameNetwork)
 
     useEffect(() => {
         const setPreviousOptions = () => {
             if (localStorage.getItem("isLogin") === "1") {
                 dispatch(setAuthState(true))
             }
-            dispatch(setNameNetwork(localStorage.getItem("network") || NETWORKS[DEFAULT_NET_ID]));
+            dispatch(setNameNetwork(localStorage.getItem("network") || NETWORKS[DEFAULT_NET_ID]))
             dispatch(setNetworkId(localStorage.getItem("networkId") || DEFAULT_NET_ID))
         }
-        setPreviousOptions();
+        setPreviousOptions()
     }, []);
 
     const setNodeOptions = (options: CustomNodeConfiguration) => {
         setNetNameState(options as unknown as any);
-        dispatch(setNetworkId(`${options.chainId}`));
-        localStorage.setItem("network", NETWORKS[options.chainId]);
-        localStorage.setItem("networkId", `${options.chainId}`);
+        dispatch(setNetworkId(`${options.chainId}`))
+        localStorage.setItem("network", NETWORKS[options.chainId])
+        localStorage.setItem("networkId", `${options.chainId}`)
     }
     useEffect(() => {
         let isLoad = true;
