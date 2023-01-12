@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 
 import type {NextPage} from 'next';
-import { useRouter } from 'next/router';
+import {useRouter} from 'next/router';
 import {ChangeEvent, useState} from 'react';
 import {BaseLayout} from '@ui'
 import Link from 'next/link'
@@ -13,11 +13,10 @@ import {toast} from "react-toastify";
 import {useNetwork} from "@hooks/web3";
 import {ExclamationIcon} from "@heroicons/react/solid";
 
-const ALLOWED_FIELDS = ["name", "description", "image", "attributes"];
 
 const NftCreate: NextPage = () => {
     const router = useRouter();
-    const { provider, contract} = useWeb3();
+    const {provider, contract} = useWeb3();
     const {network} = useNetwork();
     const [nftURI, setNftURI] = useState("");
     const [price, setPrice] = useState("");
@@ -122,9 +121,7 @@ const NftCreate: NextPage = () => {
     }
 
     const createNft = async () => {
-
         try {
-
             const tx = await contract?.mintToken(
                 nftURI,
                 ethers.utils.parseEther(price), {
@@ -138,7 +135,7 @@ const NftCreate: NextPage = () => {
                     error: "Metadata upload error"
                 }
             )
-             router.push('/')
+            router.push('/')
 
 
         } catch (e: any) {
@@ -265,7 +262,8 @@ const NftCreate: NextPage = () => {
                             <div>
                                 <div className="px-4 sm:px-0">
                                     <h3 className="text-lg font-medium leading-6 text-gray-900 text-center">Create NFT
-                                        Metadata <a href="https://www.pinata.cloud/" target="_blank" rel="noreferrer">Pinata</a></h3>
+                                        Metadata <a href="https://www.pinata.cloud/" target="_blank"
+                                                    rel="noreferrer">Pinata</a></h3>
                                     <p className="mt-1 text-sm text-gray-600 text-center">
                                         This information will be displayed publicly so be careful what you share.
                                     </p>

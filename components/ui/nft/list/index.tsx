@@ -1,10 +1,10 @@
-import React, {FunctionComponent, useEffect} from "react";
-import NftItem from "../item";
-import {useListedNfts, useTransak} from "@hooks/web3";
-import {useSelector} from "react-redux";
-import {selectNetworkId} from "../../../../store/slices/networkSlice";
-import {useSWRConfig} from "swr";
-import {useWeb3} from "@providers/web3";
+import React, {FunctionComponent, useEffect} from "react"
+import NftItem from "../item"
+import {useListedNfts, useTransak} from "@hooks/web3"
+import {useSelector} from "react-redux"
+import {selectNetworkId} from "../../../../store/slices/networkSlice"
+import {useSWRConfig} from "swr"
+import {useWeb3} from "@providers/web3"
 
 
 const NftList: FunctionComponent = () => {
@@ -33,4 +33,4 @@ const NftList: FunctionComponent = () => {
     )
 }
 
-export default NftList;
+export default NftList

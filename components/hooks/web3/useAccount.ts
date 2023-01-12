@@ -1,9 +1,9 @@
-import {CryptoHookFactory} from "@_types/hooks";
-import useSWR from "swr";
+import {CryptoHookFactory} from "@_types/hooks"
+import useSWR from "swr"
 
 type UseAccountResponse = {
-    isLoading: boolean;
-    isInstalled: boolean;
+    isLoading: boolean
+    isInstalled: boolean
 }
 
 type AccountHookFactory = CryptoHookFactory<string, UseAccountResponse>
@@ -25,21 +25,17 @@ export const hookFactory: AccountHookFactory = (
     } = useSWR(
         provider ? "web3/useAccount" : null,
         async () => {
-            const accounts = await provider!.listAccounts();
-            const account = accounts[0];
+            const accounts = await provider!.listAccounts()
+            const account = accounts[0]
             if (!account) {
                 throw "Cannot retrieve account! Please, connect to web3 wallet."
             }
-            return account;
+            return account
         }, {
             revalidateOnFocus: false,
             shouldRetryOnError: false
         }
     )
-
-
-
-
     return {
         ...swr,
         data,
@@ -49,5 +45,5 @@ export const hookFactory: AccountHookFactory = (
         mutate,
 
 
-    };
+    }
 }

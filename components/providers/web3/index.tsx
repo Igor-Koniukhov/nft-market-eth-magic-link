@@ -1,22 +1,22 @@
 import {createContext, FunctionComponent, useContext, useEffect, useState} from "react"
-import {NftMarketContract} from "@_types/nftMarketContract";
-import {useDispatch, useSelector} from "react-redux";
-import {selectNetworkId, setNameNetwork, setNetworkId} from "../../../store/slices/networkSlice";
-import {NETWORKS} from "@_types/hooks";
-import {setAuthState} from "../../../store/slices/authSlice";
-import {CustomNodeConfiguration} from "magic-sdk";
+import {NftMarketContract} from "@_types/nftMarketContract"
+import {useDispatch, useSelector} from "react-redux"
+import {selectNetworkId, setNameNetwork, setNetworkId} from "../../../store/slices/networkSlice"
+import {NETWORKS} from "@_types/hooks"
+import {setAuthState} from "../../../store/slices/authSlice"
+import {CustomNodeConfiguration} from "magic-sdk"
 import {
     createDefaultState,
     createWeb3State,
-    initContractInNetwork,
     GoerliOptionNode,
+    initContractInNetwork,
     OptimismNodeOptions,
     PolygonNodeOptions,
     Web3State
-} from "./utils";
+} from "./utils"
 
-const DEFAULT_NET_ID = process.env.NEXT_PUBLIC_DEFAULT_CHAIN_ID;
-const Web3Context = createContext<Web3State>(createDefaultState());
+const DEFAULT_NET_ID = process.env.NEXT_PUBLIC_DEFAULT_CHAIN_ID
+const Web3Context = createContext<Web3State>(createDefaultState())
 
 
 const Web3Provider: FunctionComponent<any> = ({children}) => {
@@ -73,7 +73,7 @@ const Web3Provider: FunctionComponent<any> = ({children}) => {
             try {
                 await switchNetworkChain(netId)
             } catch (e) {
-                console.error(e, "Please, install web3 wallet. Msg from providers/web3 - 53");
+                console.error(e, "Please, install web3 wallet. Msg from providers/web3 - 53")
                 setWeb3Api((api) => createWeb3State({
                     ...api as any,
                     isLoading: true,
@@ -93,15 +93,15 @@ const Web3Provider: FunctionComponent<any> = ({children}) => {
 }
 
 export function useWeb3() {
-    return useContext(Web3Context);
+    return useContext(Web3Context)
 }
 
 export function useHooks() {
-    const {hooks} = useWeb3();
-    return hooks;
+    const {hooks} = useWeb3()
+    return hooks
 }
 
-export default Web3Provider;
+export default Web3Provider
 
 
 

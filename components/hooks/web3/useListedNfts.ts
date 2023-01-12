@@ -1,9 +1,9 @@
-import {CryptoHookFactory} from "@_types/hooks";
-import {Nft} from "@_types/nft";
-import {ethers} from "ethers";
-import {useCallback} from "react";
-import {toast} from "react-toastify";
-import useSWR from "swr";
+import {CryptoHookFactory} from "@_types/hooks"
+import {Nft} from "@_types/nft"
+import {ethers} from "ethers"
+import {useCallback} from "react"
+import {toast} from "react-toastify"
+import useSWR from "swr"
 
 
 type UseListedNftsResponse = {
@@ -24,14 +24,14 @@ export const hookFactory: ListedNftsHookFactory = (
         contract ? "web3/useListedNfts" : null,
         async () => {
 
-            const nfts = [] as Nft[];
-            const coreNfts = await contract!.getAllNftsOnSale();
+            const nfts = [] as Nft[]
+            const coreNfts = await contract!.getAllNftsOnSale()
 
             for (let i = 0; i < coreNfts.length; i++) {
-                const item = coreNfts[i];
-                const tokenURI = await contract!.tokenURI(item.tokenId);
-                const metaRes = await fetch(tokenURI);
-                const meta = await metaRes.json();
+                const item = coreNfts[i]
+                const tokenURI = await contract!.tokenURI(item.tokenId)
+                const metaRes = await fetch(tokenURI)
+                const meta = await metaRes.json()
 
                 nfts.push({
                     price: parseFloat(ethers.utils.formatEther(item.price)),
@@ -42,18 +42,18 @@ export const hookFactory: ListedNftsHookFactory = (
                 })
             }
 
-            return nfts;
-        },{
-            shouldRetryOnError:true,
+            return nfts
+        }, {
+            shouldRetryOnError: true,
         }
     )
 
-    const _contract = contract;
+    const _contract = contract
     const buyNft = useCallback(async (tokenId: number, value: number) => {
-        const account = await provider!.getSigner().getAddress();
+        const account = await provider!.getSigner().getAddress()
         const balance = ethers.utils.formatEther(
             await provider.getBalance(account), // Balance is in wei
-        );
+        )
 
         const getOwner = await _contract.ownerOf(tokenId)
         if (getOwner === account) {
@@ -64,8 +64,8 @@ export const hookFactory: ListedNftsHookFactory = (
             alert(`Insufficient balance: ${balance}, Please top up on : ${value} eth`)
             // @ts-ignore
             provider.provider.sdk.connect.showWallet().catch((e: any) => {
-                console.log(e);
-            });
+                console.log(e)
+            })
         }
         try {
             const result = await _contract!.buyNft(
@@ -80,10 +80,10 @@ export const hookFactory: ListedNftsHookFactory = (
                     success: "Nft is yours! Go to Profile page",
                     error: "Processing error"
                 }
-            );
+            )
 
         } catch (e) {
-            console.error(e.message);
+            console.error(e.message)
         }
     }, [_contract])
 
@@ -102,9 +102,9 @@ export const hookFactory: ListedNftsHookFactory = (
                     success: "Nft is yours! Go to Profile page",
                     error: "Processing error"
                 }
-            );
+            )
         } catch (e) {
-            console.error(e.message);
+            console.error(e.message)
         }
     }, [_contract])
 
@@ -114,5 +114,5 @@ export const hookFactory: ListedNftsHookFactory = (
         buyNftWithMW,
         data: data || [],
         mutate
-    };
+    }
 }

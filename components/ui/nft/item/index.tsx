@@ -1,20 +1,20 @@
 /* eslint-disable @next/next/no-img-element */
 
-import React, {FunctionComponent, useEffect, useState} from "react";
-import {Nft} from "../../../../types/nft";
-import {useEthPrice} from "../../../hooks/useEthPrice";
-import {useWeb3} from "@providers/web3";
-import {ethers} from "ethers";
-import {useSelector} from "react-redux";
-import {selectNetworkId} from "../../../../store/slices/networkSlice";
+import React, {FunctionComponent, useEffect, useState} from "react"
+import {Nft} from "../../../../types/nft"
+import {useEthPrice} from "../../../hooks/useEthPrice"
+import {useWeb3} from "@providers/web3"
+import {ethers} from "ethers"
+import {useSelector} from "react-redux"
+import {selectNetworkId} from "../../../../store/slices/networkSlice"
 
-const TRANSAK_API_KEY = process.env.NEXT_PUBLIC_TRANSAK_API_KEY;
-const TRANSAK_ENV = process.env.NEXT_PUBLIC_TRANSAK_ENV;
+const TRANSAK_API_KEY = process.env.NEXT_PUBLIC_TRANSAK_API_KEY
+const TRANSAK_ENV = process.env.NEXT_PUBLIC_TRANSAK_ENV
 
 
 type NftItemProps = {
-    item: Nft;
-    buyNft: (token: number, value: number) => Promise<void>;
+    item: Nft
+    buyNft: (token: number, value: number) => Promise<void>
     transakWallet: (
         cryptoCurrency: string,
         fiatValue: string,
@@ -25,7 +25,7 @@ type NftItemProps = {
         env: string,
         tokenId: number,
         value: number
-    ) => Promise<void>;
+    ) => Promise<void>
 
 }
 
@@ -33,15 +33,13 @@ function shortifyAddress(address: string) {
     return `0x****${address.slice(-4)}`
 }
 
-
-
 const NftItem: FunctionComponent<NftItemProps> = ({item, buyNft, transakWallet}) => {
-    const {eth} = useEthPrice();
-    const {contract, provider} = useWeb3();
-    const [isOwner, setIsOwner] = useState(false);
-    const [addressState, setAddress]=useState(null);
-    const [balanceState, setBalanceState] = useState(null);
-    const {networkId}=useSelector(selectNetworkId);
+    const {eth} = useEthPrice()
+    const {contract, provider} = useWeb3()
+    const [isOwner, setIsOwner] = useState(false)
+    const [addressState, setAddress] = useState(null)
+    const [balanceState, setBalanceState] = useState(null)
+    const {networkId} = useSelector(selectNetworkId)
 
     const defaultButtonStyle = `disabled:bg-slate-50
     disabled:text-slate-500
@@ -62,14 +60,14 @@ const NftItem: FunctionComponent<NftItemProps> = ({item, buyNft, transakWallet})
 
     useEffect(() => {
         let isBalanceSet = false
-        if(!isBalanceSet){
+        if (!isBalanceSet) {
             const checkIsOwner = async () => {
-                const account = await provider!.getSigner().getAddress();
+                const account = await provider!.getSigner().getAddress()
                 const owner = await contract.ownerOf(item.tokenId)
                 setAddress(account)
                 const balance = ethers.utils.formatEther(
                     await provider.getBalance(account), // Balance is in wei
-                );
+                )
                 setBalanceState(balance)
                 if (owner === account) {
                     setIsOwner(true)
@@ -78,8 +76,8 @@ const NftItem: FunctionComponent<NftItemProps> = ({item, buyNft, transakWallet})
             checkIsOwner()
         }
 
-        return ()=>{
-            isBalanceSet=false
+        return () => {
+            isBalanceSet = false
         }
     }, [balanceState, isOwner, networkId])
 
@@ -98,7 +96,7 @@ const NftItem: FunctionComponent<NftItemProps> = ({item, buyNft, transakWallet})
                                         <img
                                             className="inline-block h-9 w-9 rounded-full"
                                             src="/images/page_logo.png"
-                                            alt=""
+                                            alt="logo image"
                                         />
                                     </div>
                                     <div className="ml-3">
@@ -136,7 +134,6 @@ const NftItem: FunctionComponent<NftItemProps> = ({item, buyNft, transakWallet})
                                     {item.price}
                                     <img className="h-6" src="/images/small-eth.webp" alt="ether icon"/>
                                 </div>
-
                             </dd>
                         </div>
                         {item.meta.attributes.map(attribute =>
@@ -150,18 +147,15 @@ const NftItem: FunctionComponent<NftItemProps> = ({item, buyNft, transakWallet})
                             </div>
                         )}
                     </dl>
-
                 </div>
-
                 <div>
                     <button
                         onClick={() => {
-                            buyNft(item.tokenId, item.price);
+                            buyNft(item.tokenId, item.price)
                         }}
                         disabled={isOwner ? true : false}
                         type="button"
-                        className={`${defaultButtonStyle} ${isOwner ? `text-black bg-yellow-600` : `text-white bg-yellow-600`}`}
-                    >
+                        className={`${defaultButtonStyle} ${isOwner ? `text-black bg-yellow-600` : `text-white bg-yellow-600`}`}>
                         {isOwner ? `You are owner` : `Buy with MW`}
 
                     </button>
@@ -177,21 +171,17 @@ const NftItem: FunctionComponent<NftItemProps> = ({item, buyNft, transakWallet})
                                 `${TRANSAK_ENV}`,
                                 item.tokenId,
                                 item.price
-                                );
+                            )
                         }}
                         disabled={isOwner ? true : false}
                         type="button"
-                        className={`${defaultButtonStyle} ${isOwner ? `text-black bg-yellow-600` : `text-white bg-yellow-600`}`}
-                    >
+                        className={`${defaultButtonStyle} ${isOwner ? `text-black bg-yellow-600` : `text-white bg-yellow-600`}`}>
                         {isOwner ? `You are owner` : `Buy with TW`}
-
                     </button>
-
-
                 </div>
             </div>
         </>
     )
 }
 
-export default NftItem;
+export default NftItem
