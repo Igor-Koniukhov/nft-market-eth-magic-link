@@ -69,8 +69,8 @@ const Web3Provider: FunctionComponent<any> = ({children}) => {
         localStorage.setItem("networkId", `${options.chainId}`)
     }
     useEffect(() => {
-        let isLoad = true;
-        if (!isLoad) {
+
+       {
             const switchNetworkName = () => {
                 switch (networkName) {
                     case NETWORKS[OptimismNodeOptions.chainId]:
@@ -86,9 +86,6 @@ const Web3Provider: FunctionComponent<any> = ({children}) => {
                 }
             }
             switchNetworkName();
-        }
-        return () => {
-            isLoad = false;
         }
 
     }, [networkName]);
