@@ -8,12 +8,13 @@ import {CustomNodeConfiguration} from "magic-sdk"
 import {
     createDefaultState,
     createWeb3State,
-    GoerliOptionNode,
     initContractInNetwork,
-    OptimismNodeOptions,
-    PolygonNodeOptions,
+    networkOptions,
     Web3State
 } from "./utils"
+import {providers} from "ethers";
+
+
 
 const DEFAULT_NET_ID = process.env.NEXT_PUBLIC_DEFAULT_CHAIN_ID
 const Web3Context = createContext<Web3State>(createDefaultState())
@@ -40,38 +41,29 @@ const Web3Provider: FunctionComponent<any> = ({children}) => {
         localStorage.setItem("network", `${NETWORKS[options.chainId]}`)
     }
 
-    const setWeb3WithNodeOptions = (options: CustomNodeConfiguration, contractName: string) => {
-        setPreviousSessionNodOptions()
-        setNetworkChainId(options)
-        initContractInNetwork(options, contractName)
-            .then(data => {
-                setWeb3Api(createWeb3State({
-                    provider: data.provider,
-                    contract: data.signedContractNet as unknown as NftMarketContract,
-                    isLoading: false,
-                }))
-            })
-    }
 
-    const switchNetworkChain = (id: string) => {
-        switch (id) {
-            case `${OptimismNodeOptions.chainId}`:
-                setWeb3WithNodeOptions(OptimismNodeOptions, "NftMarket")
-                break
-            case `${PolygonNodeOptions.chainId}`:
-                setWeb3WithNodeOptions(PolygonNodeOptions, "NftMarket")
-                break
-            case `${GoerliOptionNode.chainId}`:
-                setWeb3WithNodeOptions(GoerliOptionNode, "NftMarket")
-                break
-        }
+    const setNetworks = (options : CustomNodeConfiguration[], contractName: string) => {
+        setPreviousSessionNodOptions()
+        const providersMap = new Map<string, providers.Web3Provider>()
+        const contractsMap = new Map<string, NftMarketContract>()
+        Object.entries(options).map(option =>{
+            initContractInNetwork(option[1], contractName)
+                .then(data => {
+                    setWeb3Api(createWeb3State({
+                        providers: providersMap.set(`${option[1].chainId}`, data.provider),
+                        contracts: contractsMap.set(`${option[1].chainId}`, data.signedContractNet as unknown as NftMarketContract),
+                        isLoading: false,
+                    }))
+                })
+        })
+
     }
 
     useEffect(() => {
         async function initWeb3() {
             console.log(" initWeb3")
             try {
-                await switchNetworkChain(netId)
+                await setNetworks(networkOptions, "NftMarket" )
             } catch (e) {
                 console.error(e, "Please, install web3 wallet. Msg from providers/web3 - 53")
                 setWeb3Api((api) => createWeb3State({
@@ -81,9 +73,11 @@ const Web3Provider: FunctionComponent<any> = ({children}) => {
             }
         }
 
-        initWeb3()
+        initWeb3().catch(e =>{
+            console.error(e)
+        })
 
-    }, [netId])
+    }, [])
 
     return (
         <Web3Context.Provider value={web3Api}>

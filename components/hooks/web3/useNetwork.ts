@@ -3,6 +3,7 @@ import useSWR from "swr"
 import {useSelector} from "react-redux"
 import {selectNetworkId} from "../../../store/slices/networkSlice"
 import {useEffect} from "react"
+import {quantityNetworks} from "@providers/web3/utils";
 
 
 type UseNetworkResponse = {
@@ -12,44 +13,37 @@ type UseNetworkResponse = {
     isConnectedToNetwork: boolean
 }
 
-type NetworkHookFactory = CryptoHookFactory<string, UseNetworkResponse>
+type NetworkHookFactory = CryptoHookFactory<Map<string, string>, UseNetworkResponse>
 
 export type UseNetworkHook = ReturnType<NetworkHookFactory>
 
-export const hookFactory: NetworkHookFactory = ({provider, isLoading}) => () => {
+export const hookFactory: NetworkHookFactory = ({providers, isLoading}) => () => {
     const {data, mutate, isValidating, ...swr} = useSWR(
-        provider ? "web3/useNetwork" : null,
+        providers ? "web3/useNetwork" : {} as Map<string, string>,
         async () => {
-            const chainId = (await provider!.getNetwork()).chainId
-            if (!chainId) {
-                throw "Cannot retreive network."
+            const networksMap = new Map<string, string>()
+            if(providers.size===quantityNetworks){
+                providers.forEach((provider, chainId)=>{
+                    if (!chainId) {
+                        throw "Cannot retreive network."
+                    }
+                    networksMap.set(chainId, NETWORKS[chainId])
+                })
             }
 
-            return NETWORKS[chainId]
+            return networksMap
         }, {
             revalidateOnFocus: false
         }
     )
-    useEffect(() => {
-        provider?.on("networksChanged", handleNetworksChanged)
-        return () => {
-            provider?.removeListener("networksChanged", handleNetworksChanged)
-        }
-    })
-
-    const handleNetworksChanged = (network: string) => {
-        if (network.length === 0) {
-            console.error("Please, connect to Web3 wallet")
-        } else if (network !== data) {
-            mutate(network)
-        }
-    }
 
     const targetId = useSelector(selectNetworkId) as string
     const targetNetwork = NETWORKS[targetId]
+    let isSupported = true
+    /*if(providers.size===quantityNetworks){
+         isSupported = data.get(targetId)===targetNetwork
+    }*/
 
-    //const isSupported = data===targetNetwork
-    const isSupported = true
 
     return {
         ...swr,

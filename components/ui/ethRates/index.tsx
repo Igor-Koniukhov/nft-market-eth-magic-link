@@ -2,17 +2,23 @@ import {useEthPrice} from "@hooks/useEthPrice"
 import Loader from "../loader"
 import Image from "next/image"
 import {useWeb3} from "../../providers/web3"
+import {useSelector} from "react-redux";
+import {selectNetworkId} from "../../../store/slices/networkSlice";
 
 
 export default function EthRates() {
     const {eth} = useEthPrice()
-    const {provider} = useWeb3()
+    const chainId = useSelector(selectNetworkId)
+    const {providers} = useWeb3()
 
     const showWallet = () => {
-        // @ts-ignore
-        provider.provider.sdk.connect.showWallet().catch((e: any) => {
-            console.log(e, " wallet connection error")
-        })
+        if(providers.size ===3){
+         const   provider = providers.get(chainId)
+            // @ts-ignore
+            provider.provider.sdk.connect.showWallet().catch((e: any) => {
+                console.log(e, " wallet connection error")
+            })
+        }
 
     }
 

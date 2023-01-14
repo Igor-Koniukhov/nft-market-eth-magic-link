@@ -4,45 +4,60 @@ import {ethers} from "ethers"
 import {useCallback} from "react"
 import {toast} from "react-toastify"
 import useSWR from "swr"
+import {NftMarketContract} from "@_types/nftMarketContract";
+import {quantityNetworks} from "@providers/web3/utils";
 
 type UseOwnedNftsResponse = {
-    listNft: (tokenId: number, price: number) => Promise<void>
+    listNft: (chainId: string, tokenId: number, price: number) => Promise<void>
 }
-type OwnedNftsHookFactory = CryptoHookFactory<Nft[], UseOwnedNftsResponse>
+type OwnedNftsHookFactory = CryptoHookFactory<Map<string, Nft[]>, UseOwnedNftsResponse>
 
 export type UseOwnedNftsHook = ReturnType<OwnedNftsHookFactory>
 
-export const hookFactory: OwnedNftsHookFactory = ({contract}) => () => {
+export const hookFactory: OwnedNftsHookFactory = ({contracts}) => () => {
     const {data, ...swr} = useSWR(
-        contract ? "web3/useOwnedNfts" : null,
+        contracts ? "web3/useOwnedNfts" : {} as Map<string, NftMarketContract>,
         async () => {
             const nfts = [] as Nft[]
-            const coreNfts = await contract!.getOwnedNfts()
+            const nftsMap = new Map<string, Nft[]>()
 
+            const getMetaData = async (contract: NftMarketContract, chainId: string) => {
+                const coreNfts = await contract!.getOwnedNfts()
+                for (let i = 0; i < coreNfts.length; i++) {
+                    const item = coreNfts[i]
+                    const tokenURI = await contract!.tokenURI(item.tokenId)
+                    const metaRes = await fetch(tokenURI)
+                    const meta = await metaRes.json()
 
-            for (let i = 0; i < coreNfts.length; i++) {
-                const item = coreNfts[i]
-                const tokenURI = await contract!.tokenURI(item.tokenId)
-                const metaRes = await fetch(tokenURI)
-                const meta = await metaRes.json()
+                    nfts.push({
+                        price: parseFloat(ethers.utils.formatEther(item.price)),
+                        tokenId: item.tokenId.toNumber(),
+                        creator: item.creator,
+                        isListed: item.isListed,
+                        meta
+                    })
+                    nftsMap.set(chainId, nfts)
+                }
+            }
 
-                nfts.push({
-                    price: parseFloat(ethers.utils.formatEther(item.price)),
-                    tokenId: item.tokenId.toNumber(),
-                    creator: item.creator,
-                    isListed: item.isListed,
-                    meta
+            if (contracts.size === quantityNetworks) {
+                contracts.forEach((contract, chainId) => {
+                    getMetaData(contract, chainId).catch(e => {
+                        console.error(e, "Can not get Nft metaData.")
+                    })
+
                 })
             }
 
-            return nfts
+
+            return nftsMap
         }
     )
 
-    const _contract = contract
-    const listNft = useCallback(async (tokenId: number, price: number) => {
+    const _contracts = contracts
+    const listNft = useCallback(async (chainId: string, tokenId: number, price: number) => {
         try {
-            const result = await _contract!.placeNftOnSale(
+            const result = await _contracts.get(chainId)!.placeNftOnSale(
                 tokenId,
                 ethers.utils.parseEther(price.toString()),
                 {
@@ -60,11 +75,11 @@ export const hookFactory: OwnedNftsHookFactory = ({contract}) => () => {
         } catch (e) {
             console.error(e.message, "from usedOwnedNfts")
         }
-    }, [_contract])
+    }, [_contracts])
 
     return {
         ...swr,
         listNft,
-        data: data || [],
+        data: data || {} as Map<string, Nft[]>,
     }
 }

@@ -12,15 +12,19 @@ import {ethers} from "ethers";
 import {toast} from "react-toastify";
 import {useNetwork} from "@hooks/web3";
 import {ExclamationIcon} from "@heroicons/react/solid";
+import {useSelector} from "react-redux";
+import {selectNetworkId} from "../../store/slices/networkSlice";
+import {quantityNetworks} from "@providers/web3/utils";
 
 
 const NftCreate: NextPage = () => {
     const router = useRouter();
-    const {provider, contract} = useWeb3();
+    const {providers, contracts} = useWeb3();
     const {network} = useNetwork();
     const [nftURI, setNftURI] = useState("");
     const [price, setPrice] = useState("");
     const [hasURI, setHasURI] = useState(false);
+    const chainId = useSelector(selectNetworkId)
     const [nftMeta, setNftMeta] = useState<NftMeta>({
         name: "",
         description: "",
@@ -33,12 +37,14 @@ const NftCreate: NextPage = () => {
 
     const getSignedData = async () => {
         const messageToSign = await axios.get("/api/verify");
-        const account = await provider.getSigner().getAddress();
-        const signedData = await provider.send(
-            "personal_sign",
-            [JSON.stringify(messageToSign.data), account, messageToSign.data.id])
+        if(providers.size===quantityNetworks){
+            const account = await providers.get(chainId).getSigner().getAddress();
+            const signedData = await providers.get(chainId).send(
+                "personal_sign",
+                [JSON.stringify(messageToSign.data), account, messageToSign.data.id])
 
-        return {signedData, account};
+            return {signedData, account};
+        }
     }
 
     const handleImage = async (e: ChangeEvent<HTMLInputElement>) => {
@@ -121,26 +127,28 @@ const NftCreate: NextPage = () => {
     }
 
     const createNft = async () => {
-        try {
-            const tx = await contract?.mintToken(
-                nftURI,
-                ethers.utils.parseEther(price), {
-                    value: ethers.utils.parseEther(0.025.toString())
-                }
-            );
-            await toast.promise(
-                tx!.wait(), {
-                    pending: "Minting Nft",
-                    success: "Nft has been created",
-                    error: "Metadata upload error"
-                }
-            )
-            router.push('/')
+        if(contracts.size===quantityNetworks){
+            try {
+                const tx = await contracts.get(chainId)?.mintToken(
+                    nftURI,
+                    ethers.utils.parseEther(price), {
+                        value: ethers.utils.parseEther(0.025.toString())
+                    }
+                );
+                await toast.promise(
+                    tx!.wait(), {
+                        pending: "Minting Nft",
+                        success: "Nft has been created",
+                        error: "Metadata upload error"
+                    }
+                )
+                router.push('/')
 
-
-        } catch (e: any) {
-            console.error(e.message, " Something wrong with minting Nft");
+            } catch (e: any) {
+                console.error(e.message, " Something wrong with minting Nft");
+            }
         }
+
     }
     if (!network.isConnectedToNetwork) {
         return (

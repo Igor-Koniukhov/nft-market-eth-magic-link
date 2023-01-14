@@ -5,6 +5,8 @@ import {Nft} from "@_types/nft"
 import {useAccount, useOwnedNfts} from "@hooks/web3"
 import React, {useEffect, useState} from "react"
 import {useWeb3} from "@providers/web3"
+import {useSelector} from "react-redux";
+import {selectNetworkId} from "../store/slices/networkSlice";
 
 const tabs = [{name: "Your Collection", href: "#", current: true}]
 
@@ -15,32 +17,34 @@ function classNames(...classes: string[]) {
 const Profile: NextPage = () => {
     const {nfts} = useOwnedNfts()
     const [activeNft, setActiveNft] = useState<Nft>()
-    const {account} = useAccount()
+    const {accounts} = useAccount()
     const [blockState, setBlockState] = useState({})
     const [transactionState, setTransactionState] = useState({})
+    const chainId = useSelector(selectNetworkId)
+    console.log(nfts)
 
     useEffect(() => {
-        if (nfts.data && nfts.data.length > 0) {
-            setActiveNft(nfts.data[0])
+        if (nfts.data && nfts.data.size > 0) {
+            setActiveNft(nfts.data.get(chainId)[0])
         }
         return () => setActiveNft(undefined)
     }, [nfts.data])
 
-    const {provider} = useWeb3()
+    const {providers} = useWeb3()
     const [transactionsCount, setTransactionsCount] = useState(null)
     const getData = async () => {
-        await provider.getTransactionCount(account.data).then(data => {
+        await providers.get(chainId).getTransactionCount(accounts.data.get(chainId)).then(data => {
             setTransactionsCount(data)
             console.log(data, " transaction count in pages/index 13")
         })
-        await provider.getTransaction("0x05faa4dcb3ee03d2133d21d62f2d42ae349aa6d56b3e699de31012ff6f181df3").then(data=>{
+        await providers.get(chainId).getTransaction("0x05faa4dcb3ee03d2133d21d62f2d42ae349aa6d56b3e699de31012ff6f181df3").then(data=>{
             console.log(data, " tx from hash")
         })
 
     }
 
     const getNetwork = async () => {
-        await provider.getNetwork().then(data => {
+        await providers.get(chainId).getNetwork().then(data => {
             console.log(data, " network")
         })
         Object.entries(blockState).map((value: [string, any], index: number) => {
@@ -61,8 +65,8 @@ const Profile: NextPage = () => {
     }
 
     const getBlockInfo = async () => {
-        await provider.getBlockNumber().then(data => {
-            provider.getBlockWithTransactions(data).then(data => {
+        await providers.get(chainId).getBlockNumber().then(data => {
+            providers.get(chainId).getBlockWithTransactions(data).then(data => {
                 const a = reduceData(data)
                 setBlockState(a.blockMap)
                 const tx = reduceData(data.transactions)
@@ -123,7 +127,8 @@ const Profile: NextPage = () => {
                                         role="list"
                                         className="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 sm:gap-x-6 md:grid-cols-4 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8"
                                     >
-                                        {(nfts.data as Nft[]).map((nft) => (
+
+                                       {/* {(nfts.data.get(chainId) as Nft[]).map((nft) => (
                                             <li
                                                 key={nft.meta.name}
                                                 onClick={() => setActiveNft(nft)}
@@ -158,7 +163,7 @@ const Profile: NextPage = () => {
                                                     {nft.meta.name}
                                                 </p>
                                             </li>
-                                        ))}
+                                        ))}*/}
                                     </ul>
                                 </section>
                             </div>
@@ -216,6 +221,7 @@ const Profile: NextPage = () => {
                                             <button
                                                 onClick={() => {
                                                     nfts.listNft(
+                                                        chainId,
                                                         activeNft.tokenId,
                                                         activeNft.price
                                                     )

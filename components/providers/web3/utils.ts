@@ -3,9 +3,13 @@ import {Web3Dependencies} from "@_types/hooks"
 import {Contract, ethers, providers} from "ethers"
 import {CustomNodeConfiguration, Magic} from "magic-sdk"
 import {ConnectExtension} from "@magic-ext/connect"
+import {NftMarketContract} from "@_types/nftMarketContract";
 
 
-const MAGIK_PK_FOR_GOERLI_NET = process.env.NEXT_PUBLIC_MAGIK_PK_FOR_GOERLI_NET
+const MAGIC_GOERLI_KEY = process.env.NEXT_PUBLIC_MAGIC_PK_FOR_GOERLI_NET
+
+const MAGIC_POLYGON_KEY = process.env.NEXT_PUBLIC_POLYGON
+const MAGIC_OPTIMISM_KEY=process.env.NEXT_PUBLIC_OPTIMISM
 
 type Nullable<T> = {
     [P in keyof T]: T[P] | null
@@ -18,8 +22,8 @@ export type Web3State = {
 
 export const createDefaultState = () => {
     return {
-        provider: null,
-        contract: null,
+        providers: {} as Map<string, providers.Web3Provider>,
+        contracts: {} as Map<string, NftMarketContract>,
         isLoading: true,
         hooks: setupHooks({isLoading: true} as any)
     }
@@ -27,18 +31,18 @@ export const createDefaultState = () => {
 
 export const createWeb3State = (
     {
-        provider,
-        contract,
+        providers,
+        contracts,
         isLoading,
     }: Web3Dependencies) => {
     return {
-        provider,
-        contract,
+        providers,
+        contracts,
         isLoading,
         hooks: setupHooks(
             {
-                provider,
-                contract,
+                providers,
+                contracts,
                 isLoading,
             }
         )
@@ -82,9 +86,10 @@ export const GoerliOptionNode = {
     rpcUrl: "https://rpc.ankr.com/eth_goerli",
     chainId: 5
 }
-
+export const networkOptions = [GoerliOptionNode]
+export const quantityNetworks = networkOptions.length
 const magicInit = (network: CustomNodeConfiguration) => {
-    return new Magic(MAGIK_PK_FOR_GOERLI_NET, {
+    return new Magic(MAGIC_GOERLI_KEY, {
         network: network,
         locale: "en_US",
         extensions: [new ConnectExtension()]

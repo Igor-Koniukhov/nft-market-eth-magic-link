@@ -18,14 +18,14 @@ type NftItemProps = {
     transakWallet: (
         cryptoCurrency: string,
         fiatValue: string,
-        address: string,
+        chainId: string,
         fiatCurrency: string,
         customersEmail: string,
         apiKey: string,
         env: string,
         tokenId: number,
         value: number
-    ) => Promise<void>
+    ) => void
 
 }
 
@@ -35,11 +35,10 @@ function shortifyAddress(address: string) {
 
 const NftItem: FunctionComponent<NftItemProps> = ({item, buyNft, transakWallet}) => {
     const {eth} = useEthPrice()
-    const {contract, provider} = useWeb3()
+    const {contracts, providers} = useWeb3()
     const [isOwner, setIsOwner] = useState(false)
-    const [addressState, setAddress] = useState(null)
     const [balanceState, setBalanceState] = useState(null)
-    const {networkId} = useSelector(selectNetworkId)
+    const {chainId} = useSelector(selectNetworkId)
 
     const defaultButtonStyle = `disabled:bg-slate-50
     disabled:text-slate-500
@@ -62,11 +61,10 @@ const NftItem: FunctionComponent<NftItemProps> = ({item, buyNft, transakWallet})
         let isBalanceSet = false
         if (!isBalanceSet) {
             const checkIsOwner = async () => {
-                const account = await provider!.getSigner().getAddress()
-                const owner = await contract.ownerOf(item.tokenId)
-                setAddress(account)
+                const account = await providers[chainId]!.getSigner().getAddress()
+                const owner = await contracts[chainId].ownerOf(item.tokenId)
                 const balance = ethers.utils.formatEther(
-                    await provider.getBalance(account), // Balance is in wei
+                    await providers[chainId].getBalance(account), // Balance is in wei
                 )
                 setBalanceState(balance)
                 if (owner === account) {
@@ -79,7 +77,7 @@ const NftItem: FunctionComponent<NftItemProps> = ({item, buyNft, transakWallet})
         return () => {
             isBalanceSet = false
         }
-    }, [balanceState, isOwner, networkId])
+    }, [balanceState, isOwner, chainId])
 
     return (
         <>
@@ -164,7 +162,7 @@ const NftItem: FunctionComponent<NftItemProps> = ({item, buyNft, transakWallet})
                             transakWallet(
                                 'GoerliETH',
                                 `${(item.price * eth.data).toFixed(2)}`,
-                                `${addressState}`,
+                                `${chainId}`,
                                 'USD',
                                 'ikoniukhov@gmail.com',
                                 `${TRANSAK_API_KEY}`,

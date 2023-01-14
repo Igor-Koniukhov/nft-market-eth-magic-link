@@ -6,10 +6,12 @@ import {wrapper} from "../store/store"
 import {ToastContainer} from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import {Provider} from "react-redux"
+import {useWeb3} from "@providers/web3";
 
 function MyApp({Component, ...rest}) {
     let {store, props} = wrapper.useWrappedStore(rest)
     const {pageProps} = props
+
 
     return (
         <React.Fragment>

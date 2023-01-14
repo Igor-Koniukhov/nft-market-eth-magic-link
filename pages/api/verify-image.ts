@@ -18,7 +18,6 @@ export default withSession(async (
             contentType
         } = req.body as FileReq
 
-
         if (!bytes || !fileName || !contentType) {
             return res.status(422).send({message: "Image data are missing"})
         }
@@ -35,7 +34,7 @@ export default withSession(async (
                 filename: fileName + "-" + uuidv4()
             }
         )
-
+        console.log(pinataSecretApiKey, pinataSecretApiKey, " api key")
         const fileRes = await axios.post("https://api.pinata.cloud/pinning/pinFileToIPFS", formData, {
             maxBodyLength: Infinity,
             headers: {
@@ -47,6 +46,6 @@ export default withSession(async (
 
         return res.status(200).send(fileRes.data)
     } else {
-        return res.status(422).send({message: "Invalid endpoint"})
+        return res.status(422).send({message: "Invalid endpoint 422"})
     }
 })

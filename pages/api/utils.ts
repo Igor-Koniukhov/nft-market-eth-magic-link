@@ -2,17 +2,15 @@ import {Session, withIronSession} from "next-iron-session"
 import * as util from "ethereumjs-util"
 import contract from "../../public/contracts/NftMarket.json"
 import {NextApiRequest, NextApiResponse} from "next"
+import {NETWORKS} from "@_types/hooks";
 
-const NETWORKS = {
-    "1337": "Ganache",
-    "5": "Goerly"
-}
+
 
 type NETWORK = typeof NETWORKS
 const targetNetwork = process.env.NEXT_PUBLIC_NETWORK_ID as keyof NETWORK
 export const contractAddress = contract["networks"][targetNetwork]["address"]
-export const pinataApiKey = process.env.PINATA_API_KEY as string
-export const pinataSecretApiKey = process.env.PINATA_SECRET_API_KEY as string
+export const pinataApiKey = process.env.NEXT_PUBLIC_PINATA_API_KEY as string
+export const pinataSecretApiKey = process.env.NEXT_PUBLIC_PINATA_SECRET_API_KEY as string
 
 
 export function withSession(handler: any) {

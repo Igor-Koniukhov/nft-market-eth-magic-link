@@ -17,6 +17,7 @@ import {
 import {selectAuthState, setAuthState} from "../../../store/slices/authSlice"
 import {useWeb3} from "@providers/web3"
 import {ethers} from "ethers"
+import {quantityNetworks} from "@providers/web3/utils";
 
 
 const navigation = [
@@ -30,39 +31,44 @@ function classNames(...classes: string[]) {
 
 export default function Navbar() {
     const isLogin = useSelector(selectAuthState)
-    const {account} = useAccount()
+    const {accounts} = useAccount()
     const {network} = useNetwork()
-    const {provider} = useWeb3()
+    const {providers} = useWeb3()
     const dispatch = useDispatch()
     const networkName = useSelector(selectNameNetwork)
-    const networkId = useSelector(selectNetworkId)
-
+    const chainId = useSelector(selectNetworkId)
+    console.log(accounts)
 
     const handleChangeNetwork = async (e) => {
         e.preventDefault()
         dispatch(setNameNetwork(e.target.selectedOptions[0].text))
         dispatch(setNetworkId(e.target.value.toString()))
+        localStorage.setItem("networkId", e.target.value.toString())
+        localStorage.setItem("network", e.target.selectedOptions[0].text)
     }
 
     const login = async () => {
-        provider?.getSigner().getAddress().then((account) => {
-            if (account) {
-                localStorage.setItem("isLogin", "1")
-                dispatch(setAuthState(true))
-                dispatch(setAccount(account.toString()))
-                provider!.getBalance(account).then(balance => {
-                    dispatch(setBalance(ethers.utils.formatEther(balance)))
-                })
-            }
-        })
-            .catch((error) => {
-                console.log(error, " login error")
+        if(providers.size === quantityNetworks){
+            providers.get(chainId)?.getSigner().getAddress().then((account) => {
+                if (account) {
+                    localStorage.setItem("isLogin", "1")
+                    dispatch(setAuthState(true))
+                    dispatch(setAccount(account.toString()))
+                    providers.get(chainId)!.getBalance(account).then(balance => {
+                        dispatch(setBalance(ethers.utils.formatEther(balance)))
+                    })
+                }
             })
+                .catch((error) => {
+                    console.log(error, " login error")
+                })
+        }
+
     }
 
     const disconnect = async () => {
         // @ts-ignore
-        await provider.provider.sdk.connect.disconnect().catch((e: any) => {
+        await providers.get(chainId).provider.sdk.connect.disconnect().catch((e: any) => {
             console.log(e, " disconnection error")
         })
         dispatch(setAuthState(false))
@@ -87,7 +93,7 @@ export default function Navbar() {
 
                             <label htmlFor="net-select">NETWORKS: </label>
                             <br/>
-                            <select id="net-select" value={networkId} onChange={handleChangeNetwork}>
+                            <select id="net-select" value={chainId} onChange={handleChangeNetwork}>
                                 {Object.entries(NETWORKS).map((value, index) =>
                                     <option
                                         key={index}
@@ -150,9 +156,9 @@ export default function Navbar() {
                                             logout
                                         </button>
                                         <Walletbar
-                                            isInstalled={account.isInstalled}
-                                            isLoading={account.isLoading}
-                                            account={account.data}
+                                            isInstalled={accounts.isInstalled}
+                                            isLoading={accounts.isLoading}
+                                            accounts={accounts.data}
                                         />
                                         <div className="text-gray-300 self-center ml-2">
                   <span
@@ -167,7 +173,7 @@ export default function Navbar() {
                           }}>
                           {network.isLoading ?
                               "..." :
-                              account.isInstalled ?
+                              accounts.isInstalled ?
                                   networkName :
                                   "<- Install "
                           }

@@ -4,8 +4,11 @@ import {NextApiRequest, NextApiResponse} from "next"
 import {addressCheckMiddleware, contractAddress, pinataApiKey, pinataSecretApiKey, withSession} from "./utils"
 import {NftMeta} from "@_types/nft"
 import axios from "axios"
+import contractArtifact from "../../public/contracts/NftMarket.json";
+
 
 export default withSession(async (req: NextApiRequest & { session: Session }, res: NextApiResponse) => {
+
     if (req.method === "POST") {
         try {
             const {body} = req
@@ -37,6 +40,8 @@ export default withSession(async (req: NextApiRequest & { session: Session }, re
 
     } else if (req.method === "GET") {
         try {
+            const contractAddress = contractArtifact["networks"]['5']["address"]
+            console.log(contractAddress, " contract address from verify.ts")
             const message = {contractAddress, id: uuidv4()}
             req.session.set("message-session", message)
             await req.session.save()

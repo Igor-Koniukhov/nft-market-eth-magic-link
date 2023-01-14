@@ -11,20 +11,20 @@ const NftList: FunctionComponent = () => {
     const {nfts} = useListedNfts()
     const {transakWallet} = useTransak()
     const {mutate} = useSWRConfig()
-    const {contract} = useWeb3()
-    const networkId = useSelector(selectNetworkId)
+    const {contracts} = useWeb3()
+    const chainId = useSelector(selectNetworkId)
 
 
-    useEffect(() => {
+    /*useEffect(() => {
         mutate(contract ? "web3/useListedNfts" : null, nfts.data, {populateCache: true})
-    }, [networkId])
+    }, [networkId])*/
     return (
         <div className="mt-12 max-w-lg mx-auto grid gap-5 lg:grid-cols-3 lg:max-w-none">
-            {nfts.data?.map(nft =>
+            {nfts.data[chainId]?.map(nft =>
                 <div key={nft.meta.image as string} className="flex flex-col rounded-lg shadow-lg overflow-hidden">
                     <NftItem
                         item={nft}
-                        buyNft={nfts.buyNft}
+                        buyNft={nfts[chainId].buyNft}
                         transakWallet={transakWallet.showTransakWallet}
                     />
                 </div>

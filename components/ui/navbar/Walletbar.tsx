@@ -5,12 +5,17 @@ import Link from "next/link"
 import {createRef, FunctionComponent, LegacyRef, useEffect} from "react"
 // @ts-ignore
 import jazzicon from '@metamask/jazzicon'
+import {useSelector} from "react-redux";
+import {selectNetworkId} from "../../../store/slices/networkSlice";
+import is from "@sindresorhus/is";
+import undefined = is.undefined;
+
 
 
 type WalletbarProps = {
     isLoading: boolean
     isInstalled: boolean
-    account: string | undefined
+    accounts: Map<string, string> | undefined
 
 }
 
@@ -22,15 +27,15 @@ const Walletbar: FunctionComponent<WalletbarProps> = (
     {
         isInstalled,
         isLoading,
-        account
+        accounts
     }) => {
-
+const chainId = useSelector(selectNetworkId)
     let avatarRef:  LegacyRef<HTMLDivElement> | undefined   = createRef()
    useEffect(() => {
        // @ts-ignore
-       let element = avatarRef.current 
-       if (element && account) {
-           const addr = account.slice(2, 10)
+       let element = avatarRef.current
+       if (element && accounts.size == 3) {
+           const addr = accounts.get(chainId).slice(2, 10)
            const seed = parseInt(addr, 16)
            const icon = jazzicon(32, seed) //generates a size 32 icon
            // @ts-ignore
@@ -45,7 +50,7 @@ const Walletbar: FunctionComponent<WalletbarProps> = (
 
     const copyToClipBoard = async (event: { stopPropagation: () => void }) => {
         event.stopPropagation()
-        await navigator.clipboard.writeText(String(account))
+        await navigator.clipboard.writeText(String(accounts.get(chainId)))
     }
 
     if (isLoading) {
@@ -64,7 +69,7 @@ const Walletbar: FunctionComponent<WalletbarProps> = (
         )
     }
 
-    if (account) {
+    if (accounts) {
 
         return (
             <Menu as="div" className="ml-3 relative">
@@ -85,7 +90,7 @@ const Walletbar: FunctionComponent<WalletbarProps> = (
                             <button
                                 onClick={copyToClipBoard}
                                 className=" disabled:text-gray-500 text-xs block px-4 pt-2 text-gray-700">
-                                {`0x${account[2]}${account[3]}${account[4]}....${account.slice(-4)}`}
+                                {`0x${accounts.get(chainId)[2]}${accounts.get(chainId)[3]}${accounts.get(chainId)[4]}....${accounts.get(chainId).slice(-4)}`}
 
                             </button>
                         )}

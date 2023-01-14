@@ -1,18 +1,19 @@
 import {CryptoHookFactory} from "@_types/hooks"
 import useSWR from "swr"
+import {quantityNetworks} from "@providers/web3/utils";
 
 type UseAccountResponse = {
     isLoading: boolean
     isInstalled: boolean
 }
 
-type AccountHookFactory = CryptoHookFactory<string, UseAccountResponse>
+type AccountHookFactory = CryptoHookFactory<Map<string, string>, UseAccountResponse>
 
 export type UseAccountHook = ReturnType<AccountHookFactory>
 
 export const hookFactory: AccountHookFactory = (
     {
-        provider,
+        providers,
         isLoading
     }
 ) => () => {
@@ -23,14 +24,27 @@ export const hookFactory: AccountHookFactory = (
         isValidating,
         ...swr
     } = useSWR(
-        provider ? "web3/useAccount" : null,
+        providers ? "web3/useAccount" : {},
         async () => {
-            const accounts = await provider!.listAccounts()
-            const account = accounts[0]
-            if (!account) {
-                throw "Cannot retrieve account! Please, connect to web3 wallet."
+
+            const accountsMap = new Map<string, string>()
+            if (providers.size === quantityNetworks) {
+                providers.forEach((provider, chainId) => {
+                    provider!.listAccounts().then(account => {
+                        accountsMap.set(chainId, account[0])
+                        if (!account) {
+                            throw "Cannot retrieve account! Please, connect to web3 wallet."
+                        }
+
+
+                    })
+                })
+
+
             }
-            return account
+
+
+            return accountsMap
         }, {
             revalidateOnFocus: false,
             shouldRetryOnError: false
