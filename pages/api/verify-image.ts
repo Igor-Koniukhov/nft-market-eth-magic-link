@@ -35,7 +35,7 @@ export default withSession(async (
                 filename: fileName + "-" + uuidv4()
             }
         );
-
+        console.log(formData, " formData")
         const fileRes = await axios.post("https://api.pinata.cloud/pinning/pinFileToIPFS", formData, {
             maxBodyLength: Infinity,
             headers: {

@@ -5,7 +5,7 @@ import {CustomNodeConfiguration, Magic} from "magic-sdk";
 import {ConnectExtension} from "@magic-ext/connect";
 
 
-const MAGIK_PK_FOR_GOERLI_NET = process.env.NEXT_PUBLIC_MAGIK_PK_FOR_GOERLI_NET
+const MAGIK_PK_FOR_GOERLI_NET = process.env.NEXT_PUBLIC_MAGIC_PK_FOR_GOERLI_NET
 
 type Nullable<T> = {
     [P in keyof T]: T[P] | null;
