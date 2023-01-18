@@ -6,10 +6,8 @@ import {ConnectExtension} from "@magic-ext/connect"
 import {NftMarketContract} from "@_types/nftMarketContract";
 
 
-const MAGIC_GOERLI_KEY = process.env.NEXT_PUBLIC_MAGIC_PK_FOR_GOERLI_NET
+const MAGIK_PK_FOR_GOERLI_NET = process.env.NEXT_PUBLIC_MAGIC_PK_FOR_GOERLI_NET
 
-const MAGIC_POLYGON_KEY = process.env.NEXT_PUBLIC_POLYGON
-const MAGIC_OPTIMISM_KEY=process.env.NEXT_PUBLIC_OPTIMISM
 
 type Nullable<T> = {
     [P in keyof T]: T[P] | null
@@ -89,7 +87,7 @@ export const GoerliOptionNode = {
 export const networkOptions = [GoerliOptionNode]
 export const quantityNetworks = networkOptions.length
 const magicInit = (network: CustomNodeConfiguration) => {
-    return new Magic(MAGIC_GOERLI_KEY, {
+    return new Magic(MAGIK_PK_FOR_GOERLI_NET, {
         network: network,
         locale: "en_US",
         extensions: [new ConnectExtension()]
