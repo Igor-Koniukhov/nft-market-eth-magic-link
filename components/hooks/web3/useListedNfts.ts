@@ -19,7 +19,7 @@ export type UseListedNftsHook = ReturnType<ListedNftsHookFactory>
 export const hookFactory: ListedNftsHookFactory = (
     {
         contracts,
-        providers,
+        providers, id
     }
 ) => (signedTransaction: string | Promise<string>) => {
     const {data, mutate, ...swr} = useSWR(
@@ -29,7 +29,7 @@ export const hookFactory: ListedNftsHookFactory = (
             const nfts = [] as Nft[]
             const nftsMap = new Map<string, Nft[]>()
 
-            const getMetaData = async (contract: NftMarketContract, chainId: string) => {
+            const contract = contracts[id]
                 const coreNfts = await contract!.getOwnedNfts()
                 for (let i = 0; i < coreNfts.length; i++) {
                     const item = coreNfts[i]
@@ -44,18 +44,12 @@ export const hookFactory: ListedNftsHookFactory = (
                         isListed: item.isListed,
                         meta
                     })
-                    nftsMap.set(chainId, nfts)
+                    nftsMap.set(id, nfts)
                 }
-            }
 
-            if (contracts.size === quantityNetworks) {
-                contracts.forEach((contract, chainId) => {
-                    getMetaData(contract, chainId).catch(e => {
-                        console.error(e, "Can not get Nft metaData.")
-                    })
 
-                })
-            }
+
+
 
 
             return nftsMap

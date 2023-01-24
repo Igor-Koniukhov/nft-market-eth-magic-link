@@ -17,12 +17,12 @@ import {providers} from "ethers";
 
 
 const DEFAULT_NET_ID = process.env.NEXT_PUBLIC_DEFAULT_CHAIN_ID
-const Web3Context = createContext<Web3State>(createDefaultState())
+const Web3Context = createContext<Web3State>(createDefaultState(""))
 
 
 const Web3Provider: FunctionComponent<any> = ({children}) => {
 
-    const [web3Api, setWeb3Api] = useState<Web3State>(createDefaultState())
+    const [web3Api, setWeb3Api] = useState<Web3State>(createDefaultState(""))
     const dispatch = useDispatch()
     let netId = useSelector(selectNetworkId) || DEFAULT_NET_ID
 
@@ -53,6 +53,7 @@ const Web3Provider: FunctionComponent<any> = ({children}) => {
                         providers: providersMap.set(`${option[1].chainId}`, data.provider),
                         contracts: contractsMap.set(`${option[1].chainId}`, data.signedContractNet as unknown as NftMarketContract),
                         isLoading: false,
+                        id: `${option[1].chainId}`
                     }))
                 })
         })

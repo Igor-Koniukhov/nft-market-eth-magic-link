@@ -5,7 +5,7 @@ import {useCallback} from "react"
 import {toast} from "react-toastify"
 import useSWR from "swr"
 import {NftMarketContract} from "@_types/nftMarketContract";
-import {quantityNetworks} from "@providers/web3/utils";
+
 
 type UseOwnedNftsResponse = {
     listNft: (chainId: string, tokenId: number, price: number) => Promise<void>
@@ -14,14 +14,14 @@ type OwnedNftsHookFactory = CryptoHookFactory<Map<string, Nft[]>, UseOwnedNftsRe
 
 export type UseOwnedNftsHook = ReturnType<OwnedNftsHookFactory>
 
-export const hookFactory: OwnedNftsHookFactory = ({contracts}) => () => {
+export const hookFactory: OwnedNftsHookFactory = ({contracts, id}) => () => {
     const {data, ...swr} = useSWR(
         contracts ? "web3/useOwnedNfts" : {} as Map<string, NftMarketContract>,
         async () => {
             const nfts = [] as Nft[]
             const nftsMap = new Map<string, Nft[]>()
 
-            const getMetaData = async (contract: NftMarketContract, chainId: string) => {
+                const contract = await contracts.get(id)
                 const coreNfts = await contract!.getOwnedNfts()
                 for (let i = 0; i < coreNfts.length; i++) {
                     const item = coreNfts[i]
@@ -36,18 +36,10 @@ export const hookFactory: OwnedNftsHookFactory = ({contracts}) => () => {
                         isListed: item.isListed,
                         meta
                     })
-                    nftsMap.set(chainId, nfts)
+                    nftsMap.set(id, nfts)
                 }
-            }
 
-            if (contracts.size === quantityNetworks) {
-                contracts.forEach((contract, chainId) => {
-                    getMetaData(contract, chainId).catch(e => {
-                        console.error(e, "Can not get Nft metaData.")
-                    })
 
-                })
-            }
 
 
             return nftsMap

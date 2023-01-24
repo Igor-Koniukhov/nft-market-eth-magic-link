@@ -6,6 +6,7 @@ export type Web3Dependencies = {
     providers: Map<string, providers.Web3Provider>;
     contracts: Map<string, NftMarketContract>;
     isLoading: boolean;
+    id: string;
 }
 export const NETWORKS: { [k: string]: string } = {
     420: "Optimism Goerli",

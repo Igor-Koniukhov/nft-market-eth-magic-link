@@ -18,11 +18,12 @@ export type Web3State = {
     hooks: Web3Hooks
 } & Nullable<Web3Dependencies>
 
-export const createDefaultState = () => {
+export const createDefaultState = (id: string) => {
     return {
         providers: {} as Map<string, providers.Web3Provider>,
         contracts: {} as Map<string, NftMarketContract>,
         isLoading: true,
+        id:"",
         hooks: setupHooks({isLoading: true} as any)
     }
 }
@@ -32,16 +33,19 @@ export const createWeb3State = (
         providers,
         contracts,
         isLoading,
+        id,
     }: Web3Dependencies) => {
     return {
         providers,
         contracts,
         isLoading,
+        id,
         hooks: setupHooks(
             {
                 providers,
                 contracts,
                 isLoading,
+                id,
             }
         )
     }
