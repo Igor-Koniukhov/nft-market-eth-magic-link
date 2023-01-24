@@ -1,28 +1,28 @@
-import {useEthPrice, NETWORKS_COINS_PRICE} from "@hooks/useEthPrice"
-import Loader from "../loader"
-import Image from "next/image"
-import {useWeb3} from "../../providers/web3"
+
+import {useEthPrice} from "@hooks/useEthPrice";
+import Loader from "../loader";
+import Image from "next/image";
+import {useWeb3} from "../../providers/web3";
 import {useSelector} from "react-redux";
 import {selectNetworkId} from "../../../store/slices/networkSlice";
-import {quantityNetworks} from "@providers/web3/utils";
 
 
 export default function EthRates() {
+
     const chainId = useSelector(selectNetworkId)
     const {eth} = useEthPrice(chainId)
+    const {provider} = useWeb3();
 
-    const {providers} = useWeb3()
 
     const showWallet = () => {
-        if(providers.size ===quantityNetworks){
-         const   provider = providers.get(chainId)
-            // @ts-ignore
+                     // @ts-ignore
             provider.provider.sdk.connect.showWallet().catch((e: any) => {
                 console.log(e, " wallet connection error")
             })
         }
 
-    }
+
+
 
     return (
         <div className="flex flex-column  text-center drop-shadow rounded-md mr-2 bg-orange-500 max-w-fit">
@@ -53,6 +53,8 @@ export default function EthRates() {
                 />
 
             </button>
+
+
             <div className="text-sm text-white font-bold">Current eth Price:</div>
             <div className="flex items-center justify-center">
                 {eth.data ?
