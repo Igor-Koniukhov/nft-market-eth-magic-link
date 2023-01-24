@@ -33,15 +33,13 @@ function shortifyAddress(address: string) {
     return `0x****${address.slice(-4)}`
 }
 
-
-
 const NftItem: FunctionComponent<NftItemProps> = ({item, buyNft, transakWallet}) => {
-    const {eth} = useEthPrice();
+    const networkId = useSelector(selectNetworkId)
+    const {eth} = useEthPrice(networkId);
     const {contract, provider} = useWeb3();
     const [isOwner, setIsOwner] = useState(false);
     const [addressState, setAddress]=useState(null);
     const [balanceState, setBalanceState] = useState(null);
-    const {networkId}=useSelector(selectNetworkId);
 
     const defaultButtonStyle = `disabled:bg-slate-50
     disabled:text-slate-500
