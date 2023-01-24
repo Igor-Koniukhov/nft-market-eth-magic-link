@@ -45,6 +45,7 @@ export const hookFactory: AccountHookFactory = (
             shouldRetryOnError: false
         }
     )
+
     return {
         ...swr,
         data,
@@ -52,7 +53,6 @@ export const hookFactory: AccountHookFactory = (
         isLoading: isLoading as boolean,
         isInstalled: true,
         mutate,
-
 
     }
 }
