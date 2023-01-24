@@ -5,6 +5,7 @@ import {useWeb3} from "../../providers/web3";
 
 
 export default function EthRates() {
+
     const {eth} = useEthPrice()
     const {provider} = useWeb3();
 
