@@ -75,6 +75,7 @@ const NftCreate: NextPage = () => {
                 }
             )
 
+
             const data = res.data as PinataRes;
 
             setNftMeta({

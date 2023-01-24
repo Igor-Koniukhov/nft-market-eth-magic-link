@@ -40,9 +40,6 @@ export const hookFactory: NetworkHookFactory = ({providers, isLoading}) => () =>
     const targetId = useSelector(selectNetworkId) as string
     const targetNetwork = NETWORKS[targetId]
     let isSupported = true
-    /*if(providers.size===quantityNetworks){
-         isSupported = data.get(targetId)===targetNetwork
-    }*/
 
 
     return {

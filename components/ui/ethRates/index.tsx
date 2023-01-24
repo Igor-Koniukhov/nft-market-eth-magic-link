@@ -1,18 +1,20 @@
-import {useEthPrice} from "@hooks/useEthPrice"
+import {useEthPrice, NETWORKS_COINS_PRICE} from "@hooks/useEthPrice"
 import Loader from "../loader"
 import Image from "next/image"
 import {useWeb3} from "../../providers/web3"
 import {useSelector} from "react-redux";
 import {selectNetworkId} from "../../../store/slices/networkSlice";
+import {quantityNetworks} from "@providers/web3/utils";
 
 
 export default function EthRates() {
-    const {eth} = useEthPrice()
     const chainId = useSelector(selectNetworkId)
+    const {eth} = useEthPrice(chainId)
+
     const {providers} = useWeb3()
 
     const showWallet = () => {
-        if(providers.size ===3){
+        if(providers.size ===quantityNetworks){
          const   provider = providers.get(chainId)
             // @ts-ignore
             provider.provider.sdk.connect.showWallet().catch((e: any) => {

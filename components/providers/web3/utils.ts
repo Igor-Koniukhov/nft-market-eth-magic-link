@@ -84,7 +84,7 @@ export const GoerliOptionNode = {
     rpcUrl: "https://rpc.ankr.com/eth_goerli",
     chainId: 5
 }
-export const networkOptions = [GoerliOptionNode]
+export const networkOptions = [PolygonNodeOptions, OptimismNodeOptions]
 export const quantityNetworks = networkOptions.length
 const magicInit = (network: CustomNodeConfiguration) => {
     return new Magic(MAGIK_PK_FOR_GOERLI_NET, {

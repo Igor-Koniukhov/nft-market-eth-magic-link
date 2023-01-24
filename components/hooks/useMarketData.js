@@ -1,6 +1,8 @@
 import useSWR from "swr"
 
 const URL = "https://api.coingecko.com/api/v3/coins/ethereum?localization=false&tickers=false&community_data=false&developer_data=false&sparkline=false"
+const URLMatic="https://api.coingecko.com/api/v3/coins/matic-network?localization=false&tickers=false&community_data=false&developer_data=false&sparkline=false"
+const URLOptimism="https://api.coingecko.com/api/v3/coins/optimism?localization=false&tickers=false&community_data=false&developer_data=false&sparkline=false"
 
 
 const fetcherMarketData = async url => {
@@ -11,7 +13,7 @@ const fetcherMarketData = async url => {
 
 export const useMarketData = () => {
     const {data, ...rest} = useSWR(
-        URL,
+        URLMatic,
         fetcherMarketData,
         {refreshInterval: 10000}
     )

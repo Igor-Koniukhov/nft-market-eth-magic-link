@@ -35,14 +35,9 @@ export const hookFactory: AccountHookFactory = (
                         if (!account) {
                             throw "Cannot retrieve account! Please, connect to web3 wallet."
                         }
-
-
                     })
                 })
-
-
             }
-
 
             return accountsMap
         }, {
