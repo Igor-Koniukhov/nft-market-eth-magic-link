@@ -1,52 +1,51 @@
 /* eslint-disable @next/next/no-img-element */
-import type {NextPage} from "next"
-import {BaseLayout} from "@ui"
-import {Nft} from "@_types/nft"
-import {useAccount, useOwnedNfts} from "@hooks/web3"
-import React, {useEffect, useState} from "react"
-import {useWeb3} from "@providers/web3"
-import {useSelector} from "react-redux";
-import {selectNetworkId} from "../store/slices/networkSlice";
+import type {NextPage} from "next";
+import {BaseLayout} from "@ui";
+import {Nft} from "@_types/nft";
+import {useAccount, useOwnedNfts} from "@hooks/web3";
+import React, {useEffect, useState} from "react";
+import {useWeb3} from "@providers/web3";
 
-const tabs = [{name: "Your Collection", href: "#", current: true}]
+const tabs = [{name: "Your Collection", href: "#", current: true}];
 
 function classNames(...classes: string[]) {
-    return classes.filter(Boolean).join(" ")
+    return classes.filter(Boolean).join(" ");
 }
 
+
 const Profile: NextPage = () => {
-    const {nfts} = useOwnedNfts()
-    const [activeNft, setActiveNft] = useState<Nft>()
-    const {accounts} = useAccount()
+    const {nfts} = useOwnedNfts();
+    const [activeNft, setActiveNft] = useState<Nft>();
+    const {account} = useAccount();
     const [blockState, setBlockState] = useState({})
     const [transactionState, setTransactionState] = useState({})
-    const chainId = useSelector(selectNetworkId)
-    console.log(nfts)
 
     useEffect(() => {
-        if (nfts.data && nfts.data.size > 0) {
-            setActiveNft(nfts.data.get(chainId)[0])
+        if (nfts.data && nfts.data.length > 0) {
+            setActiveNft(nfts.data[0]);
         }
-        return () => setActiveNft(undefined)
+        return () => setActiveNft(undefined);
     }, [nfts.data])
 
-    const {providers} = useWeb3()
-    const [transactionsCount, setTransactionsCount] = useState(null)
+    const {provider} = useWeb3();
+    const [transactionsCount, setTransactionsCount] = useState(null);
     const getData = async () => {
-        await providers.get(chainId).getTransactionCount(accounts.data.get(chainId)).then(data => {
+        await provider.getTransactionCount(account.data).then(data => {
             setTransactionsCount(data)
             console.log(data, " transaction count in pages/index 13")
         })
-        await providers.get(chainId).getTransaction("0x05faa4dcb3ee03d2133d21d62f2d42ae349aa6d56b3e699de31012ff6f181df3").then(data=>{
+        await provider.getTransaction("0x05faa4dcb3ee03d2133d21d62f2d42ae349aa6d56b3e699de31012ff6f181df3").then(data=>{
             console.log(data, " tx from hash")
         })
+
+
 
     }
 
     const getNetwork = async () => {
-        await providers.get(chainId).getNetwork().then(data => {
+        await provider.getNetwork().then(data => {
             console.log(data, " network")
-        })
+        });
         Object.entries(blockState).map((value: [string, any], index: number) => {
             console.log(index, value[1])
         })
@@ -65,10 +64,10 @@ const Profile: NextPage = () => {
     }
 
     const getBlockInfo = async () => {
-        await providers.get(chainId).getBlockNumber().then(data => {
-            providers.get(chainId).getBlockWithTransactions(data).then(data => {
+        await provider.getBlockNumber().then(data => {
+            provider.getBlockWithTransactions(data).then(data => {
                 const a = reduceData(data)
-                setBlockState(a.blockMap)
+                setBlockState(a.blockMap);
                 const tx = reduceData(data.transactions)
                 setTransactionState(tx.blockMap)
 
@@ -127,8 +126,7 @@ const Profile: NextPage = () => {
                                         role="list"
                                         className="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 sm:gap-x-6 md:grid-cols-4 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8"
                                     >
-
-                                       {/* {(nfts.data.get(chainId) as Nft[]).map((nft) => (
+                                        {(nfts.data as Nft[]).map((nft) => (
                                             <li
                                                 key={nft.meta.name}
                                                 onClick={() => setActiveNft(nft)}
@@ -163,7 +161,7 @@ const Profile: NextPage = () => {
                                                     {nft.meta.name}
                                                 </p>
                                             </li>
-                                        ))}*/}
+                                        ))}
                                     </ul>
                                 </section>
                             </div>
@@ -221,7 +219,6 @@ const Profile: NextPage = () => {
                                             <button
                                                 onClick={() => {
                                                     nfts.listNft(
-                                                        chainId,
                                                         activeNft.tokenId,
                                                         activeNft.price
                                                     )
@@ -280,9 +277,9 @@ const Profile: NextPage = () => {
                 {Object.entries(blockState).map((value: [string, any], index: number) =>
                     <>
                         <div key={value[0].toString()}>{value[1].map((data) =>
-                        <p key={data.toString()}>{data.toString()}</p>
+                            <p key={data.toString()}>{data.toString()}</p>
 
-                    )} </div>
+                        )} </div>
 
                     </>
 
@@ -290,30 +287,30 @@ const Profile: NextPage = () => {
             </div>
             <div>
                 {Object.entries(transactionState).map((value, index)=>
-<div key={index}>
-    <h3>Transaction {index} in block: {value[1][1].blockNumber}</h3>
-    <p >blockHash: {value[1][1].blockHash}</p>
-    <p >blockNumber: {value[1][1].blockNumber}</p>
-    <p >chainId: {value[1][1].chainId}</p>
-    <p >confirmations: {value[1][1].confirmations}</p>
-    <p >data: {value[1][1].data}</p>
-    <p >from: {value[1][1].from}</p>
-    <p >gasLimit: {value[1][1].gasLimit.toString()}</p>
-    <p >gasPrice: {value[1][1].gasPrice.toString()}</p>
-    <p >hash: {value[1][1].hash}</p>
-    <p >nonce: {value[1][1].nonce}</p>
-    <p >r: {value[1][1].r}</p>
-    <p >s: {value[1][1].s}</p>
-    <p >to: {value[1][1].to}</p>
-    <p >transactionIndex: {value[1][1].transactionIndex}</p>
-    <p >value: {value[1][1].value.toString()}</p>
-</div>
+                    <div key={index}>
+                        <h3>Transaction {index} in block: {value[1][1].blockNumber}</h3>
+                        <p >blockHash: {value[1][1].blockHash}</p>
+                        <p >blockNumber: {value[1][1].blockNumber}</p>
+                        <p >chainId: {value[1][1].chainId}</p>
+                        <p >confirmations: {value[1][1].confirmations}</p>
+                        <p >data: {value[1][1].data}</p>
+                        <p >from: {value[1][1].from}</p>
+                        <p >gasLimit: {value[1][1].gasLimit.toString()}</p>
+                        <p >gasPrice: {value[1][1].gasPrice.toString()}</p>
+                        <p >hash: {value[1][1].hash}</p>
+                        <p >nonce: {value[1][1].nonce}</p>
+                        <p >r: {value[1][1].r}</p>
+                        <p >s: {value[1][1].s}</p>
+                        <p >to: {value[1][1].to}</p>
+                        <p >transactionIndex: {value[1][1].transactionIndex}</p>
+                        <p >value: {value[1][1].value.toString()}</p>
+                    </div>
 
 
                 )}
             </div>
         </BaseLayout>
-    )
-}
+    );
+};
 
-export default Profile
+export default Profile;

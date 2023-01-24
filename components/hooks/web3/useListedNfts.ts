@@ -1,85 +1,74 @@
-import {CryptoHookFactory} from "@_types/hooks"
-import {Nft} from "@_types/nft"
-import {ethers} from "ethers"
-import {useCallback} from "react"
-import {toast} from "react-toastify"
-import useSWR from "swr"
-import {NftMarketContract} from "@_types/nftMarketContract";
-import {quantityNetworks} from "@providers/web3/utils";
+import {CryptoHookFactory} from "@_types/hooks";
+import {Nft} from "@_types/nft";
+import {ethers} from "ethers";
+import {useCallback} from "react";
+import {toast} from "react-toastify";
+import useSWR from "swr";
 
 
 type UseListedNftsResponse = {
-    buyNft: (chainId: string, token: number, value: number) => Promise<void>
-    buyNftWithMW: (chainId: string, token: number, value: number) => Promise<void>
+    buyNft: (token: number, value: number) => Promise<void>
+    buyNftWithMW: (token: number, value: number) => Promise<void>
 }
-type ListedNftsHookFactory = CryptoHookFactory<Map<string,Nft[]>, UseListedNftsResponse>
+type ListedNftsHookFactory = CryptoHookFactory<Nft[], UseListedNftsResponse>
 
 export type UseListedNftsHook = ReturnType<ListedNftsHookFactory>
 
 export const hookFactory: ListedNftsHookFactory = (
     {
-        contracts,
-        providers, id
+        contract,
+        provider,
     }
 ) => (signedTransaction: string | Promise<string>) => {
     const {data, mutate, ...swr} = useSWR(
-        contracts ? "web3/useListedNfts" : null,
+        contract ? "web3/useListedNfts" : null,
         async () => {
 
-            const nfts = [] as Nft[]
-            const nftsMap = new Map<string, Nft[]>()
+            const nfts = [] as Nft[];
+            const coreNfts = await contract!.getAllNftsOnSale();
 
-            const contract = contracts[id]
-                const coreNfts = await contract!.getOwnedNfts()
-                for (let i = 0; i < coreNfts.length; i++) {
-                    const item = coreNfts[i]
-                    const tokenURI = await contract!.tokenURI(item.tokenId)
-                    const metaRes = await fetch(tokenURI)
-                    const meta = await metaRes.json()
+            for (let i = 0; i < coreNfts.length; i++) {
+                const item = coreNfts[i];
+                const tokenURI = await contract!.tokenURI(item.tokenId);
+                const metaRes = await fetch(tokenURI);
+                const meta = await metaRes.json();
 
-                    nfts.push({
-                        price: parseFloat(ethers.utils.formatEther(item.price)),
-                        tokenId: item.tokenId.toNumber(),
-                        creator: item.creator,
-                        isListed: item.isListed,
-                        meta
-                    })
-                    nftsMap.set(id, nfts)
-                }
+                nfts.push({
+                    price: parseFloat(ethers.utils.formatEther(item.price)),
+                    tokenId: item.tokenId.toNumber(),
+                    creator: item.creator,
+                    isListed: item.isListed,
+                    meta
+                })
+            }
 
-
-
-
-
-
-            return nftsMap
-        }, {
-            shouldRetryOnError: true,
+            return nfts;
+        },{
+            shouldRetryOnError:true,
         }
     )
 
-    const _contracts = contracts
-    const buyNft = useCallback(async (chainId: string, tokenId: number, value: number) => {
-        const account = await providers.get(chainId)!.getSigner().getAddress()
+    const _contract = contract;
+    const buyNft = useCallback(async (tokenId: number, value: number) => {
+        const account = await provider!.getSigner().getAddress();
         const balance = ethers.utils.formatEther(
-            await providers[chainId].getBalance(account), // Balance is in wei
-        )
+            await provider.getBalance(account), // Balance is in wei
+        );
 
-        const getOwner = await _contracts.get(chainId).ownerOf(tokenId)
+        const getOwner = await _contract.ownerOf(tokenId)
         if (getOwner === account) {
             alert(`You already owner`)
             return
         }
         if (balance <= value.toString()) {
             alert(`Insufficient balance: ${balance}, Please top up on : ${value} eth`)
-            const   provider = providers.get(chainId)
             // @ts-ignore
             provider.provider.sdk.connect.showWallet().catch((e: any) => {
-                console.log(e, " wallet connection error")
-            })
+                console.log(e);
+            });
         }
         try {
-            const result = await _contracts[chainId]!.buyNft(
+            const result = await _contract!.buyNft(
                 tokenId, {
                     value: ethers.utils.parseEther(value.toString())
                 }
@@ -91,16 +80,16 @@ export const hookFactory: ListedNftsHookFactory = (
                     success: "Nft is yours! Go to Profile page",
                     error: "Processing error"
                 }
-            )
+            );
 
         } catch (e) {
-            console.error(e.message)
+            console.error(e.message);
         }
-    }, [_contracts])
+    }, [_contract])
 
-    const buyNftWithMW = useCallback(async (chainId:string, tokenId: number, value: number) => {
+    const buyNftWithMW = useCallback(async (tokenId: number, value: number) => {
         try {
-            const result = await _contracts.get(chainId)!.buyNft(
+            const result = await _contract!.buyNft(
                 tokenId, {
                     value: ethers.utils.parseEther(value.toString())
                 }
@@ -113,17 +102,17 @@ export const hookFactory: ListedNftsHookFactory = (
                     success: "Nft is yours! Go to Profile page",
                     error: "Processing error"
                 }
-            )
+            );
         } catch (e) {
-            console.error(e.message)
+            console.error(e.message);
         }
-    }, [_contracts])
+    }, [_contract])
 
     return {
         ...swr,
         buyNft,
         buyNftWithMW,
-        data: data || {} as Map<string, Nft[]>,
+        data: data || [],
         mutate
-    }
+    };
 }

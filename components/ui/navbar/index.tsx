@@ -1,11 +1,11 @@
 /* eslint-disable @next/next/no-img-element */
-import {Disclosure} from "@headlessui/react"
-import {MenuIcon, XIcon} from "@heroicons/react/outline"
-import {ActiveLink} from ".."
-import {useAccount, useNetwork} from "@hooks/web3"
-import Walletbar from "./Walletbar"
-import {NETWORKS} from "@_types/hooks"
-import {useDispatch, useSelector} from "react-redux"
+import {Disclosure} from "@headlessui/react";
+import {MenuIcon, XIcon} from "@heroicons/react/outline";
+import {ActiveLink} from "..";
+import {useAccount, useNetwork} from "@hooks/web3";
+import Walletbar from "./Walletbar";
+import {NETWORKS} from "@_types/hooks";
+import {useDispatch, useSelector} from "react-redux";
 import {
     selectNameNetwork,
     selectNetworkId,
@@ -13,69 +13,63 @@ import {
     setBalance,
     setNameNetwork,
     setNetworkId
-} from "../../../store/slices/networkSlice"
-import {selectAuthState, setAuthState} from "../../../store/slices/authSlice"
-import {useWeb3} from "@providers/web3"
-import {ethers} from "ethers"
-import {quantityNetworks} from "@providers/web3/utils";
+} from "../../../store/slices/networkSlice";
+import {selectAuthState, setAuthState} from "../../../store/slices/authSlice";
+import {useWeb3} from "@providers/web3";
+import {ethers} from "ethers";
 
 
 const navigation = [
     {name: "Marketplace", href: "/", current: true},
     {name: "Create (Pinata)", href: "/nft/create", current: false},
-]
+];
 
 function classNames(...classes: string[]) {
-    return classes.filter(Boolean).join(" ")
+    return classes.filter(Boolean).join(" ");
 }
 
 export default function Navbar() {
-    const isLogin = useSelector(selectAuthState)
-    const {accounts} = useAccount()
-    const {network} = useNetwork()
-    const {providers} = useWeb3()
-    const dispatch = useDispatch()
-    const networkName = useSelector(selectNameNetwork)
-    const chainId = useSelector(selectNetworkId)
-    console.log(accounts)
+    const isLogin = useSelector(selectAuthState);
+    const {account} = useAccount();
+    const {network} = useNetwork();
+    const {provider} = useWeb3();
+    const dispatch = useDispatch();
+    const networkName = useSelector(selectNameNetwork);
+    const networkId = useSelector(selectNetworkId);
+
 
     const handleChangeNetwork = async (e) => {
         e.preventDefault()
         dispatch(setNameNetwork(e.target.selectedOptions[0].text))
-        dispatch(setNetworkId(e.target.value.toString()))
-        localStorage.setItem("networkId", e.target.value.toString())
-        localStorage.setItem("network", e.target.selectedOptions[0].text)
+        dispatch(setNetworkId(e.target.value.toString()));
     }
 
     const login = async () => {
-        if(providers.size === quantityNetworks){
-            providers.get(chainId)?.getSigner().getAddress().then((account) => {
-                if (account) {
-                    localStorage.setItem("isLogin", "1")
-                    dispatch(setAuthState(true))
-                    dispatch(setAccount(account.toString()))
-                    providers.get(chainId)!.getBalance(account).then(balance => {
-                        dispatch(setBalance(ethers.utils.formatEther(balance)))
-                    })
-                }
-            })
-                .catch((error) => {
-                    console.log(error, " login error")
+        provider?.getSigner().getAddress().then((account) => {
+            if (account) {
+                localStorage.setItem("isLogin", "1")
+                dispatch(setAuthState(true));
+                dispatch(setAccount(account.toString()));
+                provider!.getBalance(account).then(balance => {
+                    dispatch(setBalance(ethers.utils.formatEther(balance)))
                 })
-        }
-
-    }
+            }
+        })
+            .catch((error) => {
+                console.log(error, " login error");
+            });
+    };
 
     const disconnect = async () => {
         // @ts-ignore
-        await providers.get(chainId).provider.sdk.connect.disconnect().catch((e: any) => {
-            console.log(e, " disconnection error")
-        })
-        dispatch(setAuthState(false))
+        await provider.provider.sdk.connect.disconnect().catch((e: any) => {
+            console.log(e, " disconnection error");
+        });
+        dispatch(setAuthState(false));
         localStorage.removeItem("network")
         localStorage.removeItem("networkId")
         localStorage.removeItem("isLogin")
-    }
+    };
 
     return (
         <Disclosure as="nav" className="bg-gray-800">
@@ -93,7 +87,7 @@ export default function Navbar() {
 
                             <label htmlFor="net-select">NETWORKS: </label>
                             <br/>
-                            <select id="net-select" value={chainId} onChange={handleChangeNetwork}>
+                            <select id="net-select" value={networkId} onChange={handleChangeNetwork}>
                                 {Object.entries(NETWORKS).map((value, index) =>
                                     <option
                                         key={index}
@@ -151,14 +145,14 @@ export default function Navbar() {
                                         className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
 
                                         <button type="button" className="text-white" onClick={() => {
-                                            disconnect()
+                                            disconnect();
                                         }}>
                                             logout
                                         </button>
                                         <Walletbar
-                                            isInstalled={accounts.isInstalled}
-                                            isLoading={accounts.isLoading}
-                                            accounts={accounts.data}
+                                            isInstalled={account.isInstalled}
+                                            isLoading={account.isLoading}
+                                            account={account.data}
                                         />
                                         <div className="text-gray-300 self-center ml-2">
                   <span
@@ -169,11 +163,11 @@ export default function Navbar() {
                       <button
 
                           onClick={() => {
-                              window.open('https://metamask.io', '_ blank')
+                              window.open('https://metamask.io', '_ blank');
                           }}>
                           {network.isLoading ?
                               "..." :
-                              accounts.isInstalled ?
+                              account.isInstalled ?
                                   networkName :
                                   "<- Install "
                           }
@@ -210,5 +204,5 @@ export default function Navbar() {
                 </>
             )}
         </Disclosure>
-    )
+    );
 }

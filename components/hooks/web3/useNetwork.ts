@@ -1,46 +1,57 @@
-import {CryptoHookFactory, NETWORKS} from "@_types/hooks"
-import useSWR from "swr"
-import {useSelector} from "react-redux"
-import {selectNetworkId} from "../../../store/slices/networkSlice"
-import {useEffect} from "react"
-import {quantityNetworks} from "@providers/web3/utils";
+
+import { CryptoHookFactory, NETWORKS } from "@_types/hooks";
+import useSWR from "swr";
+import {useSelector} from "react-redux";
+import {selectNetworkId} from "../../../store/slices/networkSlice";
+import {useEffect} from "react";
+
 
 
 type UseNetworkResponse = {
-    isLoading: boolean
-    isSupported: boolean
-    targetNetwork: string
-    isConnectedToNetwork: boolean
+    isLoading: boolean;
+    isSupported: boolean;
+    targetNetwork: string;
+    isConnectedToNetwork: boolean;
 }
 
-type NetworkHookFactory = CryptoHookFactory<Map<string, string>, UseNetworkResponse>
+type NetworkHookFactory = CryptoHookFactory<string, UseNetworkResponse>
 
 export type UseNetworkHook = ReturnType<NetworkHookFactory>
 
-export const hookFactory: NetworkHookFactory = ({providers, isLoading}) => () => {
+export const hookFactory: NetworkHookFactory = ({provider, isLoading}) => () => {
     const {data, mutate, isValidating, ...swr} = useSWR(
-        providers ? "web3/useNetwork" : {} as Map<string, string>,
+        provider ? "web3/useNetwork" : null,
         async () => {
-            const networksMap = new Map<string, string>()
-            if(providers.size===quantityNetworks){
-                providers.forEach((provider, chainId)=>{
-                    if (!chainId) {
-                        throw "Cannot retreive network."
-                    }
-                    networksMap.set(chainId, NETWORKS[chainId])
-                })
+            const chainId = (await provider!.getNetwork()).chainId;
+            if (!chainId) {
+                throw "Cannot retreive network."
             }
 
-            return networksMap
+            return NETWORKS[chainId];
         }, {
             revalidateOnFocus: false
         }
     )
+    useEffect(() => {
+        provider?.on("networksChanged", handleNetworksChanged);
+        return () => {
+            provider?.removeListener("networksChanged", handleNetworksChanged);
+        }
+    })
 
-    const targetId = useSelector(selectNetworkId) as string
-    const targetNetwork = NETWORKS[targetId]
-    let isSupported = true
+    const handleNetworksChanged = (network: string) => {
+        if (network.length === 0) {
+            console.error("Please, connect to Web3 wallet");
+        } else if (network !== data) {
+            mutate(network);
+        }
+    }
 
+    const targetId = useSelector(selectNetworkId) as string;
+    const targetNetwork = NETWORKS[targetId];
+
+    //const isSupported = data===targetNetwork;
+    const isSupported = true;
 
     return {
         ...swr,
@@ -51,5 +62,5 @@ export const hookFactory: NetworkHookFactory = ({providers, isLoading}) => () =>
         isConnectedToNetwork: !isLoading && isSupported,
         isLoading: isLoading as boolean,
         mutate,
-    }
+    };
 }

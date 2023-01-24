@@ -1,31 +1,31 @@
 /* eslint-disable @next/next/no-img-element */
 
-import React, {FunctionComponent, useEffect, useState} from "react"
-import {Nft} from "../../../../types/nft"
-import {useEthPrice} from "../../../hooks/useEthPrice"
-import {useWeb3} from "@providers/web3"
-import {ethers} from "ethers"
-import {useSelector} from "react-redux"
-import {selectNetworkId} from "../../../../store/slices/networkSlice"
+import React, {FunctionComponent, useEffect, useState} from "react";
+import {Nft} from "../../../../types/nft";
+import {useEthPrice} from "../../../hooks/useEthPrice";
+import {useWeb3} from "@providers/web3";
+import {ethers} from "ethers";
+import {useSelector} from "react-redux";
+import {selectNetworkId} from "../../../../store/slices/networkSlice";
 
-const TRANSAK_API_KEY = process.env.NEXT_PUBLIC_TRANSAK_API_KEY
-const TRANSAK_ENV = process.env.NEXT_PUBLIC_TRANSAK_ENV
+const TRANSAK_API_KEY = process.env.NEXT_PUBLIC_TRANSAK_API_KEY;
+const TRANSAK_ENV = process.env.NEXT_PUBLIC_TRANSAK_ENV;
 
 
 type NftItemProps = {
-    item: Nft
-    buyNft: (token: number, value: number) => Promise<void>
+    item: Nft;
+    buyNft: (token: number, value: number) => Promise<void>;
     transakWallet: (
         cryptoCurrency: string,
         fiatValue: string,
-        chainId: string,
+        address: string,
         fiatCurrency: string,
         customersEmail: string,
         apiKey: string,
         env: string,
         tokenId: number,
         value: number
-    ) => void
+    ) => Promise<void>;
 
 }
 
@@ -34,12 +34,12 @@ function shortifyAddress(address: string) {
 }
 
 const NftItem: FunctionComponent<NftItemProps> = ({item, buyNft, transakWallet}) => {
-
     const networkId = useSelector(selectNetworkId)
     const {eth} = useEthPrice(networkId);
     const {contract, provider} = useWeb3();
     const [isOwner, setIsOwner] = useState(false);
     const [addressState, setAddress]=useState(null);
+    const [balanceState, setBalanceState] = useState(null);
 
     const defaultButtonStyle = `disabled:bg-slate-50
     disabled:text-slate-500
@@ -60,14 +60,15 @@ const NftItem: FunctionComponent<NftItemProps> = ({item, buyNft, transakWallet})
 
     useEffect(() => {
         let isBalanceSet = false
-        if (!isBalanceSet) {
+        if(!isBalanceSet){
             const checkIsOwner = async () => {
-                const account = await provider.getSigner().getAddress()
+                const account = await provider!.getSigner().getAddress();
                 const owner = await contract.ownerOf(item.tokenId)
+                setAddress(account)
                 const balance = ethers.utils.formatEther(
                     await provider.getBalance(account), // Balance is in wei
-                )
-
+                );
+                setBalanceState(balance)
                 if (owner === account) {
                     setIsOwner(true)
                 }
@@ -75,10 +76,10 @@ const NftItem: FunctionComponent<NftItemProps> = ({item, buyNft, transakWallet})
             checkIsOwner()
         }
 
-        return () => {
-            isBalanceSet = false
+        return ()=>{
+            isBalanceSet=false
         }
-    }, [ isOwner])
+    }, [balanceState, isOwner, networkId])
 
     return (
         <>
@@ -95,7 +96,7 @@ const NftItem: FunctionComponent<NftItemProps> = ({item, buyNft, transakWallet})
                                         <img
                                             className="inline-block h-9 w-9 rounded-full"
                                             src="/images/page_logo.png"
-                                            alt="logo image"
+                                            alt=""
                                         />
                                     </div>
                                     <div className="ml-3">
@@ -133,6 +134,7 @@ const NftItem: FunctionComponent<NftItemProps> = ({item, buyNft, transakWallet})
                                     {item.price}
                                     <img className="h-6" src="/images/small-eth.webp" alt="ether icon"/>
                                 </div>
+
                             </dd>
                         </div>
                         {item.meta.attributes.map(attribute =>
@@ -146,15 +148,18 @@ const NftItem: FunctionComponent<NftItemProps> = ({item, buyNft, transakWallet})
                             </div>
                         )}
                     </dl>
+
                 </div>
+
                 <div>
                     <button
                         onClick={() => {
-                            buyNft(item.tokenId, item.price)
+                            buyNft(item.tokenId, item.price);
                         }}
                         disabled={isOwner ? true : false}
                         type="button"
-                        className={`${defaultButtonStyle} ${isOwner ? `text-black bg-yellow-600` : `text-white bg-yellow-600`}`}>
+                        className={`${defaultButtonStyle} ${isOwner ? `text-black bg-yellow-600` : `text-white bg-yellow-600`}`}
+                    >
                         {isOwner ? `You are owner` : `Buy with MW`}
 
                     </button>
@@ -163,24 +168,28 @@ const NftItem: FunctionComponent<NftItemProps> = ({item, buyNft, transakWallet})
                             transakWallet(
                                 'GoerliETH',
                                 `${(item.price * eth.data).toFixed(2)}`,
-                                `${chainId}`,
+                                `${addressState}`,
                                 'USD',
                                 'ikoniukhov@gmail.com',
                                 `${TRANSAK_API_KEY}`,
                                 `${TRANSAK_ENV}`,
                                 item.tokenId,
                                 item.price
-                            )
+                            );
                         }}
                         disabled={isOwner ? true : false}
                         type="button"
-                        className={`${defaultButtonStyle} ${isOwner ? `text-black bg-yellow-600` : `text-white bg-yellow-600`}`}>
+                        className={`${defaultButtonStyle} ${isOwner ? `text-black bg-yellow-600` : `text-white bg-yellow-600`}`}
+                    >
                         {isOwner ? `You are owner` : `Buy with TW`}
+
                     </button>
+
+
                 </div>
             </div>
         </>
     )
 }
 
-export default NftItem
+export default NftItem;

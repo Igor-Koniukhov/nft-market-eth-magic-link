@@ -20,10 +20,6 @@ export default function EthRates() {
                 console.log(e, " wallet connection error")
             })
         }
-
-
-
-
     return (
         <div className="flex flex-column  text-center drop-shadow rounded-md mr-2 bg-orange-500 max-w-fit">
             <button type="button" className="

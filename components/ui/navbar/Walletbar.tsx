@@ -1,21 +1,16 @@
 /* eslint-disable @next/next/no-img-element */
 
-import {Menu} from "@headlessui/react"
-import Link from "next/link"
-import {createRef, FunctionComponent, LegacyRef, useEffect} from "react"
+import {Menu} from "@headlessui/react";
+import Link from "next/link";
+import {createRef, FunctionComponent, LegacyRef, useEffect} from "react";
 // @ts-ignore
-import jazzicon from '@metamask/jazzicon'
-import {useSelector} from "react-redux";
-import {selectNetworkId} from "../../../store/slices/networkSlice";
-import is from "@sindresorhus/is";
-import undefined = is.undefined;
-
+import jazzicon from '@metamask/jazzicon';
 
 
 type WalletbarProps = {
-    isLoading: boolean
-    isInstalled: boolean
-    accounts: Map<string, string> | undefined
+    isLoading: boolean;
+    isInstalled: boolean;
+    account: string | undefined;
 
 }
 
@@ -27,30 +22,30 @@ const Walletbar: FunctionComponent<WalletbarProps> = (
     {
         isInstalled,
         isLoading,
-        accounts
+        account
     }) => {
-const chainId = useSelector(selectNetworkId)
-    let avatarRef:  LegacyRef<HTMLDivElement> | undefined   = createRef()
-   useEffect(() => {
-       // @ts-ignore
-       let element = avatarRef.current
-       if (element && accounts.size == 3) {
-           const addr = accounts.get(chainId).slice(2, 10)
-           const seed = parseInt(addr, 16)
-           const icon = jazzicon(32, seed) //generates a size 32 icon
-           // @ts-ignore
-           if (element.firstChild) {
-               // @ts-ignore
-               element.removeChild(element.firstChild)
-           }
-           // @ts-ignore
-           element.appendChild(icon)
-       }
-   })
 
-    const copyToClipBoard = async (event: { stopPropagation: () => void }) => {
+    let avatarRef:  LegacyRef<HTMLDivElement> | undefined   = createRef();
+    useEffect(() => {
+        // @ts-ignore
+        let element = avatarRef.current ;
+        if (element && account) {
+            const addr = account.slice(2, 10);
+            const seed = parseInt(addr, 16);
+            const icon = jazzicon(32, seed); //generates a size 32 icon
+            // @ts-ignore
+            if (element.firstChild) {
+                // @ts-ignore
+                element.removeChild(element.firstChild);
+            }
+            // @ts-ignore
+            element.appendChild(icon);
+        }
+    });
+
+    const copyToClipBoard = async (event: { stopPropagation: () => void; }) => {
         event.stopPropagation()
-        await navigator.clipboard.writeText(String(accounts.get(chainId)))
+        await navigator.clipboard.writeText(String(account));
     }
 
     if (isLoading) {
@@ -69,7 +64,7 @@ const chainId = useSelector(selectNetworkId)
         )
     }
 
-    if (accounts) {
+    if (account) {
 
         return (
             <Menu as="div" className="ml-3 relative">
@@ -78,7 +73,7 @@ const chainId = useSelector(selectNetworkId)
                     <Menu.Button
                         className="bg-gray-800 flex text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white">
 
-                       <div ref={avatarRef} className="h-8 w-8 rounded-full"></div>
+                        <div ref={avatarRef} className="h-8 w-8 rounded-full"></div>
 
                     </Menu.Button>
                 </div>
@@ -90,7 +85,7 @@ const chainId = useSelector(selectNetworkId)
                             <button
                                 onClick={copyToClipBoard}
                                 className=" disabled:text-gray-500 text-xs block px-4 pt-2 text-gray-700">
-                                {`0x${accounts.get(chainId)[2]}${accounts.get(chainId)[3]}${accounts.get(chainId)[4]}....${accounts.get(chainId).slice(-4)}`}
+                                {`0x${account[2]}${account[3]}${account[4]}....${account.slice(-4)}`}
 
                             </button>
                         )}
@@ -117,7 +112,7 @@ const chainId = useSelector(selectNetworkId)
             <div>
                 <button
                     onClick={() => {
-                       alert("Next time =)")
+                        alert("Next time =)")
                     }}
                     type="button"
                     className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-full shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
@@ -131,7 +126,7 @@ const chainId = useSelector(selectNetworkId)
             <div>
                 <button
                     onClick={() => {
-                        window.open('https://metamask.io', '_ blank')
+                        window.open('https://metamask.io', '_ blank');
                     }}
                     type="button"
                     className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-full shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
@@ -143,4 +138,4 @@ const chainId = useSelector(selectNetworkId)
     }
 }
 
-export default Walletbar
+export default Walletbar;
