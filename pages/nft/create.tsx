@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 
 import type {NextPage} from 'next';
-import {useRouter} from 'next/router';
+import { useRouter } from 'next/router';
 import {ChangeEvent, useState} from 'react';
 import {BaseLayout} from '@ui'
 import Link from 'next/link'
@@ -14,17 +14,17 @@ import {useNetwork} from "@hooks/web3";
 import {ExclamationIcon} from "@heroicons/react/solid";
 import {useSelector} from "react-redux";
 import {selectNetworkId} from "../../store/slices/networkSlice";
-import {quantityNetworks} from "@providers/web3/utils";
 
+const ALLOWED_FIELDS = ["name", "description", "image", "attributes"];
 
 const NftCreate: NextPage = () => {
     const router = useRouter();
-    const {providers, contracts} = useWeb3();
+    const { provider, contract} = useWeb3();
     const {network} = useNetwork();
     const [nftURI, setNftURI] = useState("");
     const [price, setPrice] = useState("");
     const [hasURI, setHasURI] = useState(false);
-    const chainId = useSelector(selectNetworkId)
+    const networkId = useSelector(selectNetworkId)
     const [nftMeta, setNftMeta] = useState<NftMeta>({
         name: "",
         description: "",
@@ -36,15 +36,13 @@ const NftCreate: NextPage = () => {
     });
 
     const getSignedData = async () => {
-        const messageToSign = await axios.get("/api/verify");
-        if(providers.size===quantityNetworks){
-            const account = await providers.get(chainId).getSigner().getAddress();
-            const signedData = await providers.get(chainId).send(
-                "personal_sign",
-                [JSON.stringify(messageToSign.data), account, messageToSign.data.id])
+        const messageToSign = await axios.get(`/api/verify`,{ params: {id: networkId as string}});
+        const account = await provider.getSigner().getAddress();
+        const signedData = await provider.send(
+            "personal_sign",
+            [JSON.stringify(messageToSign.data), account, messageToSign.data.id])
 
-            return {signedData, account};
-        }
+        return {signedData, account};
     }
 
     const handleImage = async (e: ChangeEvent<HTMLInputElement>) => {
@@ -74,7 +72,6 @@ const NftCreate: NextPage = () => {
                     error: "Image upload error"
                 }
             )
-
 
             const data = res.data as PinataRes;
 
@@ -110,7 +107,7 @@ const NftCreate: NextPage = () => {
             const promise = axios.post("/api/verify", {
                 address: account,
                 signature: signedData,
-                nft: nftMeta
+                nft: nftMeta,
             })
 
             const res = await toast.promise(
@@ -128,28 +125,28 @@ const NftCreate: NextPage = () => {
     }
 
     const createNft = async () => {
-        if(contracts.size===quantityNetworks){
-            try {
-                const tx = await contracts.get(chainId)?.mintToken(
-                    nftURI,
-                    ethers.utils.parseEther(price), {
-                        value: ethers.utils.parseEther(0.025.toString())
-                    }
-                );
-                await toast.promise(
-                    tx!.wait(), {
-                        pending: "Minting Nft",
-                        success: "Nft has been created",
-                        error: "Metadata upload error"
-                    }
-                )
-                router.push('/')
 
-            } catch (e: any) {
-                console.error(e.message, " Something wrong with minting Nft");
-            }
+        try {
+
+            const tx = await contract?.mintToken(
+                nftURI,
+                ethers.utils.parseEther(price), {
+                    value: ethers.utils.parseEther(0.025.toString())
+                }
+            );
+            await toast.promise(
+                tx!.wait(), {
+                    pending: "Minting Nft",
+                    success: "Nft has been created",
+                    error: "Metadata upload error"
+                }
+            )
+            router.push('/')
+
+
+        } catch (e: any) {
+            console.error(e.message, " Something wrong with minting Nft");
         }
-
     }
     if (!network.isConnectedToNetwork) {
         return (
@@ -271,8 +268,7 @@ const NftCreate: NextPage = () => {
                             <div>
                                 <div className="px-4 sm:px-0">
                                     <h3 className="text-lg font-medium leading-6 text-gray-900 text-center">Create NFT
-                                        Metadata <a href="https://www.pinata.cloud/" target="_blank"
-                                                    rel="noreferrer">Pinata</a></h3>
+                                        Metadata <a href="https://www.pinata.cloud/" target="_blank" rel="noreferrer">Pinata</a></h3>
                                     <p className="mt-1 text-sm text-gray-600 text-center">
                                         This information will be displayed publicly so be careful what you share.
                                     </p>

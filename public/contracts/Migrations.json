@@ -1796,18 +1796,18 @@
     "420": {
       "events": {},
       "links": {},
-      "address": "0x475489565c0f472648B3c85F73aDf4dBF1171802",
-      "transactionHash": "0x0a7f16ad4013a05a036537b7d5e5a2185b528aaeb5622d45ce9af60b00c623e2"
+      "address": "0x7F4FdDe2C695970A3b43168CB23933b5A5bA9A20",
+      "transactionHash": "0x7a4b5d27289f014025962052cc4446c8c422eb3964cf933c0908d9cf6ab30f5d"
     },
     "80001": {
       "events": {},
       "links": {},
-      "address": "0x8FF6937906d001Fb67F8F645020c8Eb620550F1a",
-      "transactionHash": "0xbfef3c1008d3799b15f5e86fbf8cbebccdf3f1274e86e841e4a3035fe6915c7f"
+      "address": "0x22613b08000AD91729063aAcC1253eF31cdd22dC",
+      "transactionHash": "0x5e5b6e8776570532a79e298886ebd149bdffeafd4c890fb999e18f783dba0d75"
     }
   },
   "schemaVersion": "3.4.9",
-  "updatedAt": "2023-01-13T13:38:51.761Z",
+  "updatedAt": "2023-01-24T15:49:26.749Z",
   "networkType": "ethereum",
   "devdoc": {
     "kind": "dev",

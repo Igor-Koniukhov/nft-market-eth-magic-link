@@ -5,12 +5,13 @@ import Image from "next/image";
 import {useWeb3} from "../../providers/web3";
 import {useSelector} from "react-redux";
 import {selectNetworkId} from "../../../store/slices/networkSlice";
+import {NETWORKS_SYMBOL} from "@_types/hooks";
 
 
 export default function EthRates() {
 
-    const chainId = useSelector(selectNetworkId)
-    const {eth} = useEthPrice(chainId)
+    const networkId = useSelector(selectNetworkId)
+    const {eth} = useEthPrice(networkId)
     const {provider} = useWeb3();
 
 
@@ -57,9 +58,9 @@ export default function EthRates() {
                     <>
                         1 <Image
                         alt="eth symbol"
-                        height="35"
-                        width="35"
-                        src="/images/small-eth.webp"
+                        height="22"
+                        width="22"
+                        src={NETWORKS_SYMBOL[networkId]}
                     />
                         <span className="text-xl font-bold text-white">
                 = {eth.data}$

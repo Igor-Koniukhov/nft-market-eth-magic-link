@@ -16,7 +16,10 @@ const NftList: FunctionComponent = () => {
 
 
     useEffect(() => {
-        mutate(contract ? "web3/useListedNfts" : null, nfts.data, {populateCache: true})
+       if (networkId){
+           mutate(contract ? "web3/useListedNfts" : null, nfts.data, {populateCache: true})
+       }
+
     }, [networkId])
     return (
         <div className="mt-12 max-w-lg mx-auto grid gap-5 lg:grid-cols-3 lg:max-w-none">

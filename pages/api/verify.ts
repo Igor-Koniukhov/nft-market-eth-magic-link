@@ -1,10 +1,10 @@
 import {v4 as uuidv4} from "uuid"
 import {Session} from "next-iron-session"
 import {NextApiRequest, NextApiResponse} from "next"
-import {addressCheckMiddleware, contractAddress, pinataApiKey, pinataSecretApiKey, withSession} from "./utils"
+import {addressCheckMiddleware, pinataApiKey, pinataSecretApiKey, withSession} from "./utils"
 import {NftMeta} from "@_types/nft"
 import axios from "axios"
-import contractArtifact from "../../public/contracts/NftMarket.json";
+import contractArtifact from "../../public/contracts/NftMarket.json"
 
 
 export default withSession(async (req: NextApiRequest & { session: Session }, res: NextApiResponse) => {
@@ -29,10 +29,7 @@ export default withSession(async (req: NextApiRequest & { session: Session }, re
                 }
             })
 
-            // console.log(jsonRes.data, " jsonRes from verify")
-            // IpfsHash: 'QmPitcZmehaKh693KvCywUgVfxiwZ5G7UvAWY5RSKUMExt',
-            // PinSize: 225,
-            // Timestamp: '2022-09-29T16:52:01.338Z'
+
             return res.status(200).send(jsonRes.data)
         } catch {
             return res.status(422).send({message: "Cannot create JSON"})
@@ -40,8 +37,8 @@ export default withSession(async (req: NextApiRequest & { session: Session }, re
 
     } else if (req.method === "GET") {
         try {
-            const contractAddress = contractArtifact["networks"]['5']["address"]
-            console.log(contractAddress, " contract address from verify.ts")
+            let networkId = `${req.query.id}`
+           const contractAddress = contractArtifact["networks"][networkId]["address"]
             const message = {contractAddress, id: uuidv4()}
             req.session.set("message-session", message)
             await req.session.save()

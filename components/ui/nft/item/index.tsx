@@ -7,6 +7,7 @@ import {useWeb3} from "@providers/web3";
 import {ethers} from "ethers";
 import {useSelector} from "react-redux";
 import {selectNetworkId} from "../../../../store/slices/networkSlice";
+import {NETWORKS_SYMBOL} from "@_types/hooks";
 
 const TRANSAK_API_KEY = process.env.NEXT_PUBLIC_TRANSAK_API_KEY;
 const TRANSAK_ENV = process.env.NEXT_PUBLIC_TRANSAK_ENV;
@@ -122,8 +123,8 @@ const NftItem: FunctionComponent<NftItemProps> = ({item, buyNft, transakWallet})
             <div className="flex-1 bg-white p-6 flex flex-col justify-around">
                 <div className="flex justify-center items-center">
                     {item.price}
-                    <img className="h-6" src="/images/small-eth.webp" alt="ether icon"/>
-                    = {(item.price * eth.data).toFixed(2)} $
+                    <img className="h-6 mr-1" src={NETWORKS_SYMBOL[networkId]} alt="ether icon"/>
+                     = {(item.price * eth.data).toFixed(2)} $
                 </div>
                 <div className="overflow-hidden mb-4 flex justify-around">
                     <dl className="-mx-4 -mt-4 flex flex-wrap">
@@ -132,7 +133,7 @@ const NftItem: FunctionComponent<NftItemProps> = ({item, buyNft, transakWallet})
                             <dd className="order-1 text-xl font-extrabold text-yellow-600">
                                 <div className="flex justify-center items-center">
                                     {item.price}
-                                    <img className="h-6" src="/images/small-eth.webp" alt="ether icon"/>
+                                    <img className="h-6" src={NETWORKS_SYMBOL[networkId]} alt="ether icon"/>
                                 </div>
 
                             </dd>

@@ -5,8 +5,6 @@ export const URL = "https://api.coingecko.com/api/v3/coins/ethereum?localization
 export const URLMatic="https://api.coingecko.com/api/v3/coins/matic-network?localization=false&tickers=false&community_data=false&developer_data=false&sparkline=false"
 export const URLOptimism="https://api.coingecko.com/api/v3/coins/optimism?localization=false&tickers=false&community_data=false&developer_data=false&sparkline=false"
 export const NETWORKS_COINS_PRICE: { [k: string]: string } = {
-
-  5: URL,
   420: URLOptimism,
   80001: URLMatic,
 

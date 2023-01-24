@@ -3,11 +3,8 @@ import {Web3Dependencies} from "@_types/hooks"
 import {Contract, ethers, providers} from "ethers"
 import {CustomNodeConfiguration, Magic} from "magic-sdk"
 import {ConnectExtension} from "@magic-ext/connect"
-import {NftMarketContract} from "@_types/nftMarketContract";
-
 
 const MAGIK_PK_FOR_GOERLI_NET = process.env.NEXT_PUBLIC_MAGIC_PK_FOR_GOERLI_NET
-
 
 type Nullable<T> = {
     [P in keyof T]: T[P] | null
@@ -80,12 +77,7 @@ export const PolygonNodeOptions = {
     chainId: 80001, // Polygon chain id
 }
 
-export const GoerliOptionNode = {
-    rpcUrl: "https://rpc.ankr.com/eth_goerli",
-    chainId: 5
-}
-export const networkOptions = [PolygonNodeOptions, OptimismNodeOptions]
-export const quantityNetworks = networkOptions.length
+
 const magicInit = (network: CustomNodeConfiguration) => {
     return new Magic(MAGIK_PK_FOR_GOERLI_NET, {
         network: network,

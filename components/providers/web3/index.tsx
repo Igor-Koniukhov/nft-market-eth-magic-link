@@ -9,7 +9,6 @@ import {
     createDefaultState,
     createWeb3State,
     initContractInNetwork,
-    GoerliOptionNode,
     OptimismNodeOptions,
     PolygonNodeOptions,
     Web3State
@@ -23,15 +22,25 @@ const Web3Provider: FunctionComponent<any> = ({children}) => {
 
     const [web3Api, setWeb3Api] = useState<Web3State>(createDefaultState())
     const dispatch = useDispatch()
-    let netId = useSelector(selectNetworkId) || DEFAULT_NET_ID
 
-    const setPreviousSessionNodOptions = () => {
+
+    const setPreviousSessionNodOptions = async () => {
         if (localStorage.getItem("isLogin") === "1") {
             dispatch(setAuthState(true))
         }
-        dispatch(setNameNetwork(localStorage.getItem("network") || NETWORKS[DEFAULT_NET_ID]))
-        dispatch(setNetworkId(localStorage.getItem("networkId") || DEFAULT_NET_ID))
+        await dispatch(setNameNetwork(localStorage.getItem("network") || NETWORKS[DEFAULT_NET_ID]))
+        await dispatch(setNetworkId(localStorage.getItem("networkId") || DEFAULT_NET_ID))
     }
+    useEffect(() => {
+        let isLoad = true
+        if (isLoad) {
+            setPreviousSessionNodOptions()
+        }
+        return () => {
+            isLoad = !isLoad
+        };
+    }, []);
+
 
     const setNetworkChainId = (options: CustomNodeConfiguration) => {
         dispatch(setNetworkId(`${options.chainId}`))
@@ -41,7 +50,7 @@ const Web3Provider: FunctionComponent<any> = ({children}) => {
     }
 
     const setWeb3WithNodeOptions = (options: CustomNodeConfiguration, contractName: string) => {
-        setPreviousSessionNodOptions()
+
         setNetworkChainId(options)
         initContractInNetwork(options, contractName)
             .then(data => {
@@ -52,7 +61,7 @@ const Web3Provider: FunctionComponent<any> = ({children}) => {
                 }))
             })
     }
-
+    let netId = useSelector(selectNetworkId)
     const switchNetworkChain = (id: string) => {
         switch (id) {
             case `${OptimismNodeOptions.chainId}`:
@@ -61,15 +70,13 @@ const Web3Provider: FunctionComponent<any> = ({children}) => {
             case `${PolygonNodeOptions.chainId}`:
                 setWeb3WithNodeOptions(PolygonNodeOptions, "NftMarket")
                 break
-            case `${GoerliOptionNode.chainId}`:
-                setWeb3WithNodeOptions(GoerliOptionNode, "NftMarket")
-                break
+
         }
     }
 
     useEffect(() => {
         async function initWeb3() {
-            console.log(" initWeb3")
+
             try {
                 await switchNetworkChain(netId)
             } catch (e) {

@@ -11,7 +11,10 @@ export const NETWORKS: { [k: string]: string } = {
     420: "Optimism Goerli",
     80001: "Polygon",
 }
-
+export const NETWORKS_SYMBOL: { [k: string]: string } = {
+    420: "/images/optimism.png",
+    80001: "/images/polygon.png",
+}
 
 export type CryptoHookFactory<D = any, R = any, P = any> = {
     (d: Partial<Web3Dependencies>): CryptoHandlerHook<D, R, P>

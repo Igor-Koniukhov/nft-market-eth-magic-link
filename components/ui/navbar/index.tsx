@@ -35,7 +35,7 @@ export default function Navbar() {
     const {provider} = useWeb3();
     const dispatch = useDispatch();
     const networkName = useSelector(selectNameNetwork);
-    const networkId = useSelector(selectNetworkId);
+    const networkId = useSelector(selectNetworkId) ;
 
 
     const handleChangeNetwork = async (e) => {
