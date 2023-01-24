@@ -3,10 +3,9 @@ import {SWRResponse} from "swr";
 import {NftMarketContract} from "@_types/nftMarketContract";
 
 export type Web3Dependencies = {
-    providers: Map<string, providers.Web3Provider>;
-    contracts: Map<string, NftMarketContract>;
+    provider:  providers.Web3Provider;
+    contract: NftMarketContract;
     isLoading: boolean;
-    id: string;
 }
 export const NETWORKS: { [k: string]: string } = {
     420: "Optimism Goerli",
